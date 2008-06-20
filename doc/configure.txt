@@ -62,7 +62,7 @@ but cannot make changes to the system.
 Here is an example admin section:
 
   <admin listen="localhost:7001">
-    <user name="admin" password="4s3cr3t" access="full"/>
+    <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
 
 The final section in the config is also optional, and specifies a log
