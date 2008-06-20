@@ -1,0 +1,128 @@
+This is a list of all current and planned web calls. Ones
+marked with 'unimplemented' in the text are, well, unimplemented.
+Ones marked with [maybe] are tentative and may not be implemented.
+
+Information/Configuration
+-------------------------
+
+  - running 
+
+      current configuration and status of the PD (HTML)
+      this page is the GUI for interactively editing the pydir
+      config.
+
+  - running.txt 
+
+      simple text view of the current running config. suitable
+      for simple reading by programs
+
+  - config.xml - 
+
+      initial boot-time configuration of the PD (xml)
+
+  - running.xml
+
+      current running config of the PD (xml)
+
+  - [maybe] config / config.txt ?
+
+      is there a use for text view of boot time config? not really.
+      unimplemented.
+
+  - [maybe] config vs. running
+
+      a display of what's different between boot time and current
+      config. unimplemented.
+
+  - [maybe] reload config, making changes
+
+      some sort of smart reload that painlessly reloads the config
+      and switches in the various new bits without interruption. will
+      probably do this as a seperate program that uses the webapi to
+      do this, instead. unimplemented.
+
+Host management
+---------------
+
+  - addHost?service=NNN&group=NNN&name=NNNN&ip=NNN:n 
+
+      add a new host to the group of a service
+
+  - delHost?service=NNN&group=NNN&name=NNN
+
+      remove a host from the group of a service
+      Note that this will not let you remove all hosts
+      from the enabled group.
+
+  - delAllHosts?service=NNN&group=NNN 
+
+      remove all hosts from the group of a service. unimplemented
+      Note that this will not let you remove all hosts
+      from the enabled group. 
+
+Group management
+----------------
+
+  - enableGroup?service=NNN&group=NNN -
+
+      switch the currently enabled group. Note that this will
+      not affect any in-progress connections. The existing enabled
+      group.
+
+  - changeScheduler?service=NNN&group=NNN&scheduler=NNN
+
+      change the scheduler of a group. This will not allow you to
+      change the scheduer of an enabled group. unimplemented.
+
+User management
+---------------
+
+  - addUser?name=NNNN&password=NNNN&access=NNNN
+
+      add a new user to the web admin interface. unimplemented.
+
+  - delUser?name=NNNN
+
+      delete a user from the web admin interface. unimplemented.
+
+Service management
+------------------
+
+  - newService?service=NNN&listen=NNN
+
+      add a new service. unimplemented.
+
+  - newGroup?service=NNN&group=NNN&scheduler=NNN
+
+      add a new group to a service. unimplemented.
+
+  - delGroup?service=NNN&group=NNN
+
+      remove a new group from a service. can't remove
+      the active group. unimplemented.
+        
+Miscellaneous
+-------------
+
+  - closeLog
+
+      close and re-open the log file. unimplemented.
+
+  - retryHost?service=NNN&group=NNN&host=NNN
+
+      force the manager thread to re-add a host now. unimplemented.
+
+  - hostAdminDown?service=NNN&group=NNN&name=NNN 
+
+      mark a host as 'administratively down'. This disables it,
+      without removing it from the configuration. unimplemented.
+
+  - hostAdminUp?service=NNN&group=NNN&name=NNN 
+
+      mark a host as 'administratively up'. This re-enables it,
+      assuming it's been previously marked 'down'. unimplemented.
+      
+  - [maybe] shutdown
+
+      shut down the python director. unimplemented.
+

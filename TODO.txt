@@ -1,0 +1,80 @@
+Things that could be added:
+    logging cleanup
+    scheduler stats structures cleanup
+    adminUp/adminDown host
+    'weighted' hosts
+
+    more doco
+    write a client that compares config xml and running xml, and updates
+      the latter to match the former. mostly there now, see compareconf
+    Figure out a way to restart/upgrade pydir. Idea: close down listener, start
+      new code immediately. Let old connections on old pydir finish (run to 
+      completion) before exiting.
+    Replace crappy manager thread and admin thread with twisted-based 
+      implementations.
+
+    Caching of DNS lookups
+    dump out curBadHosts/histBadHosts/open
+    make the connection checker work
+    sticky connections. keep a cache of 'client_ip':'backend_ip'. 
+      manager needs to be able to call "scheduler.cleanup()" to allow the
+      cache to be manageable.
+
+Admin interface bits left to do:
+
+  Information:
+    [maybe] config / config.txt ?
+    [maybe] config vs. running
+    [maybe] reload config, making changes
+  Host mgmt:
+    delAllHosts?service=NNN&group=NNN
+  Group mgmt:
+    changeScheduler?service=NNN&group=NNN&scheduler=NNN
+  Service mgmt:
+    newService?service=NNN&listen=NNN
+    newGroup?service=NNN&group=NNN&scheduler=NNN
+    delGroup?service=NNN&group=NNN
+  other
+    closeLog
+    retryHost?service=NNN&group=NNN&client=NNN
+    hostAdminDown
+    hostAdminUp
+    [maybe] shutdown?
+
+multiple admins for a pydir (e.g. one http, one https)
+
+make enable optional
+
+logging options?
+
+Document the various return results from the text mode interfaces - 
+eg running.txt
+
+additional schedulers.
+
+better testing stuff in SchedulerManager, rather than just dropping the
+dead entry back into the mix. In the case of "it's down", this is harmless,
+but nonetheless. Store away more info about the down hosts - when, how long
+til next test, &c.
+
+expires on the CSS.
+
+seriously refactor the CSS and also the pdadmin_running HTML. Nasty nasty.
+
+pid file?
+
+specify users not in the config.xml file, but somewhere else.
+
+what does 'host unknown' raise under 2.1? 
+
+Clean up all the logging. Logging now goes to a single place, but in
+inconsistent format. Still, it's better than it was.
+
+Track the count of faults.
+
+If M2Crypto is installed, allow a https-based admin interface. Sort-of
+there now, use the undocumented 'secure="yes"' flag to the admin directive.
+
+Additional idea: connection count scheduler. could be used to track 
+licensing of a service, or limit it.
+

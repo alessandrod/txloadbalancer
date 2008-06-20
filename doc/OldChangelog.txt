@@ -1,0 +1,192 @@
+This changelog is for pre-sourceforge changes to the code. Can't be
+bothered doing the tarball upload to get the full CVS history onto
+SF.
+
+2002-06-20 11:31  anthony
+
+	* TODO.txt, pdadmin.py, pdnetwork.py: added running.txt to
+	interface.
+
+2002-06-19 16:14  anthony
+
+	* pdadmin.py: slight goof in the display of bad hosts.
+
+2002-06-19 00:59  anthony
+
+	* pdadmin.py: stylesheet new bits.
+
+2002-06-19 00:46  anthony
+
+	* TODO.txt, pdadmin.py, pdmanager.py, pdnetwork.py,
+	pdschedulers.py: /running now subsumes the 'status' page
+
+2002-06-19 00:08  anthony
+
+	* pdschedulers.py, pydir.py: re-use the schedulers, don't keep
+	recreating them.
+
+2002-06-18 23:56  anthony
+
+	* pdadmin.py: added message box.
+
+2002-06-18 23:44  anthony
+
+	* README.txt, pdadmin.py: cleaned up interface of config. made
+	redirection work.
+
+2002-06-18 22:55  anthony
+
+	* confex.xml, pdadmin.py, pdconf.py, pdmanager.py, pdschedulers.py,
+	pydir.py: renamed the various ld* and LD* to pd* and PD*
+
+2002-06-18 22:48  anthony
+
+	* README.txt, TODO.txt, confex.xml, pdadmin.py, pdconf.py,
+	pdschedulers.py: added LDHost object. Hosts now have a name and an
+	ip.
+
+2002-06-18 21:56  anthony
+
+	* confex.xml, pdadmin.py, pydir.py: enableGroup works from the
+	webpage through to the backend. Yay.
+
+2002-06-18 21:22  anthony
+
+	* pdadmin.py, pdconf.py: add getGroups() to ldconf.LDService. 
+	enable new /config call in admin interface.
+
+2002-06-18 21:11  anthony
+
+	* ld.conf: old conf file. byebye.
+
+2002-06-18 20:57  anthony
+
+	* TODO.txt, pdadmin.py: renamed config.txt to config.xml
+
+2002-06-18 20:44  anthony
+
+	* pdconf.py, pdschedulers.py, pydir.py: refactor services and
+	groups into dictionaries. clean up various code that used them.
+
+2002-06-18 14:50  anthony
+
+	* TODO.txt, pdadmin.py, pdconf.py, pdmanager.py, pdnetwork.py,
+	pdschedulers.py, pydir.py: whitespace normalisation.
+
+2002-06-18 14:48  anthony
+
+	* pdschedulers.py: BaseScheduler.newHost can take ('host',port) or
+	'host:port' whitespace normalisation.
+
+2002-06-18 13:25  anthony
+
+	* pdmanager.py: oops. missed one spot in the change of
+	director.listeners from list to dictionary.
+
+2002-06-18 13:22  anthony
+
+	* .cvsignore: [no log message]
+
+2002-06-18 13:21  anthony
+
+	* schedulers.py: renamed to ldschedulers.py
+
+2002-06-18 13:21  anthony
+
+	* pydir.py: split network bits into seperate module.  pychecker
+	cleanups.  refactored the PythonDirector.__init__ method.  added
+	recreateScheduler to rebuild the scheduler for a listener.  only
+	use a single schedule manager now to manage all schedulers.
+
+2002-06-18 13:19  anthony
+
+	* pdnetwork.py: split network bits (Listener, Sender, Receiver)
+	into seperate module.  pychecker cleanups.
+
+2002-06-18 13:18  anthony
+
+	* pdmanager.py, pdschedulers.py: split manager stuff into seperate
+	module.  renamed schedulers to ldschedulers.  pychecker cleanups.
+
+2002-06-18 13:13  anthony
+
+	* pdconf.py: pychecker fix.
+
+2002-06-18 12:27  anthony
+
+	* pdadmin.py: print the service name pychecker cleanups
+
+2002-06-17 18:56  anthony
+
+	* README.txt: note about webadmin
+
+2002-06-17 18:54  anthony
+
+	* pdadmin.py: index.html, status, status.txt, config.txt, config
+	all done.  access control implemented.
+
+2002-06-17 18:54  anthony
+
+	* TODO.txt: sketching out API.
+
+2002-06-17 18:50  anthony
+
+	* pydir.py: only start admin if requested.
+
+2002-06-17 18:50  anthony
+
+	* pdconf.py: handle the <admin> section (and users) save the config
+	DOM for display purposes.
+
+2002-06-17 14:15  anthony
+
+	* README.txt, TODO.txt, conf.py, confex.xml, pdadmin.py, pdconf.py,
+	pydir.py, schedulers.py: scheduler is now a property of 'group',
+	not service.
+	
+	first bits of web admin are there - not hooked into the xml config
+	yet, tho.
+	
+	leastconns is there, and works.
+	
+	added some docs.
+
+2002-06-13 19:15  anthony
+
+	* .cvsignore, conf.py, confex.xml, ld.conf, ld.py, pydir.py,
+	schedulers.py: new config, scheduler stuff.
+
+2002-06-13 19:14  anthony
+
+	* ld.py: schedulers, config to seperate modules.
+
+2002-06-13 19:14  anthony
+
+	* ld.py: more changes.
+
+2002-06-11 18:44  anthony
+
+	* ld.py: handle connect-time errors (such as host unknown). 
+	refactor out bits from the __init__ method.
+
+2002-06-11 18:26  anthony
+
+	* ld.py: made the sender call receiver.close_when_done() - magic
+	methods, aaaah.
+
+2002-06-11 17:58  anthony
+
+	* ld.conf: sample config file.
+
+2002-06-11 17:58  anthony
+
+	* ld.py: current working set.
+
+2002-06-07 16:52  anthony
+
+	* ld.py: Initial revision
+
+2002-06-07 16:52  anthony
+
+	* ld.py: initial.
+

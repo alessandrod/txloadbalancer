@@ -1,0 +1,622 @@
+2004-12-15 00:19  anthonybaxter
+
+	* pydirector/pdnetwork.py: support twisted or asyncore
+	transparently (but prefer twisted)
+
+2004-12-15 00:18  anthonybaxter
+
+	* confex.xml: move comment from top
+
+2004-08-18 15:36  anthonybaxter
+
+	* pydirector/pdconf.py: move import to top of method
+
+2003-10-10 15:41  anthonybaxter
+
+	* pydirector/__init__.py: new version
+
+2003-10-09 18:53  anthonybaxter
+
+	* pydir.py, pydirector/__init__.py, pydirector/micropubl.py,
+	pydirector/pdadmin.py, pydirector/pdconf.py,
+	pydirector/pdlogging.py, pydirector/pdmain.py,
+	pydirector/pdmanager.py, pydirector/pdnetworkasyncore.py,
+	pydirector/pdnetworktwisted.py, pydirector/pdschedulers.py: update
+	copyright year
+
+2003-10-09 18:51  anthonybaxter
+
+	* README.txt: release stuff.
+
+2003-10-09 18:50  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2003-10-09 18:38  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2003-10-09 18:35  anthonybaxter
+
+	* TODO.txt: done a couple
+
+2003-10-09 18:33  anthonybaxter
+
+	* README.txt, doc/configure.txt: document '*' == all addresses.
+
+2003-10-09 18:26  anthonybaxter
+
+	* pydirector/pdconf.py: can specify '*' as hostname to listen for
+	admin interface == all addresses.  Will also add the same feature
+	to the listen directive.
+
+2003-10-09 18:22  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
+
+2003-10-09 18:20  anthonybaxter
+
+	* README.txt, doc/pythondirector.dtd, doc/schedulers.txt,
+	pydirector/pdschedulers.py: Added 'leastconnsrr' scheduler. May end
+	up deprecating/removing the existing leastconns scheduler, as the
+	new one is far far better.
+
+2003-08-18 13:24  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: actually change the scheduler
+	when requested.
+
+2003-05-02 19:26  anthonybaxter
+
+	* pydirector/pdconf.py: force backend server addresses to be ascii
+	strings - avoids some internal processing by python.
+
+2003-05-01 14:28  anthonybaxter
+
+	* pydirector/: pdmain.py, pdnetworkasyncore.py,
+	pdnetworktwisted.py: whitespace n18n
+
+2003-05-01 14:26  anthonybaxter
+
+	* pydirector/pdschedulers.py: debugging print left in.
+
+2003-04-30 18:41  anthonybaxter
+
+	* README.txt, TODO.txt, pydirector/pdnetworkasyncore.py,
+	pydirector/pdnetworktwisted.py, pydirector/pdschedulers.py: first
+	bunch of changes to allow "sticky" schedulers, where a client is
+	sent to the same server each time (by preference). No actual
+	scheduler or config support is there yet.
+
+2003-04-30 18:24  anthonybaxter
+
+	* pydir.py, pydirector/pdmain.py, pydirector/pdnetworktwisted.py:
+	optional profile (hotshot) support
+
+2003-04-30 16:41  anthonybaxter
+
+	* MANIFEST.in: add dtd to package.
+
+2003-04-30 16:40  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
+
+2003-04-30 16:38  anthonybaxter
+
+	* README.txt, pydirector/__init__.py: pre-release dance.
+
+2003-04-30 16:35  anthonybaxter
+
+	* pydirector/pdconf.py: damn. stupid braino.
+
+2003-04-30 16:34  anthonybaxter
+
+	* pydirector/pdconf.py: handle comments in more places.
+
+2003-04-30 16:13  anthonybaxter
+
+	* BUGS.txt, setup.py, pydirector/pdmanager.py,
+	pydirector/pdnetworktwisted.py, pydirector/pdschedulers.py:
+	whitespace n18n
+
+2003-04-30 16:13  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2003-04-30 16:07  anthonybaxter
+
+	* pydir.py: up the number of open files with
+	resource.setrlimit(RLIMIT_NOFILE)
+
+2003-04-30 16:05  anthonybaxter
+
+	* pydirector/pdmanager.py: in the case where all backends are down,
+	go into aggressive mode - automatically re-add all servers each
+	time round the main manager loop.
+
+2003-04-30 16:04  anthonybaxter
+
+	* pydirector/pdconf.py: accept (and ignore) comments in the XML
+	config.
+
+2003-04-30 16:03  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: use pdlogging rather than
+	'print'.  in the case of no working backends, drop the client
+	connection.
+
+2003-04-30 16:02  anthonybaxter
+
+	* pydirector/pdschedulers.py: handle case where no working servers
+	were found - doneHost won't be able to mark anything as "done".
+
+2003-04-30 16:01  anthonybaxter
+
+	* pydirector/pdmain.py: don't hardcode default manager sleep
+	granularity here as well as in pdmanager.py
+
+2002-11-26 17:42  anthonybaxter
+
+	* pydirector/__init__.py: [no log message]
+
+2002-11-26 17:32  anthonybaxter
+
+	* README.txt, pydir.py, setup.py: more pre-release cleanup.
+
+2002-11-26 16:50  anthonybaxter
+
+	* pydirector/: __init__.py, pdadmin.py, pdmain.py,
+	pdnetworktwisted.py, pdschedulers.py: reindent.py-ified.
+
+2002-11-26 14:53  anthonybaxter
+
+	* pydirector/pdmanager.py: *sigh* missed another line ending.
+
+2002-11-26 14:52  anthonybaxter
+
+	* README.txt: 0.0.5 notes.
+
+2002-11-26 14:45  anthonybaxter
+
+	* pydirector/: __init__.py, pdlogging.py, pdmain.py, pdnetwork.py,
+	pdnetworkasyncore.py, pdnetworktwisted.py, pdschedulers.py: merging
+	the twisted_branch into the HEAD.
+
+2002-11-26 14:34  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: mark hosts when they're down.
+
+2002-11-26 14:06  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: twisted now works. ! :)
+
+2002-11-26 11:21  anthonybaxter
+
+	* pydirector/: pdlogging.py, pdschedulers.py: logging cleanup.
+
+2002-11-25 18:03  anthonybaxter
+
+	* pydirector/: pdmain.py, pdnetwork.py, pdnetworktwisted.py: Basic
+	code works - have to handle failure cases and interacting better
+	with the scheduler next.
+
+2002-11-25 17:32  anthonybaxter
+
+	* pydirector/: pdmain.py, pdnetworkasyncore.py,
+	pdnetworktwisted.py: checkpoint to save work
+
+2002-11-25 17:32  anthonybaxter
+
+	* pydirector/pdnetworktwisted.py: file pdnetworktwisted.py was
+	initially added on branch twisted_branch.
+
+2002-11-25 13:30  anthonybaxter
+
+	* pydirector/: __init__.py, pdnetwork.py: pdnetwork now loads
+	either twisted or asyncore versions.
+
+2002-11-25 13:29  anthonybaxter
+
+	* pydirector/pdnetworkasyncore.py: file pdnetworkasyncore.py was
+	initially added on branch twisted_branch.
+
+2002-11-25 13:29  anthonybaxter
+
+	* pydirector/: pdnetwork.py, pdnetworkasyncore.py: renamed
+
+2002-11-25 13:27  anthonybaxter
+
+	* pydirector/: pdmain.py, pdnetwork.py: moved all asyncore stuff
+	into pdnetwork.py, in preparation for twisted version.
+
+2002-07-23 14:25  anthonybaxter
+
+	* pydirector/pdnetwork.py (tags: twisted_root): even more
+	defensiveness in the Listener.
+
+2002-07-23 11:43  anthonybaxter
+
+	* pydirector/: pdlogging.py (tags: twisted_root), pdmanager.py
+	(tags: twisted_root), pdnetwork.py, pdschedulers.py (tags:
+	twisted_root): more logging, with datestamps!
+
+2002-07-17 17:35  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2002-07-17 15:16  anthonybaxter
+
+	* pydirector/: pdadmin.py, pdconf.py, pdmain.py, pdmanager.py,
+	pdschedulers.py, pdsortlist.py: first cut at refactoring the
+	scheduler.
+
+2002-07-17 15:16  anthonybaxter
+
+	* pydirector/pdsortlist.py: file pdsortlist.py was initially added
+	on branch scheduler-refactor-branch.
+
+2002-07-17 14:53  anthonybaxter
+
+	* pydirector/pdadmin.py (tags: twisted_root,
+	scheduler-refactor-root): SO_REUSEADDR re-added. oops.
+
+2002-07-08 11:46  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2002-07-08 10:53  anthonybaxter
+
+	* README.txt, pydirector/__init__.py (tags: twisted_root,
+	scheduler-refactor-root) (utags: release_0_0_4): 0.0.4 release
+
+2002-07-08 10:52  anthonybaxter
+
+	* TODO.txt, doc/ChangeLog (utags: release_0_0_4): [no log message]
+
+2002-07-08 10:41  anthonybaxter
+
+	* README.txt, TODO.txt, pydir.py (tags: release_0_0_4),
+	pydirector/pdadmin.py (tags: release_0_0_4), pydirector/pdconf.py
+	(tags: twisted_root, scheduler-refactor-root, release_0_0_4),
+	pydirector/pdmain.py (tags: twisted_root, scheduler-refactor-root,
+	release_0_0_4), pydirector/pdmanager.py (tags:
+	scheduler-refactor-root, release_0_0_4): support multiple listen
+	directives for a service.
+
+2002-07-08 10:37  anthonybaxter
+
+	* TODO.txt: async C module notes, upgrade ideas
+
+2002-07-08 10:36  anthonybaxter
+
+	* BUGS.txt (tags: release_0_0_4): [no log message]
+
+2002-07-08 10:32  anthonybaxter
+
+	* doc/: configure.txt, pythondirector.dtd, xmlreference.txt (utags:
+	release_0_0_4): can now specify more than one 'listen' directive.
+	update documentation.
+
+2002-07-04 18:23  anthonybaxter
+
+	* confex.xml (tags: release_0_0_4), doc/configure.txt,
+	doc/pythondirector.dtd, doc/webapi.txt (tags: release_0_0_4),
+	doc/xmlreference.txt: document the <client> -> <host> change.
+
+2002-07-04 18:22  anthonybaxter
+
+	* README.txt, doc/ChangeLog, TODO.txt: [no log message]
+
+2002-07-04 14:09  anthonybaxter
+
+	* pydirector/: pdadmin.py, pdconf.py: renamed 'client' to 'host' in
+	config all config objects now support getFoo(name), getFoos(), and
+	getFooNames() (where they have children)
+
+2002-07-03 21:24  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2002-07-03 21:16  anthonybaxter
+
+	* .cvsignore (tags: release_0_0_4), doc/ChangeLog, TODO.txt: [no
+	log message]
+
+2002-07-03 21:15  anthonybaxter
+
+	* pydirector/: pdadmin.py, pdconf.py: implemented addUser/delUser. 
+	hooked in basic SSL support (from M2Crypto) for the admin web
+	server.  Not entirely complete yet, but sort-of-works.
+
+2002-07-03 19:25  anthonybaxter
+
+	* doc/webapi.txt: add needed delGroup command
+
+2002-07-03 19:25  anthonybaxter
+
+	* BUGS.txt, TODO.txt: [no log message]
+
+2002-07-03 19:18  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
+
+2002-07-03 19:17  anthonybaxter
+
+	* pydirector/pdconf.py: der. fixed stupid typo.
+
+2002-07-03 19:17  anthonybaxter
+
+	* pydirector/: __init__.py, compareconf.py (tags: twisted_root,
+	scheduler-refactor-root, release_0_0_4), micropubl.py (tags:
+	twisted_root, scheduler-refactor-root, release_0_0_4), pdadmin.py,
+	pdconf.py, pdlogging.py (tags: scheduler-refactor-root,
+	release_0_0_4), pdmain.py, pdmanager.py, pdnetwork.py (tags:
+	scheduler-refactor-root, release_0_0_4), pdschedulers.py (tags:
+	scheduler-refactor-root, release_0_0_4): whitespace normalisation
+
+2002-07-03 19:16  anthonybaxter
+
+	* pydirector/pdconf.py: allow pdconfig.PDConfig to take either
+	filename or string containing XML.
+
+2002-07-03 19:15  anthonybaxter
+
+	* pydirector/compareconf.py: module to compare an old and new
+	config, and supply api calls to bring the old up to the new.
+
+2002-07-03 18:15  anthonybaxter
+
+	* TODO.txt: [no log message]
+
+2002-07-03 18:11  anthonybaxter
+
+	* pydirector/pdadmin.py: added Refresh and Auto-refresh to
+	/running.
+
+2002-07-03 17:56  anthonybaxter
+
+	* pydirector/pdnetwork.py: missing newline on log_info() log
+	messages.
+
+2002-07-03 17:52  anthonybaxter
+
+	* pydirector/pdschedulers.py: handle "no alive hosts" explicitly in
+	schedulers.
+
+2002-07-03 17:39  anthonybaxter
+
+	* pydirector/: pdadmin.py, pdschedulers.py: added totals to innards
+	of scheduler and to the running interface.
+
+2002-07-03 17:39  anthonybaxter
+
+	* BUGS.txt: notes about bugs I spot
+
+2002-07-03 15:29  anthonybaxter
+
+	* TODO.txt: https admin interface.
+
+2002-07-03 15:28  anthonybaxter
+
+	* pydirector/pdlogging.py: oops. flush() the log entry.
+
+2002-07-03 15:24  anthonybaxter
+
+	* setup.py (tags: release_0_0_4, release_0_0_3): missed a 0.0.3
+	checkin
+
+2002-07-03 15:24  anthonybaxter
+
+	* TODO.txt: more bits.
+
+2002-07-03 11:35  anthonybaxter
+
+	* doc/: README.txt (tags: release_0_0_4), reference.txt,
+	xmlreference.txt: added docs/README.txt renamed reference to
+	xmlreference.txt
+
+2002-07-03 11:28  anthonybaxter
+
+	* doc/webapi.txt: complete web api doco.
+
+2002-07-03 10:49  anthonybaxter
+
+	* doc/: configure.txt, pythondirector.dtd, reference.txt,
+	schedulers.txt (tags: release_0_0_4): documentation. whoda thunk
+	it.
+
+2002-07-02 17:03  anthonybaxter
+
+	* pydirector/__init__.py (tags: release_0_0_3): onwards to 0.0.3!
+
+2002-07-02 17:03  anthonybaxter
+
+	* README.txt (tags: release_0_0_3): on to 0.0.3!
+
+2002-07-02 16:56  anthonybaxter
+
+	* doc/ChangeLog (tags: release_0_0_3): [no log message]
+
+2002-07-02 16:55  anthonybaxter
+
+	* TODO.txt (tags: release_0_0_3): delHost implemented.
+
+2002-07-02 16:55  anthonybaxter
+
+	* pydirector/pdadmin.py (tags: release_0_0_3): added delHost
+	support.
+
+2002-07-02 16:55  anthonybaxter
+
+	* pydirector/pdschedulers.py (tags: release_0_0_3): delHost takes
+	an argument 'activegroup'. If true, you can't delete the last host
+	in the scheduler.
+
+2002-07-02 16:39  anthonybaxter
+
+	* confex.xml (tags: release_0_0_3): wee. more sample stuff.
+
+2002-07-02 16:29  anthonybaxter
+
+	* TODO.txt: 0.1 plans.
+
+2002-07-02 15:59  anthonybaxter
+
+	* README.txt: more API.
+
+2002-07-02 15:58  anthonybaxter
+
+	* TODO.txt: complete the API list.
+
+2002-07-02 15:58  anthonybaxter
+
+	* pydirector/pdadmin.py: added method running.xml running.txt is
+	more sane.  running.xml and config.xml are now access 'Read'
+
+2002-07-02 15:57  anthonybaxter
+
+	* pydirector/pdconf.py (tags: release_0_0_3): add
+	PDAdmin.getUsers() to retrieve full user list.
+
+2002-07-01 18:52  anthonybaxter
+
+	* TODO.txt, confex.xml, pydirector/pdadmin.py,
+	pydirector/pdconf.py, pydirector/pdlogging.py (tags:
+	release_0_0_3), pydirector/pdnetwork.py (tags: release_0_0_3):
+	added a bunch of new logging support to the code. logging now all
+	goes to a single central file. many many logging entries need to be
+	written.
+
+2002-07-01 16:52  anthonybaxter
+
+	* TODO.txt: more todo
+
+2002-07-01 16:51  anthonybaxter
+
+	* pydirector/pdnetwork.py: socket.gaierror is a 2.2-ism. Handle
+	it's absence for 2.1. Todo: what does 'unknown host' raise under
+	2.1.
+
+2002-07-01 15:51  anthonybaxter
+
+	* .cvsignore (tags: release_0_0_3): more setup.py ignore
+
+2002-07-01 15:51  anthonybaxter
+
+	* doc/ChangeLog: [no log message]
+
+2002-07-01 15:51  anthonybaxter
+
+	* MANIFEST.in (tags: release_0_0_4, release_0_0_3): added ChangeLog
+	to dist.
+
+2002-07-01 15:49  anthonybaxter
+
+	* TODO.txt: more notes to self.
+
+2002-07-01 15:47  anthonybaxter
+
+	* .cvsignore: setup.py stuff
+
+2002-07-01 15:47  anthonybaxter
+
+	* MANIFEST.in: added setup.py input file.
+
+2002-07-01 15:47  anthonybaxter
+
+	* pydirector/: __init__.py, pdadmin.py: moved version to package
+	top.
+
+2002-07-01 15:44  anthonybaxter
+
+	* doc/: ChangeLog.preSF, OldChangelog.txt (tags: release_0_0_4,
+	release_0_0_3): renamed
+
+2002-07-01 15:40  anthonybaxter
+
+	* setup.py: simple setup.py
+
+2002-07-01 15:34  anthonybaxter
+
+	* pydir.py (tags: release_0_0_3): python2.1 compat fixes.
+
+2002-07-01 15:33  anthonybaxter
+
+	* pydirector/: __init__.py, micropubl.py (tags: release_0_0_3),
+	pdadmin.py, pdconf.py, pdmain.py (tags: release_0_0_3),
+	pdnetwork.py: Py2.1 compatibility fixes.
+
+2002-07-01 15:33  anthonybaxter
+
+	* pydirector/pdschedulers.py: renamed getHosts to getHostNames. 
+	Made py2.1 compat.
+
+2002-07-01 15:30  anthonybaxter
+
+	* pydirector/pdmanager.py (tags: release_0_0_3): made the pdmanager
+	bad host re-add work again (woops!)
+
+2002-07-01 15:05  anthonybaxter
+
+	* pydir.py, pydirector/pdmain.py: broke main driver object off into
+	seperate pdmain module. driver is now trivial.
+
+2002-07-01 14:59  anthonybaxter
+
+	* TODO.txt, micropubl.py, pdadmin.py, pdconf.py, pdmanager.py,
+	pdnetwork.py, pdschedulers.py, pydir.py, pydirector/.cvsignore
+	(tags: twisted_root, scheduler-refactor-root, release_0_0_4,
+	release_0_0_3), pydirector/__init__.py, pydirector/micropubl.py,
+	pydirector/pdadmin.py, pydirector/pdconf.py,
+	pydirector/pdmanager.py, pydirector/pdnetwork.py,
+	pydirector/pdschedulers.py: Packaged up the code. Everything but
+	'pydir.py' is now in the pydirector package.
+
+2002-07-01 13:38  anthonybaxter
+
+	* confex.xml: add *(documentation).
+
+2002-07-01 13:28  anthonybaxter
+
+	* TODO.txt: should there be a shutdown mode in the web interface?
+
+2002-07-01 13:22  anthonybaxter
+
+	* micropubl.py, pdadmin.py, pdconf.py, pdmanager.py,
+	doc/balance.fig (tags: release_0_0_4, release_0_0_3): big
+	refactoring of the web interface. using a tiny publisher mixin
+	(babybobo, or micropublisher) to extract args and do that sort of
+	magic. not completely happy with it for now, but it's Good Enough
+	for now.
+
+2002-06-25 14:00  anthonybaxter
+
+	* TODO.txt, pdadmin.py, pdschedulers.py, pydir.py: addHost works.
+	added a whole lotta CSS guff. running is now pretty with form bits
+	and stuff.
+
+2002-06-21 16:39  anthonybaxter
+
+	* TODO.txt: note adding sticky schedulers.
+
+2002-06-21 14:18  anthonybaxter
+
+	* confex.xml: made the username more .. sample-ish.
+
+2002-06-21 13:56  anthonybaxter
+
+	* .cvsignore: sssh.
+
+2002-06-21 13:54  anthonybaxter
+
+	* README.txt, TODO.txt, confex.xml, pdadmin.py, pdconf.py,
+	pdmanager.py, pdnetwork.py, pdschedulers.py, pydir.py,
+	doc/ChangeLog.preSF, doc/LICENSE.txt (tags: release_0_0_4,
+	release_0_0_3) (utags: initial_sf_checkin): Initial SF checkin.
+
+2002-06-21 13:54  anthonybaxter
+
+	* README.txt, TODO.txt, confex.xml, pdadmin.py, pdconf.py,
+	pdmanager.py, pdnetwork.py, pdschedulers.py, pydir.py,
+	doc/ChangeLog.preSF, doc/LICENSE.txt: Initial revision
+

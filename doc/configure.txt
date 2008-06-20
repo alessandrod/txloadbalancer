@@ -1,0 +1,65 @@
+Configuration of Python Director
+--------------------------------
+
+A load balancer sits between client systems and a number of server
+systems. Client TCP connections connect to the loadbalancer, and 
+it in turn distributes the connections to the various backend 
+servers. 
+
+A Python Director config consists of a number of XML directives.
+
+One of the simplest possible configs would be
+
+    <pdconfig>
+      <service name="web">
+        <listen ip="0.0.0.0:80"/>
+        <group name="servers" scheduler="roundrobin">
+          <host name="server1" ip="192.168.10.1:80"/>
+          <host name="server2" ip="192.168.10.2:80"/>
+        </group>
+        <enable group="servers"/>
+      </service>
+    </pdconfig>
+
+This configuration would produce a server listening on all addresses
+(0.0.0.0), port 80, and would alternate hits to the backend servers
+192.168.10.1 and 192.168.10.2. 
+
+The configuration file is defined completely in doc/reference.txt or
+in pythondirector.dtd for the XML-savvy.
+
+A configuration consists of one or more 'service', plus an optional 
+'admin' and 'logging' section. 
+
+The 'service' sections describe a service to be handled. Inside this 
+section is a listen directive that specifies the port and address the 
+service will accept connections on.
+
+The meat of the service section is one or more 'group' sections. 
+These are a group of backend servers and the description of how to
+distribute hits between them. Only one group can be active at a time.
+You'd use multiple groups, for instance, to specify a set of main 
+hosts, and a set of backup hosts to use when the main hosts are 
+undergoing maintenance. You don't need to specify more than one 
+group, but it is useful.
+
+Finally, there should be an 'enable' directive that specifies which
+group starts off enabled. 
+
+The admin section controls the administrative web interface. If you
+don't have an admin section, there will be no admin web interface
+started - as a result, you'll have to re-start the python director
+to make any changes. The admin directive takes a listen argument to
+specify what address to listen for connections. Use either '*' or 
+'0.0.0.0' to mean 'listen on all addresses'.
+
+Inside the admin section are one or more 'user' entries. These have
+attributes 'name' (the login name), 'password' (the unix crypt password,
+see documentation for python module 'crypt'), and 'access'. Access can
+be 'full' or 'readonly'. A readonly user can view the current state,
+but cannot make changes to the system.
+
+The final section in the config is also optional, and specifies a log
+file target. If this section is not specified, the python director will
+write log entries to stderr.
+

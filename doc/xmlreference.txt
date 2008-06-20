@@ -1,0 +1,101 @@
+Configuration of Python Director
+--------------------------------
+
+XML Reference
+=============
+
+A Python Director config consists of a number of XML directives.
+
+<pdconfig> - the top level XML node. 
+  Attributes:
+    No attributes. 
+  Children:
+    Must contain one or more <service> nodes.
+    Can contain an optional <admin> node.
+    Can contain an optional <logging> node.
+  Other notes:
+    None
+
+<service> - a load balancer service.
+  Child of: <pdconfig>
+  Attributes:
+    name - the name of this service. A text label.
+  Children:
+    Must contain one or more <listen> nodes.
+    Must contain one or more <group> nodes.
+    Must contain one <enable> node (after the <group> nodes)
+  Other notes:
+    None
+
+<listen> - listen on a network port
+  Child of: <service>
+  Attributes: 
+    ip - IP address to listen on, in format host:port
+  Children:
+    No children.
+  Other notes:
+    A service can listen on multiple host:ip ports.
+
+<group> - a group of backend servers
+  Child of: <service>
+  Attributes:
+    name - name of this group. Text label, should be unique in the service.
+    scheduler - name of the scheduler to use for this group. Full list in
+        doc/schedulers.txt 
+  Children:
+    Should contain one or more <host> nodes.
+  Other notes:
+    None
+
+<host> - a backend server
+  Child of: <group>
+  Attributes:
+    name - name of this host
+    ip - IP address to listen on, in format host:port
+  Children:
+    No children.
+  Other notes:
+    This used to be called <client>. Should be no references to the old
+    name left anywhere.
+
+<enable> - specifies the enabled group
+  Child of: <service>
+  Attributes:
+    group - the group name that should start up enabled
+  Children:
+    No children.
+  Other notes:
+    No reason this couldn't be optional - the first/only group would be
+    chosen in that case.
+
+<admin> - administrative web interface
+  Child of: <pdconfig>
+  Attributes:
+    listen - IP address to run admin web interface on, in host:port format
+  Children:
+    Should contain one or more <user> nodes
+  Other notes:
+    Should the 'listen' be a sub-node, like for service?
+    Could you have multiple admin nodes, to listen on multiple ports with
+    different user DBs? No reason why not...
+
+<user> - user of administrative web interface
+  Child of: <admin>
+  Attributes:
+    name - the user's login name
+    password - the unix crypt() password of the user
+    access - what rights the user has. One of "full" or "readonly"
+  Children:
+    No children.
+  Other notes:
+    Source users from somewhere else?
+
+<logging> - logging for python director
+  Child of: <pdconfig>
+  Attributes:
+    file - log file path
+  Children:
+    No children.
+  Other notes:
+    None
+

@@ -1,0 +1,22 @@
+Metadata-Version: 1.0
+Name: pydirector
+Version: 1.0.0
+Summary: Python Director - TCP load balancer.
+Home-page: http://sourceforge.net/projects/pythondirector/
+Author: Anthony Baxter
+Author-email: anthony@interlink.com.au
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Web Environment
+Classifier: Environment :: No Input/Output (Daemon)
+Classifier: License :: OSI Approved :: Python Software Foundation License
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft
+Classifier: Programming Language :: Python
+Classifier: Intended Audience :: System Administrators
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Internet
+Classifier: Topic :: System :: Networking

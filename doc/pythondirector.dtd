@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- This DTD specifies the python director config file -->
+<!-- 
+     I need to remember how to do DTD magic to make sure this is 
+     actually doing all the stuff it can do. 
+$Id: pythondirector.dtd,v 1.4 2003/10/09 08:20:59 anthonybaxter Exp $
+-->
+
+<!ELEMENT pdconfig (service+, admin, logging)>
+
+<!ELEMENT service (listen+, group+, enable)>
+<!ATTLIST service name CDATA #REQUIRED>
+
+<!ELEMENT listen EMPTY>
+<!ATTLIST listen ip CDATA #REQUIRED>
+
+<!ELEMENT group (host*)>
+<!ATTLIST group name      CDATA #REQUIRED
+                scheduler (random|roundrobin|leastconns|leastconnsrr) #REQUIRED>
+
+<!ELEMENT host>
+<!ATTLIST host name CDATA #REQUIRED
+                 ip CDATA #REQUIRED>
+
+<!ELEMENT enable EMPTY>
+<!ATTLIST enable group CDATA #REQUIRED>
+
+<!ELEMENT admin (user*)>
+<!ATTLIST admin listen CDATA #REQUIRED>
+
+<!ELEMENT user EMPTY>
+<!ATTLIST user name CDATA #REQUIRED
+               password CDATA #REQUIRED
+               access CDATA #REQUIRED>
+
+<!ELEMENT logging EMPTY>
+<!ATTLIST logging file CDATA #REQUIRED>

@@ -1,0 +1,36 @@
+<pdconfig>
+    <!-- This is a sample configuration file! see doc/configure.txt for
+         more information -->
+    <service name="prod-http">
+	<listen ip="127.0.0.1:8000" />
+	<group name="main" scheduler="leastconns">
+	    <host name="two" ip="127.0.0.1:8002" />
+	    <host name="three" ip="127.0.0.1:8003" />
+	    <host name="four" ip="127.0.0.1:8004" />
+	</group>
+	<group name="upgrade" scheduler="leastconns">
+	    <host name="five" ip="127.0.0.1:8005" />
+	    <host name="six" ip="127.0.0.1:8006" />
+	    <host name="seven" ip="127.0.0.1:8007" />
+	</group>
+	<enable group="main" />
+    </service>
+    <service name="backup-http">
+	<listen ip="127.0.0.2:8000" />
+	<group name="main" scheduler="leastconns">
+	    <host name="two" ip="127.0.0.2:8002" />
+	    <host name="three" ip="127.0.0.2:8003" />
+	    <host name="four" ip="127.0.0.2:8004" />
+	</group>
+	<group name="upgrade" scheduler="leastconns">
+	    <host name="five" ip="127.0.0.2:8005" />
+	    <host name="six" ip="127.0.0.2:8006" />
+	    <host name="seven" ip="127.0.0.2:8007" />
+	</group>
+	<enable group="main" />
+    </service>
+    <admin listen="localhost:7001">
+	<user name="fulluser" password="iy9l0V1MkG1DE" access="full"/>
+    </admin>
+    <logging file="pydir.log"/>
+</pdconfig>
