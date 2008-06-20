@@ -1,3 +1,22 @@
+Duncan's TODO: API-compatible changes
+-------------------------------------
+ * replace manager thread and admin thread with twisted services
+ * remove all of asynccore and make this a twisted-only app
+
+Duncan's TODO: break 'em changes
+--------------------------------
+ * reorganize and rename the modules
+ * rename classes
+ * isolate all of admin functionality in its own space (so that we could
+   replace it with Divmod Mantissa)
+ * enable the manager to run as its own service in a twistd process
+ * write a manager implementation that can run as a twisted plugin
+ * add heartbeat/HA features for lb'ed services to communicate back up to the
+   lb manager
+ * implement those as a twisted plugin
+
+Original TODO:
+--------------
 Things that could be added:
     logging cleanup
     scheduler stats structures cleanup
