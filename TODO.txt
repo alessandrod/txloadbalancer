@@ -11,6 +11,7 @@ Duncan's TODO: break 'em changes
    replace it with Divmod Mantissa)
  * enable the manager to run as its own service in a twistd process
  * write a manager implementation that can run as a twisted plugin
+ * remove XML; use the .tac files to configure services, groups, and hosts
  * add heartbeat/HA features for lb'ed services to communicate back up to the
    lb manager
  * implement those as a twisted plugin
