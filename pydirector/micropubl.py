@@ -20,11 +20,20 @@ def patchArgs(argdict):
         n[k.lower()] = v
     return n
 
-class uPublisherError(Exception): pass
-class NotFoundError(uPublisherError): pass
-class MissingArgumentError(uPublisherError): pass
-class UnhandledArgumentError(uPublisherError): pass
-class AccessDenied(uPublisherError): pass
+class uPublisherError(Exception):
+    pass
+
+class NotFoundError(uPublisherError):
+    pass
+
+class MissingArgumentError(uPublisherError):
+    pass
+
+class UnhandledArgumentError(uPublisherError):
+    pass
+
+class AccessDenied(uPublisherError):
+    pass
 
 class MicroPublisher(object):
     """ a small object publisher """

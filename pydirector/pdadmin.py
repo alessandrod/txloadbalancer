@@ -17,36 +17,35 @@ from pydirector.web import css
 
 try:
     from M2Crypto import SSL
+    from M2Crypto.SSL import ThreadingSSLServer
 except ImportError:
-    SSL = None
+    ThreadingSSLServer = object
 
-class PDTCPServerBase:
-    allow_reuse_address = 1
-    def handle_error(self, request, client_address):
-        "overridden from SocketServer.BaseServer"
-        nil, t, v, tbinfo = pdlogging.compact_traceback()
-        pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
-                (time.ctime(time.time()), t,v,tbinfo))
 
-class PDTCPServer(SocketServer.ThreadingTCPServer, PDTCPServerBase):
-    allow_reuse_address = 1
+def dictify(q):
+    """
+    takes string of form '?a=b&c=d&e=f'
+    and returns {'a':'b', 'c':'d', 'e':'f'}
+    """
+    from urllib import unquote
+    out = {}
+    if not q: return {}
+    avs = q.split('&')
+    for av in avs:
+        #print "av", av
+        a,v = av.split('=',1)
+        out[unquote(a)] = unquote(v)
+    return out
 
-if SSL is not None:
-    class PDTCPServerSSL(SSL.ThreadingSSLServer, PDTCPServerBase):
-        allow_reuse_address = 1
-        def __init__(self, server_addr, handler, ssl_ctx):
-            SSL.ThreadingSSLServer.__init__(self, server_addr, handler, ssl_ctx)
-            self.server_name = server_addr[0]
-            self.server_port = server_addr[1]
 
-        def finish(self):
-            self.request.set_shutdown(SSL.SSL_RECEIVED_SHUTDOWN | SSL.SSL_SENT_SHUTDOWN)
-            self.request.close()
+def html_quote(str):
+    return re.subn("<", "&lt;", str)[0]
+
 
 def get_ssl_context():
     from M2Crypto import Rand
     Rand.load_file('randpool.dat', -1)
-    ctx = init_context('sslv23', 'server.pem', 'ca.pem', \
+    ctx = init_context('sslv23', 'server.pem', 'ca.pem',
         SSL.verify_none)
         #SSL.verify_peer | SSL.verify_fail_if_no_peer_cert)
     ctx.set_tmp_dh('dh1024.pem')
@@ -66,8 +65,32 @@ def init_context(protocol, certfile, cafile, verify, verify_depth=10):
     return ctx
 
 
+class PDTCPServerBase:
+    allow_reuse_address = 1
+    def handle_error(self, request, client_address):
+        "overridden from SocketServer.BaseServer"
+        nil, t, v, tbinfo = pdlogging.compact_traceback()
+        pdlogging.log("ADMIN(Exception) %s - %s: %s %s\n"%
+                (time.ctime(time.time()), t,v,tbinfo))
 
-class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher):
+class PDTCPServer(SocketServer.ThreadingTCPServer, PDTCPServerBase):
+    allow_reuse_address = 1
+
+class PDTCPServerSSL(ThreadingSSLServer, PDTCPServerBase):
+    allow_reuse_address = 1
+    def __init__(self, server_addr, handler, ssl_ctx):
+        SSL.ThreadingSSLServer.__init__(self, server_addr, handler, ssl_ctx)
+        self.server_name = server_addr[0]
+        self.server_port = server_addr[1]
+
+    def finish(self):
+        self.request.set_shutdown(SSL.SSL_RECEIVED_SHUTDOWN |
+                                  SSL.SSL_SENT_SHUTDOWN)
+        self.request.close()
+
+
+class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
+                 micropubl.MicroPublisher):
     server_version = "pythondirector/%s"%Version
     director = None
     config = None
@@ -487,25 +510,6 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler, micropubl.MicroPublisher
                 (time.ctime(time.time()), t,v,tbinfo))
 
 
-
-def dictify(q):
-    """
-    takes string of form '?a=b&c=d&e=f'
-    and returns {'a':'b', 'c':'d', 'e':'f'}
-    """
-    from urllib import unquote
-    out = {}
-    if not q: return {}
-    avs = q.split('&')
-    for av in avs:
-        #print "av", av
-        a,v = av.split('=',1)
-        out[unquote(a)] = unquote(v)
-    return out
-
-def html_quote(str):
-    return re.subn("<", "&lt;", str)[0]
-
 def start(adminconf, director):
     AdminClass.director = director
     AdminClass.config = adminconf
@@ -517,3 +521,4 @@ def start(adminconf, director):
     at = threading.Thread(target=tcps.serve_forever)
     at.setDaemon(1)
     at.start()
+

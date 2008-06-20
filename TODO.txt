@@ -1,11 +1,13 @@
 Duncan's TODO: API-compatible changes
 -------------------------------------
  * replace manager thread and admin thread with twisted services
+   . replace stdlib HTTP server with twisted.web HTTP server
  * remove all of asynccore and make this a twisted-only app
 
 Duncan's TODO: break 'em changes
 --------------------------------
  * reorganize and rename the modules
+   . move micopublisher into something like web.api
  * rename classes
  * isolate all of admin functionality in its own space (so that we could
    replace it with Divmod Mantissa)
