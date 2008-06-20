@@ -1,0 +1,21 @@
+Some ASCII "art" for you:
+
+               Director = starts manager, admin, selects scheduler and starts
+                   |      listeners
+                   |
+  +-------------+--------------+--------------+
+  |             |              |              |
+Manager       Admin        Schedulers     Listeners
+  =             =              =              =
+reconfig,     web ui        lb type,       proxies
+dead hosts,                algorithms,
+
+
+Currently, the Manager and Admin are threaded, the Listeners are Twisted, and
+Schedulers are simple python objects doing duty as state machines and
+selection algorithms.
+
+The plan is to do the folowing:
+ * make the Director into a twisted application
+ * recreate the manager to be a timer service
+ * add an HTTP service to replace the current admin
