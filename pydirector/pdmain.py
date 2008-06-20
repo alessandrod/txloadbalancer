@@ -17,7 +17,12 @@ from pydirector import pdnetwork
 from pydirector import pdschedulers
 
 class PythonDirector(object):
-
+    """
+    The purpose of this class is to do the following:
+     * start the admin web server, if needed
+     * start the scheduling manager
+     * start the load-balancer listeners for enabled groups
+    """
     def __init__(self, config):
         self.listeners = {}
         self.schedulers = {}
