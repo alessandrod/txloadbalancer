@@ -9,6 +9,14 @@ Contact email: Anthony Baxter <anthony@interlink.com.au>
 
 ----------------------------------------------------------------------
 
+Usage:
+
+$ python pydir.py myconfig.xml
+
+To enabled the admin interface, you will need to update your XML configuration.
+
+----------------------------------------------------------------------
+
 Features:
 
   - by default, uses the Twisted framework for async I/O, but can
