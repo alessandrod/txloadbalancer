@@ -2,8 +2,8 @@ Python director schedulers
 --------------------------
 
 The scheduler controls how client hits are distributed amongst the
-backend servers. They're typically a very small piece of code - 
-see the file pdschedulers.py in the package for the current 
+backend servers. They're typically a very small piece of code -
+see the file pdschedulers.py in the package for the current
 schedulers.
 
 Current schedulers
@@ -23,13 +23,13 @@ leastconns
   Send the hit to the backend server with the least number of current
   open connections. Assuming that the server holds the TCP connections
   open while processing, this will often lead to a quite effective load
-  balancing, as the faster servers will process and finish connections 
+  balancing, as the faster servers will process and finish connections
   faster than the slower servers.
 
 leastconnsrr
 
   Send the hit to the backend server with the least number of current
-  connections. If multiple machines have the same number of open 
+  connections. If multiple machines have the same number of open
   connections, send to the least recently used.
 
 
@@ -41,7 +41,7 @@ schedulers.
 
 sticky
 
-  Prefer the same server address for a given client address. Useful 
+  Prefer the same server address for a given client address. Useful
   when the backend servers have some form of per-client caching.
 
 weighted

@@ -5,18 +5,18 @@ Ones marked with [maybe] are tentative and may not be implemented.
 Information/Configuration
 -------------------------
 
-  - running 
+  - running
 
       current configuration and status of the PD (HTML)
       this page is the GUI for interactively editing the pydir
       config.
 
-  - running.txt 
+  - running.txt
 
       simple text view of the current running config. suitable
       for simple reading by programs
 
-  - config.xml - 
+  - config.xml -
 
       initial boot-time configuration of the PD (xml)
 
@@ -44,7 +44,7 @@ Information/Configuration
 Host management
 ---------------
 
-  - addHost?service=NNN&group=NNN&name=NNNN&ip=NNN:n 
+  - addHost?service=NNN&group=NNN&name=NNNN&ip=NNN:n
 
       add a new host to the group of a service
 
@@ -54,11 +54,11 @@ Host management
       Note that this will not let you remove all hosts
       from the enabled group.
 
-  - delAllHosts?service=NNN&group=NNN 
+  - delAllHosts?service=NNN&group=NNN
 
       remove all hosts from the group of a service. unimplemented
       Note that this will not let you remove all hosts
-      from the enabled group. 
+      from the enabled group.
 
 Group management
 ----------------
@@ -100,7 +100,7 @@ Service management
 
       remove a new group from a service. can't remove
       the active group. unimplemented.
-        
+
 Miscellaneous
 -------------
 
@@ -112,16 +112,16 @@ Miscellaneous
 
       force the manager thread to re-add a host now. unimplemented.
 
-  - hostAdminDown?service=NNN&group=NNN&name=NNN 
+  - hostAdminDown?service=NNN&group=NNN&name=NNN
 
       mark a host as 'administratively down'. This disables it,
       without removing it from the configuration. unimplemented.
 
-  - hostAdminUp?service=NNN&group=NNN&name=NNN 
+  - hostAdminUp?service=NNN&group=NNN&name=NNN
 
       mark a host as 'administratively up'. This re-enables it,
       assuming it's been previously marked 'down'. unimplemented.
-      
+
   - [maybe] shutdown
 
       shut down the python director. unimplemented.

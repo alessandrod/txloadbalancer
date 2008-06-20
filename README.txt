@@ -2,7 +2,7 @@ README for pythondirector 1.0.0
 
 This is a pure python TCP load balancer. It takes inbound TCP
 connections and connects them to one of a number of backend
-servers. 
+servers.
 
 Project home: http://pythondirector.sourceforge.net/
 Contact email: Anthony Baxter <anthony@interlink.com.au>
@@ -21,7 +21,7 @@ Features:
     leastconns-least-recently-used)
 
   - If a server fails to answer, it's removed from the pool - the
-    client that failed to connect gets transparently failed over to 
+    client that failed to connect gets transparently failed over to
     a new host.
 
   - xml based configuration file
@@ -38,9 +38,9 @@ Performance:
   - On my notebook, load balancing an apache on the same local ethernet
     (serving a static 18K text file) gets 155 connections per second and
     2850 kbytes/s throughput (apachebench -n 2000 -c 10). Connecting directly
-    to the apache gets 180 conns/sec and 3400kbytes/s. So unless you're 
-    serving really really stupidly high hit rates it's unlikely to be 
-    pythondirector causing you difficulties. (Note that 155 connections/sec 
+    to the apache gets 180 conns/sec and 3400kbytes/s. So unless you're
+    serving really really stupidly high hit rates it's unlikely to be
+    pythondirector causing you difficulties. (Note that 155 connections/sec
     is 13 million hits per day...)
 
   - Running purely over the loopback interface to a local apache seems to
@@ -57,12 +57,12 @@ API (web based):
 Twisted vs. asyncore
 
 Pythondirector will use either twisted or asyncore for it's networking -
-it prefers twisted.  The twisted implementation is much, much faster, 
-but does require an additional package - see http://www.twistedmatrix.com 
+it prefers twisted.  The twisted implementation is much, much faster,
+but does require an additional package - see http://www.twistedmatrix.com
 for the software.
 
 I've also seen "weird failures" from asyncore with some sort of nasty
-race condition. 
+race condition.
 
 ----------------------------------------------------------------------
 
@@ -82,8 +82,8 @@ Changes from 0.0.6 to 0.0.7
   as well. Previously, leastconns would keep the list of hosts sorted,
   which often meant one system got beaten up pretty badly.
 - Twisted backend group selection works again.
-- The client address is now passed to the scheduler's getHost() method. 
-  This allows the creation of "sticky" schedulers, where a client is 
+- The client address is now passed to the scheduler's getHost() method.
+  This allows the creation of "sticky" schedulers, where a client is
   (by preference) sent to the same backend server. The factory function
   for schedulers will change to allow things like "roundrobin,sticky".
 
@@ -129,8 +129,8 @@ Changes from 0.0.2 to 0.0.3:
 
 - delHost hooked up
 - running.xml added - XML dump of current config
-- centralised logging - the various things that write logfile 
-  entries need to be made consistent, and a lot of additional 
+- centralised logging - the various things that write logfile
+  entries need to be made consistent, and a lot of additional
   logging needs to be added.
 - Python2.1 compatibility fix: no socket.gaierror exception on 2.1
 
@@ -143,7 +143,7 @@ Changes from 0.0.1 to 0.0.2:
 
 This software is covered by the following license:
 
-Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com/) 
+Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com/)
 and Anthony Baxter <anthony@interlink.com.au>
 
 Permission is hereby granted, free of charge, to any person obtaining a

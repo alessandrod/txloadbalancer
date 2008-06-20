@@ -206,7 +206,7 @@ class LeastConnsRRScheduler(BaseScheduler):
     def nextHost(self, client_addr):
         if not self.openconns.keys():
             return None
-        hosts = [ (x[1], self.lastclose.get(x[0],0), x[0]) 
+        hosts = [ (x[1], self.lastclose.get(x[0],0), x[0])
                             for x in self.openconns.items() ]
         hosts.sort()
         return hosts[0][2]

@@ -6,9 +6,9 @@ XML Reference
 
 A Python Director config consists of a number of XML directives.
 
-<pdconfig> - the top level XML node. 
+<pdconfig> - the top level XML node.
   Attributes:
-    No attributes. 
+    No attributes.
   Children:
     Must contain one or more <service> nodes.
     Can contain an optional <admin> node.
@@ -29,7 +29,7 @@ A Python Director config consists of a number of XML directives.
 
 <listen> - listen on a network port
   Child of: <service>
-  Attributes: 
+  Attributes:
     ip - IP address to listen on, in format host:port
   Children:
     No children.
@@ -41,7 +41,7 @@ A Python Director config consists of a number of XML directives.
   Attributes:
     name - name of this group. Text label, should be unique in the service.
     scheduler - name of the scheduler to use for this group. Full list in
-        doc/schedulers.txt 
+        doc/schedulers.txt
   Children:
     Should contain one or more <host> nodes.
   Other notes:
