@@ -8,11 +8,17 @@
 import sys
 if sys.version_info < (2,2):
     class object: pass
+import threading
+
+from pydirector import pdconf
+from pydirector import pdadmin
+from pydirector import pdmanager
+from pydirector import pdnetwork
+from pydirector import pdschedulers
 
 class PythonDirector(object):
 
     def __init__(self, config):
-        from pydirector import pdconf
         self.listeners = {}
         self.schedulers = {}
         self.manager = None
@@ -21,9 +27,6 @@ class PythonDirector(object):
         self.createListeners()
 
     def start(self, profile=0):
-        import sys
-        from pydirector import pdadmin
-        from pdnetwork import mainloop
         if self.conf.admin is not None:
             pdadmin.start(adminconf=self.conf.admin, director=self)
         self.manager.start()
@@ -33,25 +36,22 @@ class PythonDirector(object):
                 print "creating profiling log"
                 prof = hotshot.Profile("pydir.prof")
                 try:
-                    prof.runcall(mainloop)
+                    prof.runcall(pdnetwork.mainloop)
                 finally:
                     print "closing profile log"
                     prof.close()
             else:
-                mainloop(timeout=4)
+                pdnetwork.mainloop(timeout=4)
         except KeyboardInterrupt:
             sys.exit(0)
 
     def createManager(self):
-        from pydirector import pdmanager
-        import threading
         manager = pdmanager.SchedulerManager(self)
         mt = threading.Thread(target=manager.mainloop)
         mt.setDaemon(1)
         self.manager = mt
 
     def createSchedulers(self, service):
-        from pydirector import pdschedulers
         for group in service.getGroups():
             s = pdschedulers.createScheduler(group)
             self.schedulers[(service.name,group.name)] = s
@@ -60,7 +60,6 @@ class PythonDirector(object):
         return self.schedulers[(serviceName,groupName)]
 
     def createListeners(self):
-        from pydirector import pdnetwork, pdconf
         for service in self.conf.getServices():
             self.createSchedulers(service)
             eg = service.getEnabledGroup()
