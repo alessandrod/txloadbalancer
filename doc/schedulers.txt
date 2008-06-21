@@ -1,4 +1,4 @@
-Python director schedulers
+txLoadBalancer schedulers
 --------------------------
 
 The scheduler controls how client hits are distributed amongst the
