@@ -1,5 +1,8 @@
 2008.06.21 oubiwann
 
+* Added an admin definitions file for use with admin scripts.
+* Changed commit.sh to use the defs.
+* Added push.sh.
 * Updated the scheduler docs.
 * Updated the configuration docs.
 * Changed the date separators.
