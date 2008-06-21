@@ -26,7 +26,8 @@ $Id: pythondirector.dtd,v 1.4 2003/10/09 08:20:59 anthonybaxter Exp $
 <!ATTLIST enable group CDATA #REQUIRED>
 
 <!ELEMENT admin (user*)>
-<!ATTLIST admin listen CDATA #REQUIRED>
+<!ATTLIST admin listen CDATA #REQUIRED
+                secure CDATA>
 
 <!ELEMENT user EMPTY>
 <!ATTLIST user name CDATA #REQUIRED

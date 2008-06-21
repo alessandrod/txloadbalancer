@@ -1,10 +1,10 @@
-Configuration of Python Director
---------------------------------
+Configuration of txLoadBalancer
+-------------------------------
 
 XML Reference
 =============
 
-A Python Director config consists of a number of XML directives.
+A txLoadBalancer config consists of a number of XML directives.
 
 <pdconfig> - the top level XML node.
   Attributes:

@@ -1,12 +1,12 @@
-Configuration of Python Director
---------------------------------
+Configuration of txLoadBalancer
+-------------------------------
 
 A load balancer sits between client systems and a number of server
 systems. Client TCP connections connect to the loadbalancer, and
 it in turn distributes the connections to the various backend
 servers.
 
-A Python Director config consists of a number of XML directives.
+A txLoadBalancer config consists of a number of XML directives.
 
 One of the simplest possible configs would be
 
@@ -26,11 +26,17 @@ This configuration would produce a server listening on all addresses
 192.168.10.1 and 192.168.10.2.
 
 The configuration file is defined completely in doc/reference.txt or
-in pythondirector.dtd for the XML-savvy.
+in config.dtd for the XML-savvy.
 
+
+Top-Level Overview
+------------------
 A configuration consists of one or more 'service', plus an optional
 'admin' and 'logging' section.
 
+
+Service Section
+---------------
 The 'service' sections describe a service to be handled. Inside this
 section is a listen directive that specifies the port and address the
 service will accept connections on.
@@ -46,6 +52,9 @@ group, but it is useful.
 Finally, there should be an 'enable' directive that specifies which
 group starts off enabled.
 
+
+Admin Section
+-------------
 The admin section controls the administrative web interface. If you
 don't have an admin section, there will be no admin web interface
 started - as a result, you'll have to re-start the python director
@@ -65,6 +74,9 @@ Here is an example admin section:
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
 
+
+Log Section
+-----------
 The final section in the config is also optional, and specifies a log
 file target. If this section is not specified, the python director will
 write log entries to stderr.
