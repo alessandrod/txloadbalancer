@@ -1,11 +1,20 @@
 <pdconfig>
-  <service name="web">
+  <service name="web1">
     <listen ip="0.0.0.0:8080"/>
     <group name="servers" scheduler="roundrobin">
       <host name="server1" ip="127.0.0.1:7001" />
       <host name="server2" ip="127.0.0.1:7002" />
       <host name="server3" ip="127.0.0.1:7003" />
       <host name="server4" ip="127.0.0.1:7004" />
+    </group>
+    <enable group="servers"/>
+  </service>
+  <service name="web2">
+    <listen ip="0.0.0.0:9080"/>
+    <group name="servers" scheduler="roundrobin">
+      <host name="server1" ip="127.0.0.1:7001" />
+      <host name="server2" ip="127.0.0.1:7002" />
+      <host name="server3" ip="127.0.0.1:7003" />
     </group>
     <enable group="servers"/>
   </service>
