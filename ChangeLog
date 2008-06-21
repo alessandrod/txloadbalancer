@@ -1,5 +1,6 @@
 2008.06.21 oubiwann
 
+* Updated TODO.
 * Updated the sample config to have two service groups.
 * Updated the docs for the web api.
 * Added an admin definitions file for use with admin scripts.

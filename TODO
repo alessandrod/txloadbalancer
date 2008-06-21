@@ -1,21 +1,21 @@
 Duncan's TODO: break 'em changes
 --------------------------------
  * add an admin configuration option for setting the refresh rate
- * add an admin option for setting the project URL
- * move micopublisher into something like web.api
- * isolate all of admin functionality in its own space (so that we could
+ * move micopublisher into something like admin.api
+ * isolate all of admin functionality in its own space (so that we can
    replace it with Divmod Mantissa)
  * write a manager implementation that can run as a twisted plugin
- * [maybe] remove XML; use the .tac files to configure services, groups, and
-   hosts
+ * [maybe] remove XML; use the .tac file (or other python) to configure
+   services, groups, and hosts
  * add heartbeat/HA features for lb'ed services to communicate back up to the
    lb manager
- * implement those as a twisted plugin
+ * implement heartbeat/HA features as a twisted plugin
  * add an XML-RPC service instead of the custom web API
  * [maybe] move the "hidden" listener initialization/creation into something
    explicit that the .tac file does
  * I don't like the default behaviour of adding bad hosts back into circulation
    without any checks; I want to add something there...
+ * sort service groups in admin UI by name
 
 Original TODO:
 --------------
