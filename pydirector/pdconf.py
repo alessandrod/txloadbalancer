@@ -4,13 +4,14 @@
 #
 # $Id: pdconf.py,v 1.18 2004/12/14 13:31:39 anthonybaxter Exp $
 #
-
 import sys
-if sys.version_info < (2,2):
-    class object: pass
+import inspect
+from crypt import crypt
+from xml.dom import minidom
+
+from pydirector import pdlogging
 
 def getDefaultArgs(methodObj):
-    import inspect
     arglist, vaarg, kwarg, defargs = inspect.getargspec(methodObj.im_func)
     arglist.reverse()
     defargs = list(defargs)
@@ -27,9 +28,14 @@ def splitHostPort(s):
         h = ''
     return h,p
 
-class ConfigError(Exception): pass
-class ServiceError(ConfigError): pass
-class GroupError(ServiceError): pass
+class ConfigError(Exception):
+    pass
+
+class ServiceError(ConfigError):
+    pass
+
+class GroupError(ServiceError):
+    pass
 
 class PDHost(object):
     __slots__ = [ 'name', 'ip' ]
@@ -118,14 +124,12 @@ class PDAdminUser(object):
     __slots__ = [ 'name', 'password', 'access' ]
 
     def checkPW(self, password):
-        from crypt import crypt
         if crypt(password, self.password[:2]) == self.password:
             return 1
         else:
             return 0
 
     def checkAccess(self, methodObj, argdict):
-        from inspect import getargspec
         a = getDefaultArgs(methodObj)
         required = a.get('Access', 'NoAccess')
         if required == "Read" and self.access in ('full', 'readonly'):
@@ -177,7 +181,6 @@ class PDConfig(object):
     __slots__ = [ 'services', 'admin', 'dom' ]
 
     def __init__(self, filename=None, xml=None):
-        import pdlogging
         self.services = {}
         self.admin = None
         dom = self._loadDOM(filename, xml)
@@ -200,12 +203,11 @@ class PDConfig(object):
                 pdlogging.initlog(item.getAttribute('file'))
 
     def _loadDOM(self, filename, xml):
-        from xml.dom.minidom import parseString
         if filename is not None:
             xml = open(filename).read()
         elif xml is None:
             raise ConfigError, "need filename or xml"
-        self.dom = parseString(xml)
+        self.dom = minidom.parseString(xml)
         return self.dom.childNodes[0]
 
     def loadAdmin(self, admin):
@@ -249,5 +251,4 @@ class PDConfig(object):
         self.services[serviceName] = newService
 
 if __name__ == "__main__":
-    import sys
     PDConfig(sys.argv[1])
