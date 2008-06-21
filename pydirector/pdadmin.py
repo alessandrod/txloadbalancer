@@ -323,20 +323,17 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
     def pdadmin_running(self, verbose=0, refresh=0, ignore='', resultmessage='', Access='Read'):
         self.header(html=1, refreshURL='/running?refresh=1&ignore=%s'%time.time())
         W = self.wfile.write
-        W('<p><b>current config</b></p>\n')
-        W('<p>last update at %s</p>\n'%time.ctime(time.time()))
-        W('<p><a class="button" href="/running?ignore=%s">Refresh</a>'%time.time())
         if refresh:
-            W('<a class="button" href="/running?ignore=%s">Stop auto-refresh</a></p>'%time.time())
+            stopStart = template.stopRefresh % time.time()
         else:
-            W('<a class="button" href="/running?refresh=1&ignore=%s">Start auto-refresh</a></p>'%time.time())
-        W("<p></p>\n")
+            stopStart = template.startRefresh % time.time()
+        W(template.refreshButtons % (
+            time.ctime(time.time()), time.time(), stopStart))
         conf = self.director.conf
         for service in conf.getServices():
-            W('<table><tr><th align="left" colspan="1">Service: %s</th></tr>\n'%
-                                                        service.name)
+            W(template.serviceName % service.name)
             for l in service.listen:
-                W('<tr><td colspan="1">Listening on %s</td></tr>\n'%l)
+                W(template.listeningService % l)
             eg = service.getEnabledGroup()
             groups = service.getGroups()
             for group in groups:
@@ -345,28 +342,15 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
                 hdict = sch.getHostNames()
                 if group is eg:
                     klass = 'enabled'
+                    desc = template.groupDescEnabled
                 else:
                     klass = 'inactive'
-                W('<tr class="%s"><td colspan="4" class="servHeader">%s '%(klass, group.name))
-                if group is eg:
-                    W('<b>ENABLED</b>\n')
-                else:
-                    W('<a href="enableGroup?service=%s&group=%s">enable</a>\n'%
-                                            (service.name, group.name))
-                W('</td><td valign="top" rowspan="2" class="addWidget">')
-                W('<table class="addWidget">')
-                W('<form method="GET" action="addHost">')
-                W('<input type="hidden" name="service" value="%s">'%service.name)
-                W('<input type="hidden" name="group" value="%s">'%group.name)
-                W('<tr><td><div class="widgetLabel">name</div></td><td><input name="name" type="text" size="15"></td></tr>')
-                W('<tr><td><div class="widgetLabel">ip</div></td><td><input name="ip" type="text" size="15"></td></tr>')
-                W('<tr><td colspan=2 align="center"><input type="submit" value="add host"></td></tr>')
-                W('</form>')
-                W('</table>')
-                W('</td>')
-                W('</tr>\n')
-                W('''<tr class="%s"><th colspan="2">hosts</th>
-                     <th>open</th><th>total</th></tr>\n'''%klass)
+                    desc = template.groupDescDisabled % (
+                        service.name, group.name)
+                W(template.groupName % (klass, group.name))
+                W(desc)
+                W(template.groupHeaderForm % (
+                    service.name, group.name, klass))
                 counts = stats['open']
                 totals = stats['totals']
                 k = counts.keys()
