@@ -19,7 +19,7 @@ def checkBadHosts(director):
             # All servers are down! Go into a more aggressive mode for
             # checking.
             forceCheck = True
-        for bh in badHosts.keys()
+        for bh in badHosts.keys():
             when, what = badHosts[bh]
             pdlogging.log("re-adding %s automatically\n"%str(bh),
                     datestamp=1)

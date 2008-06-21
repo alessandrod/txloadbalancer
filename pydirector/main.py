@@ -1,4 +1,6 @@
 from pydirector import pdconf
+from pydirector import pdnetwork
+from pydirector import pdschedulers
 
 class Director(object):
     """
