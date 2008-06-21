@@ -242,7 +242,8 @@ class DeleteHost(BasePage):
         service = request.args['service'][0]
         group = request.args['group'][0]
         ip = request.args['ip'][0]
-        sched = self.parent.director.getScheduler(serviceName=service, groupName=group)
+        sched = self.parent.director.getScheduler(
+            serviceName=service, groupName=group)
         service = self.parent.director.conf.getService(service)
         eg = service.getEnabledGroup()
         if group == eg.name:
@@ -262,6 +263,21 @@ class AddHost(BasePage):
     """
 
     """
+    def getPage(self, request):
+        """
+
+        """
+        service = request.args['service'][0]
+        group = request.args['group'][0]
+        name = request.args['name'][0]
+        ip = request.args['ip'][0]
+        sched = self.parent.director.getScheduler(
+            serviceName=service, groupName=group)
+        sched.newHost(name=name, ip=ip)
+        # also add to conf DOM object
+        msg = 'Host %s(%s) added to %s / %s' % (name, ip, group, service)
+        request.redirect('/running?resultMessage=%s' % urllib.quote(msg))
+        return "OK"
 
 class AdminServer(resource.Resource):
     """
