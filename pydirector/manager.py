@@ -1,6 +1,3 @@
-import sys
-if sys.version_info < (2,2):
-    class object: pass
 import time
 
 from pydirector import pdconf, pdlogging
@@ -24,8 +21,8 @@ def checkBadHosts(director):
             pdlogging.log("re-adding %s automatically\n"%str(bh),
                     datestamp=1)
             name = scheduler.getHostNames()[bh]
-            del badhosts[bh]
+            del badHosts[bh]
             scheduler.newHost(bh, name)
 
-def checkConfigChange():
+def checkConfigChanges():
     pass
