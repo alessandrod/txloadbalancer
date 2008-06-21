@@ -5,7 +5,18 @@ import socket
 from twisted.web import resource
 
 from pydirector import Version
+from pydirector.web import css
 from pydirector.web import template
+
+class StyleSheet(resource.Resource):
+    """
+
+    """
+    def render_GET(self, request):
+        """
+
+        """
+        return css.adminCSS
 
 class BasePage(resource.Resource):
     """
@@ -47,9 +58,9 @@ class BasePage(resource.Resource):
 
     def getPage(self):
         """
-
+        Subclasses must override this.
         """
-        return self.getHeader() + self.getBody() + self.getFooter()
+        raise NotImplemented
 
     def render_GET(self, request):
         """
@@ -63,7 +74,7 @@ class RunningPage(BasePage):
     """
     def getPage(self):
         """
-
+        This craziness is a modified version of the original.
         """
         refresh = False
         verbose = False
@@ -124,6 +135,26 @@ class RunningPage(BasePage):
         content += self.getFooter(resultMessage)
         return str(content)
 
+class RunningConfig(BasePage):
+    """
+
+    """
+
+class StoredConfig(BasePage):
+    """
+
+    """
+
+class DeleteHost(BasePage):
+    """
+
+    """
+
+class AddHost(BasePage):
+    """
+
+    """
+
 class AdminServer(resource.Resource):
     """
 
@@ -139,8 +170,18 @@ class AdminServer(resource.Resource):
         """
 
         """
-        if name == 'running':
+        if name == 'running' or name == '':
             return RunningPage(self)
+        elif name == 'pydirector.css':
+            return StyleSheet()
+        elif name == 'running.xml':
+            return RunningConfig(self)
+        elif name == 'config.xml':
+            return StoredConfig(self)
+        elif name == 'delHost':
+            return DeleteHost(self)
+        elif name == 'addHost':
+            return AddHost(self)
         return resource.Resource.getChild(self, name, request)
 
     def render_GET(self, request):
