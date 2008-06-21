@@ -1,11 +1,13 @@
 import resource
 
 from twisted.web import server
+from twisted.internet import ssl
 from twisted.application import service
 from twisted.application import internet
 from twisted.application import strports
 
 from pydirector import main
+from pydirector import util
 from pydirector.web import admin
 from pydirector.manager import checkBadHosts
 
@@ -20,10 +22,13 @@ director = main.Director(configFile)
 
 # set up the web server
 site = server.Site(admin.AdminServer(director))
+adminPort = director.conf.admin.listen[1]
 if director.conf.admin.secure:
-    admin = None
+    util.setupServerCert()
+    context = ssl.DefaultOpenSSLContextFactory(util.privKeyFile, util.certFile)
+    admin = internet.SSLServer(adminPort, site, context)
 else:
-    admin = internet.TCPServer(director.conf.admin.listen[1], site)
+    admin = internet.TCPServer(adminPort, site)
 admin.setServiceParent(services)
 
 # set up the manager timer service

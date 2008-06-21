@@ -2,7 +2,6 @@ Duncan's TODO: API-compatible changes
 -------------------------------------
  * replace admin thread with twisted services
    . add basic auth to twisted web version of admin ui
-   . add https support for twisted web version of admin ui
 
 Duncan's TODO: break 'em changes
 --------------------------------
