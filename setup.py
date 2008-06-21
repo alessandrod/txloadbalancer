@@ -1,16 +1,16 @@
 from setuptools import setup
 
-from txlb import Version
+import  txlb
 
 setup(
-    name = "txLoadBalancer",
-    version = Version,
+    name = txlb.name
+    version = txlb.version,
     description = "txLoadBalancer - A Twisted-based TCP load balancer.",
     author = "Anthony Baxter, Duncan McGreggor",
     author_email = "anthony@interlink.com.au, oubiwann@divmod.com",
     url = 'https://launchpad.net/txloadbalancer',
-    packages = ['txlb'],
-    scripts = ['bin/pydir.tac'],
+    packages = setuptools.find_packages(txlb.shortName.lower()),
+    scripts = ['bin/txlb.tac'],
     classifiers = [
        'Development Status :: 5 - Production/Stable',
        'Environment :: Web Environment',

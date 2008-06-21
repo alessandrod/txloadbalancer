@@ -7,4 +7,6 @@
 
 # Package init file.
 
-Version = '1.0.0'
+name = 'txLoadBalancer'
+shortName = 'txLB'
+version = '1.0.0'

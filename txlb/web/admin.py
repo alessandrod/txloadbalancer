@@ -7,7 +7,7 @@ from twisted.web import http
 from twisted.web import static
 from twisted.web import resource
 
-from txlb import Version
+import txlb
 from txlb.web import css
 from txlb.web import template
 
@@ -50,7 +50,8 @@ class BasePage(resource.Resource):
             refreshRate = 30
             refresh = template.refresh % (refreshRate, refreshURL)
         return template.header % (
-            refresh, self.parent.serverVersion, socket.gethostname())
+            txlb.name, refresh, self.parent.serverVersion, socket.gethostname()
+            )
 
     def getBody(self):
         """
@@ -300,7 +301,7 @@ class AdminServer(resource.Resource):
         self.director = director
         self.config = director.conf.admin
         self.starttime = time.time()
-        self.serverVersion = "pythondirector/%s" % Version
+        self.serverVersion = "pythondirector/%s" % txlb.version
 
     def unauthorized(self):
         return UnauthorizedResource()

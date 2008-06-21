@@ -5,7 +5,7 @@
       <host name="server1" ip="127.0.0.1:7001" />
       <host name="server2" ip="127.0.0.1:7002" />
       <host name="server3" ip="127.0.0.1:7003" />
-      <host name="server4" ip="127.0.0.1:80" />
+      <host name="server4" ip="127.0.0.1:7004" />
     </group>
     <enable group="servers"/>
   </service>

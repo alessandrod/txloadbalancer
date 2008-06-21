@@ -1,8 +1,9 @@
-# takes an optional strings substition, such as the value of a refresh template
+# takes a title and an optional strings substition, such as the value of a
+# refresh template
 head = """
     <html>
     <head>
-    <title>python director</title>
+    <title>%s</title>
     <link rel=stylesheet type="text/css" href="/pydirector.css">
     %s
     </head>
