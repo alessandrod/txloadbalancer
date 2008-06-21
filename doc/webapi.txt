@@ -8,7 +8,7 @@ Information/Configuration
   - running
 
       current configuration and status of the PD (HTML)
-      this page is the GUI for interactively editing the pydir
+      this page is the GUI for interactively editing the txLB
       config.
 
   - running.txt
@@ -124,5 +124,5 @@ Miscellaneous
 
   - [maybe] shutdown
 
-      shut down the python director. unimplemented.
+      shut down the loadbalancer. unimplemented.
 

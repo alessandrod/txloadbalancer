@@ -1,5 +1,6 @@
 2008.06.21 oubiwann
 
+* Updated the docs for the web api.
 * Added an admin definitions file for use with admin scripts.
 * Changed commit.sh to use the defs.
 * Added push.sh.
