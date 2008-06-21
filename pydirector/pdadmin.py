@@ -8,8 +8,7 @@
 import sys
 if sys.version_info < (2,2):
     class object: pass
-from urllib import quote
-from urllib import unquote
+import urllib
 import threading, BaseHTTPServer, SocketServer, urlparse, re, urllib
 import socket, time, sys, traceback, time
 from xml.dom.minidom import Document
@@ -17,6 +16,7 @@ from xml.dom.minidom import Document
 from pydirector import micropubl
 from pydirector import Version, pdlogging
 from pydirector.web import css
+from pydirector.web import template
 
 try:
     from M2Crypto import SSL
@@ -37,7 +37,7 @@ def dictify(q):
     for av in avs:
         #print "av", av
         a,v = av.split('=',1)
-        out[unquote(a)] = unquote(v)
+        out[urllib.unquote(a)] = urllib.unquote(v)
     return out
 
 
@@ -117,7 +117,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
         self.send_header('WWW-Authenticate', 'basic realm="python director"')
         self.wfile.write("<p>Unauthorised</p>\n")
 
-    def header(self, html=1, refresh=''):
+    def header(self, html=1, refreshURL=''):
         self.send_response(200)
         if html:
             self.send_header("Content-type", "text/html")
@@ -125,32 +125,23 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
             self.send_header("Content-type", "text/plain")
         self.end_headers()
         if html:
-            W = self.wfile.write
-            W("""<html><head><title>python director</title>
-                 <link rel=stylesheet type="text/css" href="/pydirector.css">
-            """)
-            if refresh:
-                W('<META HTTP-EQUIV=Refresh CONTENT="60; URL=%s">'%refresh)
-            W("""</head></body>""")
-            W("""
-            <div class="title">Python Director version %s, running on host %s.</div>
-            """%(self.server_version, socket.gethostname()))
+            refresh = ''
+            if refreshURL:
+                # XXX add an admin configuration option for setting the refresh
+                # rate
+                refreshRate = 30
+                refresh = template.refresh % (refreshRate, refreshURL)
+            data = template.header % (
+                refresh, self.server_version, socket.gethostname())
+            self.wfile.write(data)
 
     def footer(self, message=''):
-        W = self.wfile.write
-        W("""
-            <div class="footer">
-            <a href="/">top</a>
-            <a href="running">running</a>
-            <a href="running.xml">running.xml</a>
-            <a href="config.xml">config.xml</a>
-            <a href="http://pythondirector.sf.net">pythondirector</a>
-            </div>""")
-
+        # XXX put the project URL in the admin config
+        projectURL ='http://pythondirector.sf.net'
         if message:
-            message = urllib.unquote(message)
-            W("""<p class="message">%s</p>"""%message)
-        W("""</body></html>\n\n""")
+            message = template.message % urllib.unquote(message)
+        data = template.footer % (projectURL, message)
+        self.wfile.write(data)
 
     def redir(self, url):
         self.send_response(302)
@@ -158,7 +149,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
         self.end_headers()
 
     def action_done(self, mesg):
-        self.redir('/running?resultMessage=%s'%urllib.quote(mesg))
+        self.redir('/running?resultMessage=%s' % urllib.quote(mesg))
 
     def do_GET(self):
         try:
@@ -167,11 +158,9 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
             self.log_exception()
 
     def do_request(self):
-        #print "URL",self.path
         h,p,u,p,q,f = urlparse.urlparse(self.path)
 
         authstr = self.headers.get('Authorization','')
-        #print "authstr", authstr
         if authstr:
             user = self.getUser(authstr)
         if not (authstr and user):
@@ -332,7 +321,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
                     W(" %s -\n"%what)
 
     def pdadmin_running(self, verbose=0, refresh=0, ignore='', resultmessage='', Access='Read'):
-        self.header(html=1, refresh='/running?refresh=1&ignore=%s'%time.time())
+        self.header(html=1, refreshURL='/running?refresh=1&ignore=%s'%time.time())
         W = self.wfile.write
         W('<p><b>current config</b></p>\n')
         W('<p>last update at %s</p>\n'%time.ctime(time.time()))
@@ -396,7 +385,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
                     W("<td>%s</td><td>%s</td>"%(oc,tc))
                     W('<td><div class="deleteButton">')
                     a='service=%s&group=%s&ip=%s'%(
-                        quote(service.name), quote(group.name), quote(h))
+                        urllib.quote(service.name), urllib.quote(group.name), urllib.quote(h))
                     W('<a href="delHost?%s">remove host</a>'%(a))
                     W('</div></td>')
                     W('</tr>')
