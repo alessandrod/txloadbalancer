@@ -13,6 +13,8 @@ Duncan's TODO: break 'em changes
  * add an XML-RPC service instead of the custom web API
  * [maybe] move the "hidden" listener initialization/creation into something
    explicit that the .tac file does
+   . possibly iterate through the director's listeners from the .tac file or a
+     utility function
  * I don't like the default behaviour of adding bad hosts back into circulation
    without any checks; I want to add something there...
  * sort service groups in admin UI by name

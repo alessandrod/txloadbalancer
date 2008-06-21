@@ -25,6 +25,8 @@ class Listener:
         self.listening_address = (bindhost, bindport)
         self.rfactory = ReceiverFactory((bindhost,bindport), scheduler)
         self.setScheduler(scheduler)
+        # XXX I don't like this here... I want to put the code that controls
+        # this in the .tac file
         reactor.listenTCP(bindport, self.rfactory, interface=bindhost)
 
     def setScheduler(self, scheduler):
