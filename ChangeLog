@@ -1,4 +1,4 @@
-2008-06-21 oubiwann
+2008.06.21 oubiwann
 
 * Grouped changes by day.
 * Removed the indents from the ChangeLog.
@@ -51,7 +51,7 @@
 * Added host info to template.
 * Moved the group header html into template.
 
-2008-06-20 oubiwann
+2008.06.20 oubiwann
 
 * Moved header and footer html out of pdadmin and into a template module.
 * Added a stub for html templates.
@@ -79,21 +79,21 @@
 * Cleaned up trailing white space and tabs.
 * Added files from Anthony Baxter's 1.0.0 2004 release.
 
-2004-12-15 anthonybaxter
+2004.12.15 anthonybaxter
 
 * pydirector/pdnetwork.py: support twisted or asyncore
 transparently (but prefer twisted)
 * confex.xml: move comment from top
 
-2004-08-18 anthonybaxter
+2004.08.18 anthonybaxter
 
 * pydirector/pdconf.py: move import to top of method
 
-2003-10-10 anthonybaxter
+2003.10.10 anthonybaxter
 
 * pydirector/__init__.py: new version
 
-2003-10-09 anthonybaxter
+2003.10.09 anthonybaxter
 
 * pydir.py, pydirector/__init__.py, pydirector/micropubl.py,
 pydirector/pdadmin.py, pydirector/pdconf.py,
@@ -115,23 +115,23 @@ pydirector/pdschedulers.py: Added 'leastconnsrr' scheduler. May end
 up deprecating/removing the existing leastconns scheduler, as the
 new one is far far better.
 
-2003-08-18 anthonybaxter
+2003.08.18 anthonybaxter
 
 * pydirector/pdnetworktwisted.py: actually change the scheduler
 when requested.
 
-2003-05-02 anthonybaxter
+2003.05.02 anthonybaxter
 
 * pydirector/pdconf.py: force backend server addresses to be ascii
 strings - avoids some internal processing by python.
 
-2003-05-01 anthonybaxter
+2003.05.01 anthonybaxter
 
 * pydirector/: pdmain.py, pdnetworkasyncore.py,
 pdnetworktwisted.py: whitespace n18n
 * pydirector/pdschedulers.py: debugging print left in.
 
-2003-04-30 anthonybaxter
+2003.04.30 anthonybaxter
 
 * README.txt, TODO.txt, pydirector/pdnetworkasyncore.py,
 pydirector/pdnetworktwisted.py, pydirector/pdschedulers.py: first
@@ -164,7 +164,7 @@ were found - doneHost won't be able to mark anything as "done".
 * pydirector/pdmain.py: don't hardcode default manager sleep
 granularity here as well as in pdmanager.py
 
-2002-11-26 anthonybaxter
+2002.11.26 anthonybaxter
 
 * pydirector/__init__.py: [no log message]
 * README.txt, pydir.py, setup.py: more pre-release cleanup.
@@ -179,7 +179,7 @@ the twisted_branch into the HEAD.
 * pydirector/pdnetworktwisted.py: twisted now works. ! :)
 * pydirector/: pdlogging.py, pdschedulers.py: logging cleanup.
 
-2002-11-25 anthonybaxter
+2002.11.25 anthonybaxter
 
 * pydirector/: pdmain.py, pdnetwork.py, pdnetworktwisted.py: Basic
 code works - have to handle failure cases and interacting better
@@ -196,7 +196,7 @@ initially added on branch twisted_branch.
 * pydirector/: pdmain.py, pdnetwork.py: moved all asyncore stuff
 into pdnetwork.py, in preparation for twisted version.
 
-2002-07-23 anthonybaxter
+2002.07.23 anthonybaxter
 
 * pydirector/pdnetwork.py (tags: twisted_root): even more
 defensiveness in the Listener.
@@ -204,7 +204,7 @@ defensiveness in the Listener.
 (tags: twisted_root), pdnetwork.py, pdschedulers.py (tags:
 twisted_root): more logging, with datestamps!
 
-2002-07-17 anthonybaxter
+2002.07.17 anthonybaxter
 
 * TODO.txt: [no log message]
 * pydirector/: pdadmin.py, pdconf.py, pdmain.py, pdmanager.py,
@@ -215,7 +215,7 @@ on branch scheduler-refactor-branch.
 * pydirector/pdadmin.py (tags: twisted_root,
 scheduler-refactor-root): SO_REUSEADDR re-added. oops.
 
-2002-07-08 anthonybaxter
+2002.07.08 anthonybaxter
 
 * TODO.txt: [no log message]
 * README.txt, pydirector/__init__.py (tags: twisted_root,
@@ -234,7 +234,7 @@ directives for a service.
 release_0_0_4): can now specify more than one 'listen' directive.
 update documentation.
 
-2002-07-04 anthonybaxter
+2002.07.04 anthonybaxter
 
 * confex.xml (tags: release_0_0_4), doc/configure.txt,
 doc/pythondirector.dtd, doc/webapi.txt (tags: release_0_0_4),
@@ -244,7 +244,7 @@ doc/xmlreference.txt: document the <client> -> <host> change.
 config all config objects now support getFoo(name), getFoos(), and
 getFooNames() (where they have children)
 
-2002-07-03 anthonybaxter
+2002.07.03 anthonybaxter
 
 * TODO.txt: [no log message]
 * .cvsignore (tags: release_0_0_4), doc/ChangeLog, TODO.txt: [no
@@ -290,7 +290,7 @@ xmlreference.txt
 schedulers.txt (tags: release_0_0_4): documentation. whoda thunk
 it.
 
-2002-07-02 anthonybaxter
+2002.07.02 anthonybaxter
 
 * pydirector/__init__.py (tags: release_0_0_3): onwards to 0.0.3!
 * README.txt (tags: release_0_0_3): on to 0.0.3!
@@ -310,7 +310,7 @@ more sane.  running.xml and config.xml are now access 'Read'
 * pydirector/pdconf.py (tags: release_0_0_3): add
 PDAdmin.getUsers() to retrieve full user list.
 
-2002-07-01 anthonybaxter
+2002.07.01 anthonybaxter
 
 * TODO.txt, confex.xml, pydirector/pdadmin.py,
 pydirector/pdconf.py, pydirector/pdlogging.py (tags:
@@ -361,13 +361,13 @@ refactoring of the web interface. using a tiny publisher mixin
 magic. not completely happy with it for now, but it's Good Enough
 for now.
 
-2002-06-25 anthonybaxter
+2002.06.25 anthonybaxter
 
 * TODO.txt, pdadmin.py, pdschedulers.py, pydir.py: addHost works.
 added a whole lotta CSS guff. running is now pretty with form bits
 and stuff.
 
-2002-06-21 anthonybaxter
+2002.06.21 anthonybaxter
 
 * TODO.txt: note adding sticky schedulers.
 * confex.xml: made the username more .. sample-ish.
