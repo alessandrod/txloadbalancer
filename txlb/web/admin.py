@@ -50,8 +50,8 @@ class BasePage(resource.Resource):
             refreshRate = 30
             refresh = template.refresh % (refreshRate, refreshURL)
         return template.header % (
-            txlb.name, refresh, self.parent.serverVersion, socket.gethostname()
-            )
+            txlb.name, refresh, txlb.name, self.parent.serverVersion,
+            socket.gethostname())
 
     def getBody(self):
         """
@@ -63,11 +63,9 @@ class BasePage(resource.Resource):
         """
 
         """
-        # XXX put the project URL in the admin config
-        projectURL ='http://pythondirector.sf.net'
         if message:
             message = template.message % urllib.unquote(message)
-        return template.footer % (projectURL, message)
+        return template.footer % (txlb.projectURL, txlb.name, message)
 
 
     def getPage(self):
@@ -301,7 +299,7 @@ class AdminServer(resource.Resource):
         self.director = director
         self.config = director.conf.admin
         self.starttime = time.time()
-        self.serverVersion = "pythondirector/%s" % txlb.version
+        self.serverVersion = "%s/%s" % (txlb.shortName, txlb.version)
 
     def unauthorized(self):
         return UnauthorizedResource()
@@ -328,7 +326,7 @@ class AdminServer(resource.Resource):
             return self.unauthorized()
         if name == 'running' or name == '':
             return RunningPage(self)
-        elif name == 'pydirector.css':
+        elif name == 'txlb.css':
             return StyleSheet()
         elif name == 'running.xml':
             return RunningConfig(self)

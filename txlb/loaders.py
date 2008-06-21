@@ -186,7 +186,7 @@ class Receiver(Protocol):
 
 
 class ReceiverFactory(ServerFactory):
-    "Factory for the listener bit of the pydirector"
+    "Factory for the listener bit of the load balancer."
     protocol = Receiver
     noisy = 0
 

@@ -4,7 +4,7 @@ head = """
     <html>
     <head>
     <title>%s</title>
-    <link rel=stylesheet type="text/css" href="/pydirector.css">
+    <link rel=stylesheet type="text/css" href="/txlb.css">
     %s
     </head>
     """
@@ -14,10 +14,10 @@ refresh = """
     <META HTTP-EQUIV=Refresh CONTENT="%s; URL=%s">
     """
 
-# takes optional refresh, version, and hostname
+# takes a title, optional refresh, project name, version, and hostname
 header = head + """
     <body>
-    <div class="title">Python Director version %s, running on host %s.</div>
+    <div class="title">%s version %s, running on host %s.</div>
     """
 
 # takes a message
@@ -30,7 +30,7 @@ footer = """
     <a href="running">running</a>
     <a href="running.xml">running.xml</a>
     <a href="config.xml">config.xml</a>
-    <a href="%s">pythondirector</a>
+    <a href="%s">%s</a>
     </div>
     %s
     </body>
@@ -38,7 +38,8 @@ footer = """
     """
 
 startRefresh = """
-    <a class="button" href="/running?refresh=1&ignore=%s">Start auto-refresh</a></p>
+    <a class="button" href="/running?refresh=1&ignore=%s">Start
+    auto-refresh</a></p>
     """
 
 stopRefresh = """
@@ -65,7 +66,7 @@ listeningService = """
 
 # takes a CSS class and a group name
 groupName = """
-    <tr class="%s"><td colspan="4" class="servHeader">%s 
+    <tr class="%s"><td colspan="4" class="servHeader">%s
     """
 
 # takes no substituion
