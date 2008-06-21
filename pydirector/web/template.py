@@ -123,3 +123,7 @@ badHostInfo = """
 serviceClose = """
     </table>
     """
+
+unauth = """
+    <html><body>Access Denied.</body></html>
+    """

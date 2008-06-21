@@ -1,8 +1,3 @@
-Duncan's TODO: API-compatible changes
--------------------------------------
- * replace admin thread with twisted services
-   . add basic auth to twisted web version of admin ui
-
 Duncan's TODO: break 'em changes
 --------------------------------
  * remove all of asynccore and make this a twisted-only app

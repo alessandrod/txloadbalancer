@@ -3,11 +3,23 @@ import urllib
 import socket
 from xml.dom import minidom
 
+from twisted.web import http
+from twisted.web import static
 from twisted.web import resource
 
 from pydirector import Version
 from pydirector.web import css
 from pydirector.web import template
+
+class UnauthorizedResource(resource.Resource):
+    isLeaf = 1
+    unauthorizedPage = static.Data(template.unauth, 'text/html')
+
+    def render(self, request):
+        request.setResponseCode(http.UNAUTHORIZED)
+        request.setHeader(
+            'WWW-authenticate', 'basic realm="PyDirector"')
+        return self.unauthorizedPage.render(request)
 
 class StyleSheet(resource.Resource):
     """
@@ -290,10 +302,29 @@ class AdminServer(resource.Resource):
         self.starttime = time.time()
         self.serverVersion = "pythondirector/%s" % Version
 
+    def unauthorized(self):
+        return UnauthorizedResource()
+
+    def authenticateUser(self, request):
+        authstr = request.getHeader('Authorization')
+        if not authstr:
+            return False
+        type, auth = authstr.split()
+        if type.lower() != 'basic':
+            return False
+        auth = auth.decode('base64')
+        user, pw = auth.split(':',1)
+        userObj = self.config.getUser(user)
+        if (userObj and userObj.checkPW(pw)):
+            return True
+        return False
+
     def getChild(self, name, request):
         """
 
         """
+        if not self.authenticateUser(request):
+            return self.unauthorized()
         if name == 'running' or name == '':
             return RunningPage(self)
         elif name == 'pydirector.css':
@@ -307,3 +338,5 @@ class AdminServer(resource.Resource):
         elif name == 'addHost':
             return AddHost(self)
         return resource.Resource.getChild(self, name, request)
+
+
