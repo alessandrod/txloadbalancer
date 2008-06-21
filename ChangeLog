@@ -1,5 +1,8 @@
 2008.06.21 oubiwann
 
+* Updated the configuration docs.
+* Changed the date separators.
+* Added the changes from the last couple days to the change log.
 * Grouped changes by day.
 * Removed the indents from the ChangeLog.
 * Added commit script.
