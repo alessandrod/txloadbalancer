@@ -288,7 +288,7 @@ class AdminServer(resource.Resource):
         self.director = director
         self.config = director.conf.admin
         self.starttime = time.time()
-        self.serverVersion = "pythondirector/%s"%Version
+        self.serverVersion = "pythondirector/%s" % Version
 
     def getChild(self, name, request):
         """

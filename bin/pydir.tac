@@ -20,7 +20,10 @@ director = main.Director(configFile)
 
 # set up the web server
 site = server.Site(admin.AdminServer(director))
-admin = internet.TCPServer(director.conf.admin.listen[1], site)
+if director.conf.admin.secure:
+    admin = None
+else:
+    admin = internet.TCPServer(director.conf.admin.listen[1], site)
 admin.setServiceParent(services)
 
 # set up the manager timer service
