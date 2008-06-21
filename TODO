@@ -16,6 +16,9 @@ Duncan's TODO: break 'em changes
  * I don't like the default behaviour of adding bad hosts back into circulation
    without any checks; I want to add something there...
  * sort service groups in admin UI by name
+ * [maybe] make the "top" link point to a list of service groups, linked to
+   pages that just display that one section (as opposed to the view that
+   "running" gives, which is all sections)
 
 Original TODO:
 --------------

@@ -1,5 +1,6 @@
 2008.06.21 oubiwann
 
+* Updated TODO.
 * Removed old, unused publisher (we're using Twisted to publish data to the
 web).
 * Updated TODO.
