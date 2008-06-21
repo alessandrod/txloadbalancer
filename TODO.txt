@@ -5,6 +5,8 @@ Duncan's TODO: API-compatible changes
  * remove all of asynccore and make this a twisted-only app
  * I don't like the default behaviour of adding bad hosts back into circulation
    without any checks; I want to add something there...
+ * maybe move the "hidden" listener initialization/creation into something
+   explicit that the .tac file does?
 
 Duncan's TODO: break 'em changes
 --------------------------------
