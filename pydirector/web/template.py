@@ -95,6 +95,13 @@ groupHeaderForm = """
     <th>open</th><th>total</th></tr>
     """
 
-serviceClass = """
-
+# takes CSS class, hostname, host, open connections, total connections as well
+# as urllib-quoted service name, group name, and host
+hostInfo = """
+    <tr class="%s"><td>%s</td><td><tt>%s</tt></td>
+    <td>%s</td><td>%s</td>
+    <td><div class="deleteButton">
+    <a href="delHost?service=%s&group=%s&ip=%s">remove host</a>
+    </div></td>
+    </tr>
     """

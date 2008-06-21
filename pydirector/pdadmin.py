@@ -321,7 +321,7 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
                     W(" %s -\n"%what)
 
     def pdadmin_running(self, verbose=0, refresh=0, ignore='', resultmessage='', Access='Read'):
-        self.header(html=1, refreshURL='/running?refresh=1&ignore=%s'%time.time())
+        self.header(html=1, refreshURL='/running?refresh=1&ignore=%s' % time.time())
         W = self.wfile.write
         if refresh:
             stopStart = template.stopRefresh % time.time()
@@ -356,8 +356,6 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
                 k = counts.keys()
                 k.sort()
                 for h in k:
-                    W('<tr class="%s"><td>'%klass)
-                    W("%s</td><td><tt>%s</tt></td>\n"%(hdict[h], h))
                     if counts.has_key(h):
                         oc = counts[h]
                     else:
@@ -366,13 +364,9 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
                         tc = totals[h]
                     else:
                         tc = '--'
-                    W("<td>%s</td><td>%s</td>"%(oc,tc))
-                    W('<td><div class="deleteButton">')
-                    a='service=%s&group=%s&ip=%s'%(
-                        urllib.quote(service.name), urllib.quote(group.name), urllib.quote(h))
-                    W('<a href="delHost?%s">remove host</a>'%(a))
-                    W('</div></td>')
-                    W('</tr>')
+                    W(template.hostInfo % (
+                        klass, hdict[h], h, oc, tc, urllib.quote(service.name),
+                        urllib.quote(group.name), urllib.quote(h)))
                 bad = stats['bad']
                 if bad:
                     W('''<tr class="%s"><th colspan="2">disabled hosts</th>
