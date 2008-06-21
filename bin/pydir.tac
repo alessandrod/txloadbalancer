@@ -17,7 +17,7 @@ application = service.Application('PyDirector')
 services = service.IServiceCollection(application)
 
 # set up the director
-configFile = './config.xml'
+configFile = './etc/config.xml'
 director = main.Director(configFile)
 
 # set up the web server
