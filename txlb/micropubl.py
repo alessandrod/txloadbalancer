@@ -1,13 +1,4 @@
-#
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
-# and Anthony Baxter <anthony@interlink.com.au>
-#
-# $Id: micropubl.py,v 1.5 2004/12/14 13:31:39 anthonybaxter Exp $
-#
-
-import sys
-if sys.version_info < (2,2):
-    class object: pass
+from inspect import getargspec
 
 # a.k.a babybobo. A very small and limited object publisher.
 # where possible, it's not tied to any particular mechanism
@@ -53,7 +44,6 @@ class MicroPublisher(object):
 
 
     def checkArgs(self, fn, args):
-        from inspect import getargspec
         arglist, vaarg, kwarg, defargs = getargspec(fn.im_func)
         if arglist[0] == "self":
             arglist = arglist[1:]

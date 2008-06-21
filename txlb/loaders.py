@@ -1,17 +1,10 @@
-#
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
-# and Anthony Baxter <anthony@interlink.com.au>
-#
-# Networking core - twisted version (http://www.twistedmatrix.com)
-#
-# $Id: pdnetworktwisted.py,v 1.11 2004/12/14 13:31:39 anthonybaxter Exp $
-#
-
-from twisted.internet.protocol import ServerFactory, ClientFactory, Protocol
 from twisted.internet import reactor
 import twisted.internet
+from twisted.internet.protocol import Protocol
+from twisted.internet.protocol import ServerFactory
+from twisted.internet.protocol import ClientFactory
 
-import pdlogging
+from txlb import logging
 
 
 
@@ -69,7 +62,7 @@ class Sender(Protocol):
     def dataReceived(self, data):
         #print "client data", len(data)
         if self.receiver is None:
-            pdlogging.log("client got data, no receiver, tho\n", datestamp=1)
+            logging.log("client got data, no receiver, tho\n", datestamp=1)
         else:
             self.receiver.transport.write(data)
 
@@ -118,12 +111,12 @@ class SenderFactory(ClientFactory):
         next =  self.receiver.factory.scheduler.getHost(self,
                                                     self.receiver.client_addr)
         if next:
-            pdlogging.log("retrying with %s\n"%repr(next), datestamp=1)
+            logging.log("retrying with %s\n"%repr(next), datestamp=1)
             host, port = next
             reactor.connectTCP(host, port, self)
         else:
             # No working servers!?
-            pdlogging.log("no working servers, manager -> aggressive\n",
+            logging.log("no working servers, manager -> aggressive\n",
                           datestamp=1)
             self.receiver.transport.loseConnection()
 

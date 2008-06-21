@@ -1,15 +1,9 @@
-#
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
-# and Anthony Baxter <anthony@interlink.com.au>
-#
-# $Id: pdconf.py,v 1.18 2004/12/14 13:31:39 anthonybaxter Exp $
-#
 import sys
 import inspect
 from crypt import crypt
 from xml.dom import minidom
 
-from pydirector import pdlogging
+from txlb import logging
 
 def getDefaultArgs(methodObj):
     arglist, vaarg, kwarg, defargs = inspect.getargspec(methodObj.im_func)

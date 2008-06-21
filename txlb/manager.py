@@ -1,6 +1,6 @@
 import time
 
-from pydirector import pdconf, pdlogging
+from txlb import logging
 
 def checkBadHosts(director):
     """
@@ -18,7 +18,7 @@ def checkBadHosts(director):
             forceCheck = True
         for bh in badHosts.keys():
             when, what = badHosts[bh]
-            pdlogging.log("re-adding %s automatically\n"%str(bh),
+            logging.log("re-adding %s automatically\n"%str(bh),
                     datestamp=1)
             name = scheduler.getHostNames()[bh]
             del badHosts[bh]

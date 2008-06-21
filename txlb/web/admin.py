@@ -7,9 +7,9 @@ from twisted.web import http
 from twisted.web import static
 from twisted.web import resource
 
-from pydirector import Version
-from pydirector.web import css
-from pydirector.web import template
+from txlb import Version
+from txlb.web import css
+from txlb.web import template
 
 class UnauthorizedResource(resource.Resource):
     isLeaf = 1

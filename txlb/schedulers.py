@@ -1,15 +1,7 @@
-#
-# Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com)
-# and Anthony Baxter <anthony@interlink.com.au>
-#
-# $Id: pdschedulers.py,v 1.16 2004/12/14 13:31:39 anthonybaxter Exp $
-#
+import time
 
-import sys, time
-if sys.version_info < (2,2):
-    class object: pass
-
-import pdconf, pdlogging
+from txlb import conf
+from txlb import logging
 
 def createScheduler(groupConfig):
     schedulerName = groupConfig.scheduler
@@ -102,7 +94,7 @@ class BaseScheduler:
 
     def newHost(self, ip, name):
         if type(ip) is not type(()):
-            ip = pdconf.splitHostPort(ip)
+            ip = conf.splitHostPort(ip)
         self.hosts.append(ip)
         self.hostnames[ip] = name
         self.hostnames['%s:%d'%ip] = name
@@ -113,7 +105,7 @@ class BaseScheduler:
         "remove a host"
         if ip is not None:
             if type(ip) is not type(()):
-                ip = pdconf.splitHostPort(ip)
+                ip = conf.splitHostPort(ip)
         elif name is not None:
             for ip in self.hostnames.keys():
                 if self.hostnames[ip] == name:
@@ -138,7 +130,7 @@ class BaseScheduler:
         from time import time
         t,host = self.open[s_id]
         if host in self.hosts:
-            pdlogging.log("marking host %s down (%s)\n"%(str(host), reason),
+            logging.log("marking host %s down (%s)\n"%(str(host), reason),
                             datestamp=1)
             self.hosts.remove(host)
         if self.openconns.has_key(host):

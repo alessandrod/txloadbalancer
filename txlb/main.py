@@ -1,6 +1,6 @@
-from pydirector import pdconf
-from pydirector import pdnetwork
-from pydirector import pdschedulers
+from txlb import conf
+from txlb import loaders
+from txlb import schedulers
 
 class Director(object):
     """
@@ -10,7 +10,7 @@ class Director(object):
     def __init__(self, config):
         self.listeners = {}
         self.schedulers = {}
-        self.conf = pdconf.PDConfig(config)
+        self.conf = conf.PDConfig(config)
         self.createListeners()
 
     def getScheduler(self, serviceName, groupName):
@@ -18,7 +18,7 @@ class Director(object):
 
     def createSchedulers(self, service):
         for group in service.getGroups():
-            s = pdschedulers.createScheduler(group)
+            s = schedulers.createScheduler(group)
             self.schedulers[(service.name,group.name)] = s
 
     def createListeners(self):
@@ -29,8 +29,8 @@ class Director(object):
             # handle multiple listeners for a service
             self.listeners[service.name] = []
             for lobj in service.listen:
-                l = pdnetwork.Listener(service.name,
-                                   pdconf.splitHostPort(lobj),
+                l = loaders.Listener(service.name,
+                                   conf.splitHostPort(lobj),
                                    scheduler)
                 self.listeners[service.name].append(l)
 

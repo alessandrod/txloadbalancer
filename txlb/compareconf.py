@@ -1,14 +1,3 @@
-#
-# Very straightforward (brutally so) code to compare to
-# configurations and supply a list of web api commands to
-# make the first look like the second.
-#
-# This code prefers simplicity to elegance. I want something
-# I can read clearly
-#
-# $Id: compareconf.py,v 1.2 2002/07/03 09:17:23 anthonybaxter Exp $
-#
-
 class DiffError(Exception): pass
 
 def diffXML(oldxml, newxml):
