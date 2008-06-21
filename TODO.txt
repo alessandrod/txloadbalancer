@@ -8,6 +8,8 @@ Duncan's TODO: API-compatible changes
  * fix URL params in the twisted port of the admin UI
  * maybe move the "hidden" listener initialization/creation into something
    explicit that the .tac file does?
+ * add basic auth to twisted web version of admin ui
+ * add https support for twisted web version of admin ui
 
 Duncan's TODO: break 'em changes
 --------------------------------
@@ -22,6 +24,7 @@ Duncan's TODO: break 'em changes
  * add heartbeat/HA features for lb'ed services to communicate back up to the
    lb manager
  * implement those as a twisted plugin
+ * add an XML-RPC service instead of the custom web API
 
 Original TODO:
 --------------
