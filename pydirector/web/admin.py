@@ -224,6 +224,12 @@ class StoredConfig(BasePage):
     """
 
     """
+    def getPage(self, request):
+        """
+
+        """
+        request.setHeader('Content-type', 'text/plain')
+        return self.parent.director.conf.dom.toxml()
 
 class DeleteHost(BasePage):
     """
