@@ -9,6 +9,8 @@ Duncan's TODO: API-compatible changes
    explicit that the .tac file does?
  * add basic auth to twisted web version of admin ui
  * add https support for twisted web version of admin ui
+ * added an admin configuration option for setting the refresh rate
+ * add an admin option for setting the project URL
 
 Duncan's TODO: break 'em changes
 --------------------------------
