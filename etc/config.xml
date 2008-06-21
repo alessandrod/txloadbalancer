@@ -1,0 +1,16 @@
+<pdconfig>
+  <service name="web">
+    <listen ip="0.0.0.0:8080"/>
+    <group name="servers" scheduler="roundrobin">
+      <host name="server1" ip="127.0.0.1:7001" />
+      <host name="server2" ip="127.0.0.1:7002" />
+      <host name="server3" ip="127.0.0.1:7003" />
+      <host name="server4" ip="127.0.0.1:80" />
+    </group>
+    <enable group="servers"/>
+  </service>
+  <admin listen="localhost:7000" secure="secure">
+    <user name="admin" password="..xpoEyRReGzk" access="full"/>
+  </admin>
+</pdconfig>
+
