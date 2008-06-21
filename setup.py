@@ -2,22 +2,15 @@ from distutils.core import setup
 
 from pydirector import Version
 
-# patch distutils if it can't cope with the "classifiers" keyword.
-# this just makes it ignore it.
-import sys
-if sys.version < '2.2.3':
-    from distutils.dist import DistributionMetadata
-    DistributionMetadata.classifiers = None
-
 setup(
     name = "pydirector",
     version = Version,
     description = "Python Director - TCP load balancer.",
-    author = "Anthony Baxter",
-    author_email = "anthony@interlink.com.au",
-    url = 'http://sourceforge.net/projects/pythondirector/',
+    author = "Anthony Baxter, Duncan McGreggor",
+    author_email = "anthony@interlink.com.au, oubiwann@divmod.com",
+    url = 'https://launchpad.net/pydirector',
     packages = ['pydirector'],
-    scripts = ['pydir.py'],
+    scripts = ['bin/pydir.py', 'bin/pydir++.py', 'pydir.tac'],
     classifiers = [
        'Development Status :: 5 - Production/Stable',
        'Environment :: Web Environment',
