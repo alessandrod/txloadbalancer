@@ -235,6 +235,28 @@ class DeleteHost(BasePage):
     """
 
     """
+    def getPage(self, request):
+        """
+
+        """
+        service = request.args['service'][0]
+        group = request.args['group'][0]
+        ip = request.args['ip'][0]
+        sched = self.parent.director.getScheduler(serviceName=service, groupName=group)
+        service = self.parent.director.conf.getService(service)
+        eg = service.getEnabledGroup()
+        if group == eg.name:
+            if sched.delHost(ip=ip, activegroup=1):
+                msg = 'host %s deleted (from active group!)' % ip
+            else:
+                msg = 'host %s <b>not</b> deleted from active group' % ip
+        else:
+            if sched.delHost(ip=ip):
+                msg = 'host %s deleted from inactive group' % ip
+            else:
+                msg = 'host %s <b>not</b> deleted from inactive group' % ip
+        request.redirect('/running?resultMessage=%s' % urllib.quote(msg))
+        return "OK"
 
 class AddHost(BasePage):
     """
