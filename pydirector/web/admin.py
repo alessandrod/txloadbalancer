@@ -74,7 +74,7 @@ class RunningPage(BasePage):
     """
     def getPage(self, request):
         """
-        This craziness is a modified version of the original.
+        Don't look at me; this craziness is a modified version of the original.
         """
         verbose = False
         resultMessage = ''
@@ -96,7 +96,8 @@ class RunningPage(BasePage):
             eg = service.getEnabledGroup()
             groups = service.getGroups()
             for group in groups:
-                sch = self.parent.director.getScheduler(service.name, group.name)
+                sch = self.parent.director.getScheduler(
+                    service.name, group.name)
                 stats = sch.getStats(verbose=verbose)
                 hdict = sch.getHostNames()
                 if group is eg:
