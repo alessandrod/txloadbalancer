@@ -10,7 +10,7 @@ setup(
     author_email = "anthony@interlink.com.au, oubiwann@divmod.com",
     url = 'https://launchpad.net/pydirector',
     packages = ['pydirector'],
-    scripts = ['bin/pydir.py', 'bin/pydir++.py', 'pydir.tac'],
+    scripts = ['bin/pydir.py', 'bin/pydir++.py', 'bin/pydir.tac'],
     classifiers = [
        'Development Status :: 5 - Production/Stable',
        'Environment :: Web Environment',
