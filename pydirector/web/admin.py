@@ -1,6 +1,7 @@
 import time
 import urllib
 import socket
+from xml.dom import minidom
 
 from twisted.web import resource
 
@@ -66,7 +67,7 @@ class BasePage(resource.Resource):
         """
 
         """
-        return self.getPage(request)
+        return str(self.getPage(request))
 
 class RunningPage(BasePage):
     """
@@ -137,12 +138,87 @@ class RunningPage(BasePage):
                         klass, hdict[host], host, what)
             content += template.serviceClose
         content += self.getFooter(resultMessage)
-        return str(content)
+        return content
 
 class RunningConfig(BasePage):
     """
 
     """
+    def getPage(self, request):
+        """
+
+        """
+        request.setHeader('Content-type', 'text/plain')
+        verbose = False
+        conf = self.parent.director.conf
+        doc = minidom.Document()
+        top = doc.createElement("pdconfig")
+        doc.appendChild(top)
+        for service in conf.getServices():
+            top.appendChild(doc.createTextNode("\n    "))
+            serv = doc.createElement("service")
+            serv.setAttribute('name', service.name)
+            top.appendChild(serv)
+            for l in service.listen:
+                serv.appendChild(doc.createTextNode("\n        "))
+                lobj = doc.createElement("listen")
+                lobj.setAttribute('ip', l)
+                serv.appendChild(lobj)
+            groups = service.getGroups()
+            for group in groups:
+                serv.appendChild(doc.createTextNode("\n        "))
+                sch = self.parent.director.getScheduler(service.name, group.name)
+                xg = doc.createElement("group")
+                xg.setAttribute('name', group.name)
+                xg.setAttribute('scheduler', sch.schedulerName)
+                serv.appendChild(xg)
+                stats = sch.getStats(verbose=verbose)
+                hosts = group.getHosts()
+                hdict = sch.getHostNames()
+                counts = stats['open']
+                ahosts = counts.keys() # ahosts is now a list of active hosts
+                # now add disabled hosts.
+                for k in stats['bad'].keys():
+                    ahosts.append('%s:%s'%k)
+                ahosts.sort()
+                for h in ahosts:
+                    xg.appendChild(doc.createTextNode("\n            "))
+                    xh = doc.createElement("host")
+                    xh.setAttribute('name', hdict[h])
+                    xh.setAttribute('ip', h)
+                    xg.appendChild(xh)
+                xg.appendChild(doc.createTextNode("\n        "))
+            serv.appendChild(doc.createTextNode("\n        "))
+            eg = service.getEnabledGroup()
+            xeg = doc.createElement("enable")
+            xeg.setAttribute("group", eg.name)
+            serv.appendChild(xeg)
+            serv.appendChild(doc.createTextNode("\n    "))
+        top.appendChild(doc.createTextNode("\n    "))
+        # now the admin block
+        admin = self.parent.director.conf.admin
+        if admin is not None:
+            xa = doc.createElement("admin")
+            xa.setAttribute("listen", "%s:%s"%admin.listen)
+            top.appendChild(xa)
+            for user in admin.getUsers():
+                xa.appendChild(doc.createTextNode("\n        "))
+                xu = doc.createElement("user")
+                xu.setAttribute("name", user.name)
+                xu.setAttribute("password", user.password)
+                xu.setAttribute("access", user.access)
+                xa.appendChild(xu)
+            xa.appendChild(doc.createTextNode("\n    "))
+            top.appendChild(doc.createTextNode("\n    "))
+        # finally, the logging section (if set)
+        #if logger.logfile is not None:
+        #    xl = doc.createElement("logging")
+        #    xl.setAttribute("file", logger.logfile)
+        #    top.appendChild(xl)
+        # final newline
+        top.appendChild(doc.createTextNode("\n"))
+        # and spit out the XML
+        return doc.toxml()
 
 class StoredConfig(BasePage):
     """
