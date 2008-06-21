@@ -6,10 +6,10 @@ from twisted.application import service
 from twisted.application import internet
 from twisted.application import strports
 
-from pydirector import main
-from pydirector import util
-from pydirector.web import admin
-from pydirector.manager import checkBadHosts
+from txlb import main
+from txlb import util
+from txlb.web import admin
+from txlb.manager import checkBadHosts
 
 resource.setrlimit(resource.RLIMIT_NOFILE, (1024, 1024))
 
