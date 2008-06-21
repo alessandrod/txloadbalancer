@@ -2,8 +2,8 @@ import os
 
 from twisted.internet import ssl
 
-privKeyFile = 'server.pem'
-certFile = 'server.pem'
+privKeyFile = 'etc/server.pem'
+certFile = 'etc/server.pem'
 
 def createCertificate():
     # this is copied from test_sslverify.py
