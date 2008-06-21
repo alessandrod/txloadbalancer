@@ -1,16 +1,16 @@
-from distutils.core import setup
+from setuptools import setup
 
 from pydirector import Version
 
 setup(
-    name = "pydirector",
+    name = "txLoadBalancer",
     version = Version,
-    description = "Python Director - TCP load balancer.",
+    description = "txLoadBalancer - A Twisted-based TCP load balancer.",
     author = "Anthony Baxter, Duncan McGreggor",
     author_email = "anthony@interlink.com.au, oubiwann@divmod.com",
-    url = 'https://launchpad.net/pydirector',
-    packages = ['pydirector'],
-    scripts = ['bin/pydir.py', 'bin/pydir++.py', 'bin/pydir.tac'],
+    url = 'https://launchpad.net/txloadbalancer',
+    packages = ['txlb'],
+    scripts = ['bin/pydir.tac'],
     classifiers = [
        'Development Status :: 5 - Production/Stable',
        'Environment :: Web Environment',
