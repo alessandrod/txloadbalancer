@@ -66,17 +66,19 @@ class BasePage(resource.Resource):
         """
 
         """
-        return self.getPage()
+        return self.getPage(request)
 
 class RunningPage(BasePage):
     """
 
     """
-    def getPage(self):
+    def getPage(self, request):
         """
         This craziness is a modified version of the original.
         """
         refresh = False
+        if request.args.has_key('refresh'):
+            refresh = bool(request.args['refresh'][0])
         verbose = False
         resultMessage = ''
         content = self.getHeader(refreshURL='/running?refresh=1&ignore=%s' % time.time())

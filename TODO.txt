@@ -5,7 +5,6 @@ Duncan's TODO: API-compatible changes
  * remove all of asynccore and make this a twisted-only app
  * I don't like the default behaviour of adding bad hosts back into circulation
    without any checks; I want to add something there...
- * fix URL params in the twisted port of the admin UI
  * maybe move the "hidden" listener initialization/creation into something
    explicit that the .tac file does?
  * add basic auth to twisted web version of admin ui
