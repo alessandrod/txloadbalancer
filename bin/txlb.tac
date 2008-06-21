@@ -8,7 +8,7 @@ from twisted.application import strports
 
 from txlb import main
 from txlb import util
-from txlb.web import admin
+from txlb.admin import pages
 from txlb.manager import checkBadHosts
 
 resource.setrlimit(resource.RLIMIT_NOFILE, (1024, 1024))
@@ -21,7 +21,7 @@ configFile = './etc/config.xml'
 director = main.Director(configFile)
 
 # set up the web server
-site = server.Site(admin.AdminServer(director))
+site = server.Site(pages.AdminServer(director))
 adminPort = director.conf.admin.listen[1]
 if director.conf.admin.secure:
     util.setupServerCert()

@@ -8,8 +8,8 @@ from twisted.web import static
 from twisted.web import resource
 
 import txlb
-from txlb.web import css
-from txlb.web import template
+from txlb.admin import css
+from txlb.admin import template
 
 class UnauthorizedResource(resource.Resource):
     isLeaf = 1
