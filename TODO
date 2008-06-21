@@ -19,6 +19,8 @@ Duncan's TODO: break 'em changes
  * [maybe] make the "top" link point to a list of service groups, linked to
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
+ * examine the benefits of schedulers having write control over host data
+ * examine breaking out listeners and managers across different processes/hosts
 
 Original TODO:
 --------------

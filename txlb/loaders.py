@@ -1,5 +1,5 @@
 from twisted.internet import reactor
-import twisted.internet
+from twisted.internet import error
 from twisted.internet.protocol import Protocol
 from twisted.internet.protocol import ServerFactory
 from twisted.internet.protocol import ClientFactory
@@ -7,18 +7,17 @@ from twisted.internet.protocol import ClientFactory
 from txlb import logging
 
 
-
 class Listener:
     """
-        Listener object. Listens at a given host/port for connections.
-        Creates a receiver to collect data from client, and a sender to
-        connect to the eventual destination host.
+    Listener object. Listens at a given host/port for connections.
+    Creates a receiver to collect data from client, and a sender to
+    connect to the eventual destination host.
 
-        Public API:
+    Public API:
 
-        method __init__(self, name, (bindhost, bindport), scheduler)
-        attribute .scheduler: read/write - a PDScheduler
-        attribute .listening_address: read - a tuple of (host,port)
+    method __init__(self, name, (bindhost, bindport), scheduler)
+    attribute .scheduler: read/write - a PDScheduler
+    attribute .listening_address: read - a tuple of (host,port)
     """
 
     def __init__(self, name, (bindhost, bindport), scheduler):
@@ -32,12 +31,13 @@ class Listener:
         self.scheduler = scheduler
         self.rfactory.setScheduler(scheduler)
 
+
 class Sender(Protocol):
     """
-        A Sender object connects to the remote final server, and passes data
-        back and forth. Unlike the receiver, it's not necessary to buffer up
-        data, since the client _must_ be connected (if it's not, toss the
-        data)
+    A Sender object connects to the remote final server, and passes data
+    back and forth. Unlike the receiver, it's not necessary to buffer up
+    data, since the client _must_ be connected (if it's not, toss the
+    data)
     """
     receiver = None
 
@@ -46,13 +46,13 @@ class Sender(Protocol):
 
     def connectionLost(self, reason):
         """
-            the server is done, and has closed the connection. write out any
-            remaining data, and close the socket.
+        The server is done, and has closed the connection. write out any
+        remaining data, and close the socket.
         """
         if self.receiver is not None:
-            if reason.type is twisted.internet.error.ConnectionDone:
+            if reason.type is error.ConnectionDone:
                 return
-            elif reason.type is twisted.internet.error.ConnectionLost:
+            elif reason.type is error.ConnectionLost:
                 pass
             else:
                 #print id(self),"connection to server lost:",reason
@@ -68,8 +68,8 @@ class Sender(Protocol):
 
     def connectionMade(self):
         """
-            we've connected to the destination server. tell the other end
-            it's ok to send any buffered data from the client.
+        We've connected to the destination server. tell the other end
+        it's ok to send any buffered data from the client.
         """
         #print "client connection",self.factory
         if self.receiver.receiverOk:
@@ -86,8 +86,11 @@ class Sender(Protocol):
             self.transport.loseConnection()
             self.setReceiver(None)
 
+
 class SenderFactory(ClientFactory):
-    "create a Sender when needed. The sender connects to the remote host"
+    """
+    Create a Sender when needed. The sender connects to the remote host.
+    """
     protocol = Sender
     noisy = 0
 
@@ -124,14 +127,17 @@ class SenderFactory(ClientFactory):
         self.receiver.factory.scheduler.doneHost(self)
 
 class Receiver(Protocol):
-    "Listener bit for clients connecting to the director"
-
+    """
+    Listener bit for clients connecting to the director.
+    """
     sender = None
     buffer = ''
     receiverOk = 0
 
     def connectionMade(self):
-        "This is invoked when a client connects to the director"
+        """
+        This is invoked when a client connects to the director.
+        """
         self.receiverOk = 1
         self.client_addr = self.transport.client
         sender = SenderFactory()
@@ -145,7 +151,9 @@ class Receiver(Protocol):
             self.transport.loseConnection()
 
     def setSender(self, sender):
-        "the sender side of the proxy is connected"
+        """
+        The sender side of the proxy is connected.
+        """
         self.sender = sender
         if self.buffer:
             self.sender.transport.write(self.buffer)
@@ -153,9 +161,9 @@ class Receiver(Protocol):
 
     def connectionLost(self, reason):
         """
-            the client has hung up/disconnected. send the rest of the
-            data through before disconnecting. Let the client know that
-            it can just discard the data.
+        The client has hung up/disconnected. send the rest of the
+        data through before disconnecting. Let the client know that
+        it can just discard the data.
         """
         # damn. XXX TODO. If the client connects, sends, then disconnects,
         # before the end server has connected, we have data loss - the client
@@ -174,11 +182,15 @@ class Receiver(Protocol):
             self.receiverOk = 0
 
     def getBuffer(self):
-        "return any buffered data"
+        """
+        Return any buffered data.
+        """
         return self.buffer
 
     def dataReceived(self, data):
-        "received data from the client. either send it on, or save it"
+        """
+        Received data from the client. either send it on, or save it.
+        """
         if self.sender is not None:
             self.sender.transport.write(data)
         else:
@@ -186,7 +198,9 @@ class Receiver(Protocol):
 
 
 class ReceiverFactory(ServerFactory):
-    "Factory for the listener bit of the load balancer."
+    """
+    Factory for the listener bit of the load balancer.
+    """
     protocol = Receiver
     noisy = 0
 
@@ -198,8 +212,3 @@ class ReceiverFactory(ServerFactory):
     def setScheduler(self, scheduler):
         self.scheduler = scheduler
 
-
-def mainloop(timeout=5):
-    " run the main loop "
-    #print "running mainloop"
-    reactor.run()

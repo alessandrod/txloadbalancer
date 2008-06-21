@@ -14,10 +14,12 @@ def createScheduler(groupConfig):
     elif schedulerName == "leastconnsrr":
         return LeastConnsRRScheduler(groupConfig)
     else:
-        raise ValueError, "Unknown scheduler type `%s'"%schedulerName
+        raise ValueError, "Unknown scheduler type `%s'" % schedulerName
 
 class BaseScheduler:
+    """
 
+    """
     schedulerName = "base"
 
     def __init__(self, groupConfig):
