@@ -8,15 +8,16 @@
 import sys
 if sys.version_info < (2,2):
     class object: pass
+import time
 
-import pdconf, pdlogging
+from pydirector import pdconf, pdlogging
 
 
 class SchedulerManager(object):
     """
-        This object sits in a seperate thread and manages the scheduler.
-        It's responsible for reconfiguration, checking dead hosts to see
-        if they've come back, that sort of thing.
+    This object sits in a seperate thread and manages the scheduler.
+    It's responsible for reconfiguration, checking dead hosts to see
+    if they've come back, that sort of thing.
     """
     def __init__(self, director, sleeptime=15, checktime=120):
         self.director = director
@@ -24,7 +25,6 @@ class SchedulerManager(object):
         self.checktime = checktime
 
     def mainloop(self):
-        import time
         print "manager sleeptime is %s"%(self.sleeptime)
         while 1:
             time.sleep(self.sleeptime)
@@ -37,7 +37,6 @@ class SchedulerManager(object):
                 self.checkBadHosts(scheduler)
 
     def checkBadHosts(self, scheduler):
-        import time
         forcecheck=0
         badhosts = scheduler.badhosts
         hosts = badhosts.keys()
