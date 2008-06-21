@@ -1,7 +1,6 @@
 Duncan's TODO: API-compatible changes
 -------------------------------------
  * replace admin thread with twisted services
-   . replace stdlib HTTP server with twisted.web HTTP server
    . add basic auth to twisted web version of admin ui
    . add https support for twisted web version of admin ui
 
