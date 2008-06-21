@@ -187,9 +187,3 @@ class AdminServer(resource.Resource):
         elif name == 'addHost':
             return AddHost(self)
         return resource.Resource.getChild(self, name, request)
-
-    def render_GET(self, request):
-        """
-
-        """
-        return "base"
