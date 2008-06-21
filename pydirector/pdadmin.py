@@ -8,8 +8,11 @@
 import sys
 if sys.version_info < (2,2):
     class object: pass
+from urllib import quote
+from urllib import unquote
 import threading, BaseHTTPServer, SocketServer, urlparse, re, urllib
 import socket, time, sys, traceback, time
+from xml.dom.minidom import Document
 
 from pydirector import micropubl
 from pydirector import Version, pdlogging
@@ -18,6 +21,7 @@ from pydirector.web import css
 try:
     from M2Crypto import SSL
     from M2Crypto.SSL import ThreadingSSLServer
+    from M2Crypto import Rand
 except ImportError:
     ThreadingSSLServer = object
 
@@ -27,7 +31,6 @@ def dictify(q):
     takes string of form '?a=b&c=d&e=f'
     and returns {'a':'b', 'c':'d', 'e':'f'}
     """
-    from urllib import unquote
     out = {}
     if not q: return {}
     avs = q.split('&')
@@ -43,7 +46,6 @@ def html_quote(str):
 
 
 def get_ssl_context():
-    from M2Crypto import Rand
     Rand.load_file('randpool.dat', -1)
     ctx = init_context('sslv23', 'server.pem', 'ca.pem',
         SSL.verify_none)
@@ -98,11 +100,10 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
     published_prefix = "pdadmin_"
 
     def getUser(self, authstr):
-        from base64 import decodestring
         type,auth = authstr.split()
         if type.lower() != 'basic':
             return None
-        auth = decodestring(auth)
+        auth = auth.decode('base64')
         user,pw = auth.split(':',1)
         userObj = self.config.getUser(user)
         if not ( userObj and userObj.checkPW(pw) ):
@@ -221,7 +222,6 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
         self.footer()
 
     def pdadmin_running_xml(self, verbose=0, Access='Read'):
-        from xml.dom.minidom import Document
         self.header(html=0)
         W = self.wfile.write
         conf = self.director.conf
@@ -332,7 +332,6 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
                     W(" %s -\n"%what)
 
     def pdadmin_running(self, verbose=0, refresh=0, ignore='', resultmessage='', Access='Read'):
-        from urllib import quote
         self.header(html=1, refresh='/running?refresh=1&ignore=%s'%time.time())
         W = self.wfile.write
         W('<p><b>current config</b></p>\n')
