@@ -1,6 +1,6 @@
 from setuptools import setup
 
-from pydirector import Version
+from txlb import Version
 
 setup(
     name = "txLoadBalancer",
