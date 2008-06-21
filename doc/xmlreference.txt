@@ -41,7 +41,7 @@ A Python Director config consists of a number of XML directives.
   Attributes:
     name - name of this group. Text label, should be unique in the service.
     scheduler - name of the scheduler to use for this group. Full list in
-        doc/schedulers.txt
+                doc/schedulers.txt
   Children:
     Should contain one or more <host> nodes.
   Other notes:
@@ -72,6 +72,8 @@ A Python Director config consists of a number of XML directives.
   Child of: <pdconfig>
   Attributes:
     listen - IP address to run admin web interface on, in host:port format
+    secure - if present, this attribute will cause the admin UI to be served
+             over SSL
   Children:
     Should contain one or more <user> nodes
   Other notes:
