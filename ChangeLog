@@ -1,3 +1,84 @@
+2008-06-21 oubiwann
+
+* Grouped changes by day.
+* Removed the indents from the ChangeLog.
+* Added commit script.
+* Added an admin clean script.
+* Moved txlb.web to txlb.admin.
+* Moved the .pem file generation to the etc dir.
+* Finished ferrting out the old project name and references in all the code.
+* Incremented version number (for next release).
+* Fixed setup.py.
+* Added admin scripts for running servers during development.
+* Renamed the .tac file to accord with the project name.
+* Fixed a typo in the LICENSE.
+* File house cleaning.
+* Removed package info file.
+* Removed load profiling code.
+* Updated TODO with current status.
+* Fixed old import in setup.py.
+* Updated the version number for the txLoadBalancer release. This release breaks compatibility with PyDirector.
+* Cleaned up imports, renamed files, and removed old threading or asyncore files.
+* Removed the old scripts.
+* Updated the imports.
+* Updated the .tac file to adjust for the new location of the example config.
+* Added another example config.
+* Renamed some files and moved the example config.
+* Renamed the lib dir to txlb.
+* Adjusted setup.py in anticipation of the fork to txLoadBalancer.
+* Fixed typo in setup.py.
+* Incremented version number, updated setup.py, and updated the license.
+* Added support for basic auth to twisted-based web ui.
+* Added support for HTTPS to twisted-based web ui.
+* Cleaned up imports.
+* Added a place for setting up HTTPS.
+* Updated TODO.
+* Added support for adding hosts through the twisted admin web ui.
+* Adjusted the TODO.
+* Added support for deleting hosts.
+* Updated TODO.
+* Added rendering of stored xml config in twisted-based admin web ui.
+* Added support for render running XML config in twisted web ui.
+* Removed useless render_GET.
+* Minor formatting tweak.
+* Fixed a perma-refresh bug.
+* Fixed the request query param fetching.
+* Updated TODO.
+* Added stylesheet resource and stubbed out remaining resources.
+* Added we resources to the .tac file for rudimentary twisted admin web ui.
+* Added a tentative note about potential restructuring of listener services.
+* Moved bad host info into template.
+* Added host info to template.
+* Moved the group header html into template.
+
+2008-06-20 oubiwann
+
+* Moved header and footer html out of pdadmin and into a template module.
+* Added a stub for html templates.
+* Some import cleanups.
+* Moved scripts into bin dir.
+* Added a bin directory for scripts.
+* Removed a useless import and fixed a typo.
+* Added a note about improving the hueristics for bad hosts.
+* Added some missing imports, fixed some syntax, and added a Director instance to the .tac file.
+* Updated the architecture notes.
+* Added code to the new director.
+* Added a stub for the twisted-based director.
+* Added a manager replacement.
+* Added a stub for the twisted-based manager.
+* Added a stub for the twisted-based admin interface.
+* Added stubbed out .tac file.
+* Added notes on current architecture and planned changes.
+* Added a doc string.
+* Consolidated import statements.
+* Minor rearrangements in pdadmin.py
+* Moved CSS out of pdadmin.
+* Updated some docs.
+* Updated the TODO with a note about getting rid of XML in a later version.
+* Updated TODO.
+* Cleaned up trailing white space and tabs.
+* Added files from Anthony Baxter's 1.0.0 2004 release.
+
 2004-12-15 anthonybaxter
 
 * pydirector/pdnetwork.py: support twisted or asyncore
@@ -298,4 +379,3 @@ release_0_0_3) (utags: initial_sf_checkin): Initial SF checkin.
 * README.txt, TODO.txt, confex.xml, pdadmin.py, pdconf.py,
 pdmanager.py, pdnetwork.py, pdschedulers.py, pydir.py,
 doc/ChangeLog.preSF, doc/LICENSE.txt: Initial revision
-
