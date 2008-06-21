@@ -2,18 +2,14 @@ Duncan's TODO: API-compatible changes
 -------------------------------------
  * replace admin thread with twisted services
    . replace stdlib HTTP server with twisted.web HTTP server
- * remove all of asynccore and make this a twisted-only app
- * I don't like the default behaviour of adding bad hosts back into circulation
-   without any checks; I want to add something there...
- * maybe move the "hidden" listener initialization/creation into something
-   explicit that the .tac file does?
- * add basic auth to twisted web version of admin ui
- * add https support for twisted web version of admin ui
- * added an admin configuration option for setting the refresh rate
- * add an admin option for setting the project URL
+   . add basic auth to twisted web version of admin ui
+   . add https support for twisted web version of admin ui
 
 Duncan's TODO: break 'em changes
 --------------------------------
+ * remove all of asynccore and make this a twisted-only app
+ * add an admin configuration option for setting the refresh rate
+ * add an admin option for setting the project URL
  * reorganize and rename the modules
    . move micopublisher into something like web.api
  * rename classes
@@ -26,6 +22,10 @@ Duncan's TODO: break 'em changes
    lb manager
  * implement those as a twisted plugin
  * add an XML-RPC service instead of the custom web API
+ * maybe move the "hidden" listener initialization/creation into something
+   explicit that the .tac file does?
+ * I don't like the default behaviour of adding bad hosts back into circulation
+   without any checks; I want to add something there...
 
 Original TODO:
 --------------
