@@ -76,15 +76,16 @@ class RunningPage(BasePage):
         """
         This craziness is a modified version of the original.
         """
-        refresh = False
-        if request.args.has_key('refresh'):
-            refresh = bool(request.args['refresh'][0])
         verbose = False
         resultMessage = ''
-        content = self.getHeader(refreshURL='/running?refresh=1&ignore=%s' % time.time())
-        if refresh:
+        content = ''
+        if request.args.has_key('refresh'):
+            refresh = bool(request.args['refresh'][0])
+            url = '/running?refresh=1&ignore=%s' % time.time()
+            content += self.getHeader(refreshURL=url)
             stopStart = template.stopRefresh % time.time()
         else:
+            content += self.getHeader()
             stopStart = template.startRefresh % time.time()
         content += template.refreshButtons % (
             time.ctime(time.time()), time.time(), stopStart)
