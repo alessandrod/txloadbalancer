@@ -105,3 +105,21 @@ hostInfo = """
     </div></td>
     </tr>
     """
+
+# takes a CSS class
+badHostGroup = """
+    <tr class="%s"><th colspan="2">disabled hosts</th>
+    <th>why</th><th>when</th></tr>
+    """
+
+# takes a CSS class, hostname, host, and error message
+badHostInfo = """
+    <tr class="%s"><td>
+    %s</td><td><tt>%s</tt></td>
+    <td>%s</td><td>--</td>
+    </tr>
+    """
+
+serviceClose = """
+    </table>
+    """

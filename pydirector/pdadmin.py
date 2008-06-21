@@ -369,16 +369,12 @@ class AdminClass(BaseHTTPServer.BaseHTTPRequestHandler,
                         urllib.quote(group.name), urllib.quote(h)))
                 bad = stats['bad']
                 if bad:
-                    W('''<tr class="%s"><th colspan="2">disabled hosts</th>
-                         <th>why</th><th>when</th></tr>\n'''%klass)
+                    W(template.badHostGroup % klass)
                 for k in bad.keys():
-                    host = '%s:%s'%k
-                    W('<tr class="%s"><td>'%klass)
-                    W("%s</td><td><tt>%s</tt></td>\n"%(hdict[host], host)) # XXXX
-                    when,what = bad[k]
-                    W("<td>%s</td><td>--</td>"%what)
-                    W('</tr>')
-            W("</table>")
+                    host = '%s:%s' % k
+                    when, what = bad[k]
+                    W(template.badHostInfo % (klass, hdict[host], host, what))
+            W(template.serviceClose)
         self.footer(resultmessage)
 
     def pdadmin_addHost(self, service, group, name, ip, Access='Write'):
