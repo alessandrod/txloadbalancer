@@ -9,7 +9,7 @@
       <host name="server5" ip="lorien:7005" />
       <host name="server21" ip="lorien:7021" />
     </group>
-    <enable group="twisted-lorien"/>
+    <enable group="servers"/>
   </service>
   <service name="twisted-fangorn">
     <listen ip="0.0.0.0:6080"/>
@@ -17,7 +17,7 @@
       <host name="server1" ip="fangorn:7001" />
       <host name="server2" ip="fangorn:7002" />
     </group>
-    <enable group="twisted-fangorn"/>
+    <enable group="servers"/>
   </service>
   <service name="apache">
     <listen ip="0.0.0.0:9080"/>
@@ -25,7 +25,7 @@
       <host name="server1" ip="rivendel:80" />
       <host name="server2" ip="lorien:80" />
     </group>
-    <enable group="apache"/>
+    <enable group="servers"/>
   </service>
   <admin listen="localhost:7000" secure="secure" refresh="10">
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
