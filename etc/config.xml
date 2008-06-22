@@ -1,20 +1,23 @@
 <pdconfig>
-  <service name="web1">
+  <service name="twisted">
     <listen ip="0.0.0.0:8080"/>
     <group name="servers" scheduler="roundrobin">
-      <host name="server1" ip="127.0.0.1:7001" />
-      <host name="server2" ip="127.0.0.1:7002" />
-      <host name="server3" ip="127.0.0.1:7003" />
-      <host name="server4" ip="127.0.0.1:7004" />
+      <host name="server1" ip="rivendel:7001" />
+      <host name="server2" ip="rivendel:7002" />
+      <host name="server3" ip="rivendel:7003" />
+      <host name="server4" ip="rivendel:7004" />
+      <host name="server5" ip="lorien:7001" />
+      <host name="server6" ip="lorien:7002" />
+      <host name="server7" ip="lorien:7003" />
+      <host name="server8" ip="lorien:7004" />
     </group>
     <enable group="servers"/>
   </service>
-  <service name="web2">
+  <service name="apache">
     <listen ip="0.0.0.0:9080"/>
     <group name="servers" scheduler="roundrobin">
-      <host name="server1" ip="127.0.0.1:7001" />
-      <host name="server2" ip="127.0.0.1:7002" />
-      <host name="server3" ip="127.0.0.1:7003" />
+      <host name="server1" ip="rivendel:80" />
+      <host name="server2" ip="lorien:80" />
     </group>
     <enable group="servers"/>
   </service>
