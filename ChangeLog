@@ -1,5 +1,6 @@
 2008.06.21 oubiwann
 
+* Updated TODO.
 * Updated admin.poges to use the new refresh rate config option.
 * Added a configure option for the refresh rate.
 * Updated the docs with info on the new "refresh" config option.
