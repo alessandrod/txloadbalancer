@@ -1,5 +1,7 @@
 Duncan's TODO: break 'em changes
 --------------------------------
+ * add an architecture diagram for the classes in the loaders module that
+   summarizes the releationships of the classes in that model
  * examine the benefits of schedulers having write control over host data
  * examine breaking out listeners and managers across different processes/hosts
  * [maybe] move the "hidden" listener initialization/creation into something
@@ -24,6 +26,8 @@ Duncan's TODO: break 'em changes
  * rename conf module to config.
  * rename loaders module to proxy
  * rename loaders.Listener to proxy.Proxy
+ * rename main.Director to manager.ProxyManager
+ * rename compareconf to diff
 
 
 Lab Plan 1
