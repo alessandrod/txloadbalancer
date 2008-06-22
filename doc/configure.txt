@@ -75,6 +75,12 @@ Here is an example admin section:
   </admin>
 
 
+Manager Section
+---------------
+The manager section provides configuration information for txLoadBalancers's
+regularly scheduled tasks.
+
+
 Log Section
 -----------
 The final section in the config is also optional, and specifies a log

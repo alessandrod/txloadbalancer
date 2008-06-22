@@ -93,7 +93,7 @@ A txLoadBalancer config consists of a number of XML directives.
   Other notes:
     Source users from somewhere else?
 
-<logging> - logging for python director
+<logging> - logging for txLoadBalancer
   Child of: <pdconfig>
   Attributes:
     file - log file path
@@ -102,3 +102,12 @@ A txLoadBalancer config consists of a number of XML directives.
   Other notes:
     None
 
+<manager> - configuration options for various tasks that txLoadBalanver
+            manages, such as bad host checks
+  Child of: <pdconfig>
+  Attributes:
+    hostCheckInterval - the time in seconds between re-checkign bad hosts
+  Children:
+    None
+  Other notes:
+    None

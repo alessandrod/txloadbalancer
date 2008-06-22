@@ -32,8 +32,7 @@ else:
 admin.setServiceParent(services)
 
 # set up the manager timer service
-# XXX this interval needs to be in the configuration
-checkInterval = 120
+checkInterval = director.conf.manager.hostCheckInterval
 checker = internet.TimerService(checkInterval, checkBadHosts, director)
 checker.setServiceParent(services)
 

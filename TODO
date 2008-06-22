@@ -1,5 +1,9 @@
 Duncan's TODO: break 'em changes
 --------------------------------
+ * add support for CDATA in the XML config file
+ * clean up the names in conf.PDConfig
+ * rename PDConfig and PDAdmin
+ * add the "bad host" check interval to the configuration
  * examine the benefits of schedulers having write control over host data
  * examine breaking out listeners and managers across different processes/hosts
  * [maybe] move the "hidden" listener initialization/creation into something

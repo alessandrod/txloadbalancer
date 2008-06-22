@@ -5,6 +5,13 @@ from xml.dom import minidom
 
 from txlb import logging
 
+legalConfigSections = [
+    u'service',
+    u'admin',
+    u'logging',
+    u'manager',
+    ]
+
 def getDefaultArgs(methodObj):
     arglist, vaarg, kwarg, defargs = inspect.getargspec(methodObj.im_func)
     arglist.reverse()
@@ -65,7 +72,6 @@ class PDGroup(object):
         del self.hosts[name]
 
 class PDService(object):
-    __slots__ = [ 'listen', 'groups', 'enabledgroup', 'name' ]
     def __init__(self, name):
         self.name = name
         self.groups = {}
@@ -133,6 +139,12 @@ class PDAdminUser(object):
         else:
             return 0
 
+class ManagerConfig(object):
+    """
+
+    """
+    def __init__(self):
+        self.hostCheckInterval = 120
 
 class PDAdmin(object):
     def __init__(self):
@@ -172,20 +184,20 @@ class PDAdmin(object):
 
 
 class PDConfig(object):
-    __slots__ = [ 'services', 'admin', 'dom' ]
-
     def __init__(self, filename=None, xml=None):
         self.services = {}
         self.admin = None
+        self.manager = None
         dom = self._loadDOM(filename, xml)
         if dom.nodeName != 'pdconfig':
-            raise ConfigError, "expected top level 'pdconfig', got '%s'"%(
-                                                                dom.nodeName)
+            msg = "expected top level 'pdconfig', got '%s'" % (dom.nodeName)
+            raise ConfigError, msg
         for item in dom.childNodes:
-            if item.nodeName in ("#text", "#comment"): continue
-            if item.nodeName not in ( u'service', u'admin', u'logging' ):
-                raise ConfigError, \
-                    "expected 'service' or 'admin', got '%s'"%item.nodeName
+            if item.nodeName in ("#text", "#comment"):
+                continue
+            if item.nodeName not in legalConfigSections:
+                msg = "Got '%s', not legal section name."
+                raise ConfigError, msg
             if item.nodeName == u'service':
                 self.loadService(item)
             elif item.nodeName == u'admin':
@@ -193,8 +205,12 @@ class PDConfig(object):
                     self.loadAdmin(item)
                 else:
                     raise ConfigError, "only one 'admin' block allowed"
+            elif item.nodeName == u'manager':
+                self.loadManager(item)
             elif item.nodeName == u'logging':
                 pdlogging.initlog(item.getAttribute('file'))
+        if self.manager == None:
+            self.manager = ManagerConfig()
 
     def _loadDOM(self, filename, xml):
         if filename is not None:
@@ -218,6 +234,13 @@ class PDConfig(object):
             else:
                 raise ConfigError, "only expect to see users in admin block"
         self.admin = adminServer
+
+    def loadManager(self, manager):
+        manageCfg = ManagerConfig()
+        if manageCfg.hasAttribute('hostCheckInterval'):
+            manageCfg.hostCheckInterval = manageCfg.getAttribute(
+                'hostCheckInterval')
+        self.manager = manageCfg
 
     def getService(self, serviceName):
         return self.services.get(serviceName)
