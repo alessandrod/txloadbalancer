@@ -6,6 +6,8 @@
 * Removed completed tasks from the TODO.
 * Added support for a manager section and updated the corresponding docs.
 * Removed useless chunk of code in manager.checkBadHosts.
+* Added support for CDATA and <note> sections of the XML config file.
+* Added documentation on the legal types of comments in the XML config file.
 
 2008.06.21 oubiwann
 

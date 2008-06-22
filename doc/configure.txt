@@ -87,3 +87,24 @@ The final section in the config is also optional, and specifies a log
 file target. If this section is not specified, the python director will
 write log entries to stderr.
 
+
+Comment Sections
+----------------
+You may also add comments, notes, and cdata to your config files:
+<!--
+  Here's my comment
+/-->
+
+<![CDATA[
+  Here's another comment
+]]>
+
+<note>
+  Here's a note that I have
+</note>
+
+Additionally, you may add text to any node; it will be ignored:
+
+ <admin listen="localhost:7001">
+    This text will be ignored.
+ </admin>

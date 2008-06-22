@@ -12,6 +12,13 @@ legalConfigSections = [
     u'manager',
     ]
 
+legalCommentSections = [
+    'note',
+    '#text',
+    '#comment',
+    '#cdata-section',
+    ]
+
 def getDefaultArgs(methodObj):
     arglist, vaarg, kwarg, defargs = inspect.getargspec(methodObj.im_func)
     arglist.reverse()
@@ -84,7 +91,8 @@ class PDService(object):
         newgroup.scheduler = groupobj.getAttribute('scheduler')
         cc = 0
         for host in groupobj.childNodes:
-            if host.nodeName in ("#text", "#comment"): continue
+            if host.nodeName in legalCommentSections:
+                continue
             if host.nodeName != u'host':
                 raise ConfigError, \
                     "expected 'host', got '%s'"%host.nodeName
@@ -193,10 +201,10 @@ class PDConfig(object):
             msg = "expected top level 'pdconfig', got '%s'" % (dom.nodeName)
             raise ConfigError, msg
         for item in dom.childNodes:
-            if item.nodeName in ("#text", "#comment"):
+            if item.nodeName in legalCommentSections:
                 continue
             if item.nodeName not in legalConfigSections:
-                msg = "Got '%s', not legal section name."
+                msg = "Got '%s', not legal section name." % item.nodeName
                 raise ConfigError, msg
             if item.nodeName == u'service':
                 self.loadService(item)
@@ -228,7 +236,8 @@ class PDConfig(object):
         if admin.hasAttribute('refresh'):
             adminServer.refresh = int(admin.getAttribute('refresh'))
         for user in admin.childNodes:
-            if user.nodeName in ("#text", "#comment"): continue
+            if user.nodeName in legalCommentSections:
+                continue
             if user.nodeName == u'user':
                 adminServer.loadUser(user)
             else:
@@ -255,7 +264,8 @@ class PDConfig(object):
         serviceName = service.getAttribute('name')
         newService = PDService(serviceName)
         for c in service.childNodes:
-            if c.nodeName in ("#text", "#comment"): continue
+            if c.nodeName in legalCommentSections:
+                continue
             if c.nodeName == u'listen':
                 newService.listen.append(c.getAttribute('ip'))
             elif c.nodeName == u'group':

@@ -7,21 +7,6 @@
       <host name="server3" ip="lorien:7003" />
       <host name="server4" ip="lorien:7004" />
       <host name="server5" ip="lorien:7005" />
-      <host name="server6" ip="lorien:7006" />
-      <host name="server7" ip="lorien:7007" />
-      <host name="server8" ip="lorien:7008" />
-      <host name="server9" ip="lorien:7009" />
-      <host name="server10" ip="lorien:7010" />
-      <host name="server11" ip="lorien:7011" />
-      <host name="server12" ip="lorien:7012" />
-      <host name="server13" ip="lorien:7013" />
-      <host name="server14" ip="lorien:7014" />
-      <host name="server15" ip="lorien:7015" />
-      <host name="server16" ip="lorien:7016" />
-      <host name="server17" ip="lorien:7017" />
-      <host name="server18" ip="lorien:7018" />
-      <host name="server19" ip="lorien:7019" />
-      <host name="server20" ip="lorien:7020" />
       <host name="server21" ip="lorien:7021" />
     </group>
     <enable group="servers"/>
