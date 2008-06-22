@@ -47,8 +47,10 @@ web).
 * Removed load profiling code.
 * Updated TODO with current status.
 * Fixed old import in setup.py.
-* Updated the version number for the txLoadBalancer release. This release breaks compatibility with PyDirector.
-* Cleaned up imports, renamed files, and removed old threading or asyncore files.
+* Updated the version number for the txLoadBalancer release. This release
+breaks compatibility with PyDirector.
+* Cleaned up imports, renamed files, and removed old threading or asyncore
+files.
 * Removed the old scripts.
 * Updated the imports.
 * Updated the .tac file to adjust for the new location of the example config.
@@ -90,7 +92,8 @@ web).
 * Added a bin directory for scripts.
 * Removed a useless import and fixed a typo.
 * Added a note about improving the hueristics for bad hosts.
-* Added some missing imports, fixed some syntax, and added a Director instance to the .tac file.
+* Added some missing imports, fixed some syntax, and added a Director instance
+to the .tac file.
 * Updated the architecture notes.
 * Added code to the new director.
 * Added a stub for the twisted-based director.
