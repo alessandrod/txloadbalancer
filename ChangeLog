@@ -2,6 +2,8 @@
 
 * Added a script for getting stress test stats using the siege tool.
 * Added some initial stress test data.
+* Updatd TODO with a tentative plan for a benchmark lab.
+* Removed completed tasks from the TODO.
 
 2008.06.21 oubiwann
 

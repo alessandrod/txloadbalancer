@@ -17,11 +17,19 @@ Duncan's TODO: break 'em changes
    lb manager
  * implement heartbeat/HA features as a twisted plugin
  * add an XML-RPC service instead of the custom web API
-
  * sort service groups in admin UI by name
  * [maybe] make the "top" link point to a list of service groups, linked to
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
+
+Lab Plan 1
+----------
+Dell Laptop: txlb.tac
+Gateway Laptop: siege runner
+PowerBook Al: 1 twistd
+PowerBook Ti: 1 twistd
+iMac: 2 twistd
+Netra: 4 twistd
 
 Original TODO:
 --------------
@@ -37,8 +45,6 @@ Things that could be added:
     Figure out a way to restart/upgrade pydir. Idea: close down listener, start
       new code immediately. Let old connections on old pydir finish (run to
       completion) before exiting.
-    Replace crappy manager thread and admin thread with twisted-based
-      implementations.
 
     Caching of DNS lookups
     dump out curBadHosts/histBadHosts/open
@@ -88,8 +94,6 @@ expires on the CSS.
 
 seriously refactor the CSS and also the pdadmin_running HTML. Nasty nasty.
 
-pid file?
-
 specify users not in the config.xml file, but somewhere else.
 
 what does 'host unknown' raise under 2.1?
@@ -98,9 +102,6 @@ Clean up all the logging. Logging now goes to a single place, but in
 inconsistent format. Still, it's better than it was.
 
 Track the count of faults.
-
-If M2Crypto is installed, allow a https-based admin interface. Sort-of
-there now, use the undocumented 'secure="yes"' flag to the admin directive.
 
 Additional idea: connection count scheduler. could be used to track
 licensing of a service, or limit it.
