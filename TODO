@@ -1,7 +1,6 @@
 Duncan's TODO: break 'em changes
 --------------------------------
  * add an admin configuration option for setting the refresh rate
- * move micopublisher into something like admin.api
  * isolate all of admin functionality in its own space (so that we can
    replace it with Divmod Mantissa)
  * write a manager implementation that can run as a twisted plugin

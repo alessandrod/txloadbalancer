@@ -74,6 +74,7 @@ A txLoadBalancer config consists of a number of XML directives.
     listen - IP address to run admin web interface on, in host:port format
     secure - if present, this attribute will cause the admin UI to be served
              over SSL
+    refresh - the rate at which the admin "running" page refreshes
   Children:
     Should contain one or more <user> nodes
   Other notes:

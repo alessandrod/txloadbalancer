@@ -1,5 +1,6 @@
 2008.06.21 oubiwann
 
+* Updated the docs with info on the new "refresh" config option.
 * Updated TODO.
 * Cleaned up a listener import.
 * Cleaned up formatting in listener.
