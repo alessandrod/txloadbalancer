@@ -14,6 +14,7 @@
 * Removed the PyDirector string from the .tac file.
 * Updated TODO.
 * Updated the test plan.
+* Updated configs and admin scripts for running additional tests.
 
 2008.06.21 oubiwann
 
