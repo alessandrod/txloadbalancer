@@ -36,8 +36,10 @@ Dell Laptop: txlb.tac
 Gateway Laptop: siege runner
 PowerBook Al: 1 twistd
 PowerBook Ti: 1 twistd
+Gateway tower1: 1 twistd
+Gateway tower2: 1 twistd
 iMac: 2 twistd
-Netra: 4 twistd
+Netra: 2 twistd
 
 Original TODO:
 --------------
