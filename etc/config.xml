@@ -18,7 +18,7 @@
     </group>
     <enable group="servers"/>
   </service>
-  <admin listen="localhost:7000" secure="secure">
+  <admin listen="localhost:7000" secure="secure" refresh="10">
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
 </pdconfig>

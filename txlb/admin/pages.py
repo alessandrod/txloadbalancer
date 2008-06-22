@@ -45,10 +45,8 @@ class BasePage(resource.Resource):
         """
         refresh = ''
         if refreshURL:
-            # XXX add an admin configuration option for setting the refresh
-            # rate
-            refreshRate = 30
-            refresh = template.refresh % (refreshRate, refreshURL)
+            refresh = template.refresh % (
+                self.parent.director.conf.admin.refresh, refreshURL)
         return template.header % (
             txlb.name, refresh, txlb.name, self.parent.serverVersion,
             socket.gethostname())

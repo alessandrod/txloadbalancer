@@ -135,10 +135,10 @@ class PDAdminUser(object):
 
 
 class PDAdmin(object):
-    __slots__ = [ 'listen', 'userdb', 'secure' ]
     def __init__(self):
         self.listen = None
-        self.secure = None
+        self.secure = False
+        self.refresh = 30
         self.userdb = {}
 
     def addUser(self, name, password, access):
@@ -208,7 +208,9 @@ class PDConfig(object):
         adminServer = PDAdmin()
         adminServer.listen = splitHostPort(admin.getAttribute('listen'))
         if admin.hasAttribute('secure'):
-            adminServer.secure = admin.getAttribute('secure')
+            adminServer.secure = True
+        if admin.hasAttribute('refresh'):
+            adminServer.refresh = int(admin.getAttribute('refresh'))
         for user in admin.childNodes:
             if user.nodeName in ("#text", "#comment"): continue
             if user.nodeName == u'user':
