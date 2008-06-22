@@ -5,6 +5,7 @@
 * Updatd TODO with a tentative plan for a benchmark lab.
 * Removed completed tasks from the TODO.
 * Added support for a manager section and updated the corresponding docs.
+* Removed useless chunk of code in manager.checkBadHosts.
 
 2008.06.21 oubiwann
 

@@ -12,10 +12,6 @@ def checkBadHosts(director):
         # we only need to check the first listener.
         scheduler = listeners[0].scheduler
         badHosts = scheduler.badhosts
-        if not len(scheduler.hosts):
-            # All servers are down! Go into a more aggressive mode for
-            # checking.
-            forceCheck = True
         for bh in badHosts.keys():
             when, what = badHosts[bh]
             logging.log("re-adding %s automatically\n"%str(bh),
