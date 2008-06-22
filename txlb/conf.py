@@ -45,7 +45,7 @@ class ServiceError(ConfigError):
 class GroupError(ServiceError):
     pass
 
-class PDHost(object):
+class HostConfig(object):
     __slots__ = [ 'name', 'ip' ]
 
     def __init__(self, name, ip):
@@ -55,7 +55,7 @@ class PDHost(object):
         else:
             self.ip = ip
 
-class PDGroup(object):
+class GroupConfig(object):
     __slots__ = [ 'name', 'scheduler', 'hosts' ]
 
     def __init__(self, name):
@@ -73,12 +73,12 @@ class PDGroup(object):
         return self.hosts.values()
 
     def addHost(self, name, ip):
-        self.hosts[name] = PDHost(name, ip)
+        self.hosts[name] = HostConfig(name, ip)
 
     def delHost(self, name):
         del self.hosts[name]
 
-class PDService(object):
+class ServiceConfig(object):
     def __init__(self, name):
         self.name = name
         self.groups = {}
@@ -87,7 +87,7 @@ class PDService(object):
 
     def loadGroup(self, groupobj):
         groupName = groupobj.getAttribute('name')
-        newgroup = PDGroup(groupName)
+        newgroup = GroupConfig(groupName)
         newgroup.scheduler = groupobj.getAttribute('scheduler')
         cc = 0
         for host in groupobj.childNodes:
@@ -128,7 +128,7 @@ class PDService(object):
             if not group.hosts: raise GroupError, \
                     "no hosts set for %s"%group.name
 
-class PDAdminUser(object):
+class AdminUserConfig(object):
     __slots__ = [ 'name', 'password', 'access' ]
 
     def checkPW(self, password):
@@ -154,7 +154,7 @@ class ManagerConfig(object):
     def __init__(self):
         self.hostCheckInterval = 120
 
-class PDAdmin(object):
+class AdminConfig(object):
     def __init__(self):
         self.listen = None
         self.secure = False
@@ -162,7 +162,7 @@ class PDAdmin(object):
         self.userdb = {}
 
     def addUser(self, name, password, access):
-        u = PDAdminUser()
+        u = AdminUserConfig()
         u.name = name
         u.password = password
         u.access = access
@@ -191,7 +191,7 @@ class PDAdmin(object):
         return self.userdb.keys()
 
 
-class PDConfig(object):
+class Config(object):
     def __init__(self, filename=None, xml=None):
         self.services = {}
         self.admin = None
@@ -229,20 +229,20 @@ class PDConfig(object):
         return self.dom.childNodes[0]
 
     def loadAdmin(self, admin):
-        adminServer = PDAdmin()
-        adminServer.listen = splitHostPort(admin.getAttribute('listen'))
+        adminCfg = AdminConfig()
+        adminCfg.listen = splitHostPort(admin.getAttribute('listen'))
         if admin.hasAttribute('secure'):
-            adminServer.secure = True
+            adminCfg.secure = True
         if admin.hasAttribute('refresh'):
-            adminServer.refresh = int(admin.getAttribute('refresh'))
+            adminCfg.refresh = int(admin.getAttribute('refresh'))
         for user in admin.childNodes:
             if user.nodeName in legalCommentSections:
                 continue
             if user.nodeName == u'user':
-                adminServer.loadUser(user)
+                adminCfg.loadUser(user)
             else:
                 raise ConfigError, "only expect to see users in admin block"
-        self.admin = adminServer
+        self.admin = adminCfg
 
     def loadManager(self, manager):
         manageCfg = ManagerConfig()
@@ -262,22 +262,20 @@ class PDConfig(object):
 
     def loadService(self, service):
         serviceName = service.getAttribute('name')
-        newService = PDService(serviceName)
+        serviceCfg = ServiceConfig(serviceName)
         for c in service.childNodes:
             if c.nodeName in legalCommentSections:
                 continue
             if c.nodeName == u'listen':
-                newService.listen.append(c.getAttribute('ip'))
+                serviceCfg.listen.append(c.getAttribute('ip'))
             elif c.nodeName == u'group':
-                newService.loadGroup(c)
+                serviceCfg.loadGroup(c)
             elif c.nodeName == u'enable':
-                newService.enabledgroup = c.getAttribute('group')
+                serviceCfg.enabledgroup = c.getAttribute('group')
             elif c.nodeName == "#comment":
                 continue
             else:
                 raise ConfigError, "unknown node '%s'"%c.nodeName
-        newService.checkSanity()
-        self.services[serviceName] = newService
+        serviceCfg.checkSanity()
+        self.services[serviceName] = serviceCfg
 
-if __name__ == "__main__":
-    PDConfig(sys.argv[1])

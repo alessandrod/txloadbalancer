@@ -8,6 +8,8 @@
 * Removed useless chunk of code in manager.checkBadHosts.
 * Added support for CDATA and <note> sections of the XML config file.
 * Added documentation on the legal types of comments in the XML config file.
+* Cleaned up the configuration class names.
+* Named the configuration variables more consistently.
 
 2008.06.21 oubiwann
 

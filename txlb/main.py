@@ -10,7 +10,7 @@ class Director(object):
     def __init__(self, config):
         self.listeners = {}
         self.schedulers = {}
-        self.conf = conf.PDConfig(config)
+        self.conf = conf.Config(config)
         self.createListeners()
 
     def getScheduler(self, serviceName, groupName):

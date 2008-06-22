@@ -1,10 +1,10 @@
 class DiffError(Exception): pass
 
 def diffXML(oldxml, newxml):
-    from pydirector.pdconf import PDConfig
+    from pydirector.pdconf import Config
     ret = []
-    oldconf = PDConfig(xml=oldxml)
-    newconf = PDConfig(xml=newxml)
+    oldconf = Config(xml=oldxml)
+    newconf = Config(xml=newxml)
     ret.extend( compareServices(oldconf, newconf) )
     ret.extend( compareAdmin(oldconf, newconf) )
     ret.extend( compareLogging(oldconf, newconf) )
