@@ -11,6 +11,7 @@
 * Cleaned up the configuration class names.
 * Named the configuration variables more consistently.
 * Updated TODO.
+* Removed the PyDirector string from the .tac file.
 
 2008.06.21 oubiwann
 

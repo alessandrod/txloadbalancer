@@ -6,6 +6,7 @@ from twisted.application import service
 from twisted.application import internet
 from twisted.application import strports
 
+from txlb import name
 from txlb import main
 from txlb import util
 from txlb.admin import pages
@@ -13,7 +14,7 @@ from txlb.manager import checkBadHosts
 
 resource.setrlimit(resource.RLIMIT_NOFILE, (1024, 1024))
 
-application = service.Application('PyDirector')
+application = service.Application(name)
 services = service.IServiceCollection(application)
 
 # set up the director
