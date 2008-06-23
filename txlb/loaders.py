@@ -55,7 +55,7 @@ class Sender(Protocol):
         """
         if self.receiver is not None:
             if reason.type is error.ConnectionDone:
-                return
+                pass
             elif reason.type is error.ConnectionLost:
                 pass
             else:

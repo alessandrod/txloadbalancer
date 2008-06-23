@@ -28,6 +28,9 @@ Reid.
 * Added the Apple Calendar Server changes from David Reid to the Director.
 * Updated the Listener and Directory with additional Apple Calendar Server
 changes from David Reid.
+* Added Sender fix from David Reid: "Make sure that when the server closes the
+connection cleanly we close the connection with the client. This can cause
+clients to hang and the loadbalancer to run out of filedescriptors."
 
 2008.06.21 oubiwann
 
