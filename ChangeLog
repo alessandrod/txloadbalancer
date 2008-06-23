@@ -26,6 +26,8 @@ Reid.
 (Calendar Server) by David Reid.
 * Updated the architecture diagram with the control/socket stuff.
 * Added the Apple Calendar Server changes from David Reid to the Director.
+* Updated the Listener and Directory with additional Apple Calendar Server
+changes from David Reid.
 
 2008.06.21 oubiwann
 

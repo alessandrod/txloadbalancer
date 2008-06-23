@@ -20,10 +20,12 @@ class Listener:
     attribute .listening_address: read - a tuple of (host,port)
     """
 
-    def __init__(self, name, (bindhost, bindport), scheduler):
+    def __init__(self, name, (bindhost, bindport), scheduler, director):
         self.name = name
         self.listening_address = (bindhost, bindport)
-        self.rfactory = ReceiverFactory((bindhost,bindport), scheduler)
+        self.director = director
+        self.rfactory = ReceiverFactory(
+            (bindhost,bindport), scheduler, self.director))
         self.setScheduler(scheduler)
         # XXX I don't like this here... I want to put the code that controls
         # this in the .tac file
@@ -73,6 +75,12 @@ class Sender(Protocol):
         We've connected to the destination server. tell the other end
         it's ok to send any buffered data from the client.
         """
+        #XXX: OMG THIS IS HORRIBLE
+        inSrc = self.receiver.transport.getPeer()
+        outSrc = self.transport.getHost()
+        self.receiver.factory.director.setClientAddress(
+            (outSrc.host, outSrc.port),
+            (inSrc.host, inSrc.port))
         #print "client connection",self.factory
         if self.receiver.receiverOk:
             self.receiver.setSender(self)
@@ -206,10 +214,11 @@ class ReceiverFactory(ServerFactory):
     protocol = Receiver
     noisy = 0
 
-    def __init__(self, (bindhost, bindport), scheduler):
+    def __init__(self, (bindhost, bindport), scheduler, director):
         self.bindhost = bindhost
         self.bindport = bindport
         self.scheduler = scheduler
+        self.director = director
 
     def setScheduler(self, scheduler):
         self.scheduler = scheduler
