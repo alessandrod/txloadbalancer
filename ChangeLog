@@ -18,6 +18,7 @@
 * Fixed error in config.
 * Updated siege runner admin script.
 * Added stats for testing on a Netra 240.
+* Added stats for testing with 4 web daemons on a Netra.
 
 2008.06.21 oubiwann
 
