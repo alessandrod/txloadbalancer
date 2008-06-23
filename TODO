@@ -34,9 +34,6 @@ Duncan's TODO: break 'em changes
  * [maybe] make the "top" link point to a list of service groups, linked to
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
- * provide an explicit means of setting up twisted services so that if people
-   aren't using a .tac file, they don't have to mangle txLoadBalancer code,
-   they just need to import the setup functions in their scripts.
 
 
 Lab Plan 1

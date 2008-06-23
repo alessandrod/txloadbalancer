@@ -20,6 +20,9 @@ defined, with the required fields. For an example, be sure to see
 ./etc/config.xml. For more details, please see the configuration information in
 the ./doc directory.
 
+If you are creating your own script and don't want to use txlb.tac, you can
+import the application setup functions in txlb.application.
+
 ----------------------------------------------------------------------
 
 Features:

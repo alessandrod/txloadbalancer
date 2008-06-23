@@ -24,6 +24,10 @@ ahead by a minor versio number).
 * Cleaned up docstrings in schedulers.py.
 * Added missing text to scenarios.txt.
 * Added an application module and moved most of the .tac file contents there.
+* Provided an explicit means of setting up twisted services in txlb.application
+so that if people aren't using a .tac file, they don't have to mangle
+txLoadBalancer code, they just need to import the setup functions in their
+scripts.
 
 2008.06.22 oubiwann
 

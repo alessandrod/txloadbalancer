@@ -18,7 +18,6 @@ class Listener:
     attribute .scheduler: read/write - a PDScheduler
     attribute .listening_address: read - a tuple of (host,port)
     """
-
     def __init__(self, name, (bindhost, bindport), scheduler, director):
         self.name = name
         self.listening_address = (bindhost, bindport)
@@ -27,7 +26,7 @@ class Listener:
             (bindhost,bindport), scheduler, self.director)
         self.setScheduler(scheduler)
         # XXX I don't like this here... I want to put the code that controls
-        # this in the .tac file
+        # network connections in application code
         reactor.listenTCP(bindport, self.rfactory, interface=bindhost)
 
     def setScheduler(self, scheduler):
