@@ -22,6 +22,8 @@
 * Added more stats as well as images for select stats.
 * Added the control protocol classes from Apple (Calendar Server) by David
 Reid.
+* Added the configuration options for the control/socket stuff from Apple
+(Calendar Server) by David Reid.
 
 2008.06.21 oubiwann
 

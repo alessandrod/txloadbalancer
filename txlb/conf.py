@@ -10,6 +10,7 @@ legalConfigSections = [
     u'admin',
     u'logging',
     u'manager',
+    u'control',
     ]
 
 legalCommentSections = [
@@ -196,6 +197,8 @@ class Config(object):
         self.services = {}
         self.admin = None
         self.manager = None
+        self.dom = None
+        self.socket = None
         dom = self._loadDOM(filename, xml)
         if dom.nodeName != 'pdconfig':
             msg = "expected top level 'pdconfig', got '%s'" % (dom.nodeName)
@@ -217,6 +220,8 @@ class Config(object):
                 self.loadManager(item)
             elif item.nodeName == u'logging':
                 pdlogging.initlog(item.getAttribute('file'))
+            elif item.nodeName == u'control':
+                self.socket = item.getAttribute('socket')
         if self.manager == None:
             self.manager = ManagerConfig()
 
