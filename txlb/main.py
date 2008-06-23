@@ -1,3 +1,6 @@
+from twisted.protocols import amp
+from twisted.internet import protocol
+
 from txlb import conf
 from txlb import loaders
 from txlb import schedulers
@@ -51,3 +54,37 @@ class Director(object):
         scheduler = self.getScheduler(serviceName, eg.name)
         for listener in self.listeners[serviceName]:
             listener.setScheduler(scheduler)
+
+class UnknownPortError(Exception):
+    pass
+
+
+class GetClientAddress(amp.Command):
+    arguments = [('host', amp.String()),
+                 ('port', amp.Integer())]
+
+    response = [('host', amp.String()),
+                ('port', amp.Integer())]
+
+    errors = {UnknownPortError: 'UNKNOWN_PORT'}
+
+
+class ControlProtocol(amp.AMP):
+    def __init__(self, director):
+        self.director = director
+
+    def getClientAddress(self, host, port):
+        host, port = self.director.getClientAddress(host, port)
+        if (host, port) == (None, None):
+            raise UnknownPortError()
+
+        return {'host': host, 'port': port}
+    GetClientAddress.responder(getClientAddress)
+
+
+class ControlFactory(protocol.ServerFactory):
+    def __init__(self, director):
+        self.director = director
+
+    def buildProtocol(self, addr):
+        return PDControlProtocol(self.director)
