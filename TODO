@@ -4,6 +4,11 @@ Duncan's TODO: break 'em changes
    summarizes the releationships of the classes in that model
  * examine the benefits of schedulers having write control over host data
  * examine breaking out listeners and managers across different processes/hosts
+   . if a Twisted service is to be loadbalanced how should that happen?
+   . if we are running a manger daemon for twisted services that are configured
+     to be loadbalanced, how should that happen?
+   . what about all of the services potentially being equal? any can be a
+     manager, any can be balanced via another services proxy manager
  * [maybe] move the "hidden" listener initialization/creation into something
    explicit that the .tac file does
    . possibly iterate through the director's listeners from the .tac file or a
