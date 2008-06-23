@@ -25,7 +25,7 @@ class Listener:
         self.listening_address = (bindhost, bindport)
         self.director = director
         self.rfactory = ReceiverFactory(
-            (bindhost,bindport), scheduler, self.director))
+            (bindhost,bindport), scheduler, self.director)
         self.setScheduler(scheduler)
         # XXX I don't like this here... I want to put the code that controls
         # this in the .tac file

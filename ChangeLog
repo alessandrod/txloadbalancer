@@ -33,6 +33,9 @@ connection cleanly we close the connection with the client. This can cause
 clients to hang and the loadbalancer to run out of filedescriptors."
 * Added missing change from Apple: updated the Director with the changed
 signature for the Listener.
+* Fixed typo.
+* Updated the driector's socket creation logic to accord with the configuration
+class's implementation in txLoadBalancer (vs. the Apple implementation).
 
 2008.06.21 oubiwann
 

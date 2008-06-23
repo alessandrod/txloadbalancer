@@ -53,7 +53,7 @@ class Director(object):
         self._connections = {}
         self.conf = conf.Config(config)
         self.createListeners()
-        if hasattr(self.conf, "socket"):
+        if self.conf.socket != None:
             reactor.listenUNIX(self.conf.socket, ControlFactory(self))
 
     def getScheduler(self, serviceName, groupName):
