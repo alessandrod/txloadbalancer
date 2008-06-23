@@ -116,18 +116,24 @@ class ServiceConfig(object):
         return self.groups.get(self.enabledgroup)
 
     def checkSanity(self):
-        if not self.name: raise ServiceError, "no name set"
-        if not self.listen: raise ServiceError, "no listen address set"
-        if not self.groups: raise ServiceError, "no host groups"
-        if not self.enabledgroup: raise ServiceError, "no group enabled"
-        if not self.groups.get(self.enabledgroup): raise GroupError, \
-                    "enabled group '%s' not defined"%self.enabledgroup
+        if not self.name:
+            raise ServiceError, "no name set"
+        if not self.listen:
+            raise ServiceError, "no listen address set"
+        if not self.groups:
+            raise ServiceError, "no host groups"
+        if not self.enabledgroup:
+            raise ServiceError, "no group enabled"
+        if not self.groups.get(self.enabledgroup):
+            msg = "enabled group '%s' not defined" % self.enabledgroup
+            raise GroupError, msg
         for group in self.groups.values():
-            if not group.name: raise GroupError, "no group name set"
-            if not group.scheduler: raise GroupError, \
-                    "no scheduler set for %s"%group.name
-            if not group.hosts: raise GroupError, \
-                    "no hosts set for %s"%group.name
+            if not group.name:
+                raise GroupError, "no group name set"
+            if not group.scheduler:
+                raise GroupError, "no scheduler set for %s" % group.name
+            if not group.hosts:
+                raise GroupError, "no hosts set for %s" % group.name
 
 
 class AdminUserConfig(object):

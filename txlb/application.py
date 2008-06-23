@@ -47,10 +47,26 @@ def setupControlSocket(director):
     control = service.Service()
     socket = director.conf.socket
     if socket != None:
-        control = internet.TCPClient(socket, manager.ControlFactory(director))
+        control = internet.UNIXServer(socket, manager.ControlFactory(director))
     control.setName('control')
     return control
 
+
+def setupProxies(director):
+    """
+    Set up proxies for each service the proxy manager balances.
+    """
+    proxyCollection = service.MultiService()
+    proxyCollection.setName('proxies')
+    for proxyList in director.listeners.values():
+        # XXX for some reason, there's only one in each list... probably need
+        # to look at the old code and see why, then fix it
+        proxy = proxyList[0]
+        proxyService = internet.TCPServer(
+            proxy.port, proxy.factory, interface=proxy.host)
+        proxyService.setName(proxy.name)
+        proxyService.setServiceParent(proxyCollection)
+    return proxyCollection
 
 def setup(configFile):
     """
@@ -60,13 +76,12 @@ def setup(configFile):
     application = service.Application(name)
     services = service.IServiceCollection(application)
 
-    # instantiate the proxy manager to direct the proxies
+    # instantiate the proxy manager (that which will direct the proxies)
     director = manager.ProxyManager(configFile)
 
-    # set up proxies for each service the proxy manager balances
-    # XXX
-    # XXX setup a group collection for proxy groups (an LB'ed service)
-    # XXX setup a host collection for a group's proxies (hosts for the LB'd service)
+    # set up the proxies
+    proxies = setupProxies(director)
+    proxies.setServiceParent(services)
 
     # set up the control socket
     control = setupControlSocket(director)
@@ -76,7 +91,7 @@ def setup(configFile):
     admin = setupAdminServer(director)
     admin.setServiceParent(services)
 
-    # set up the manager timer service
+    # set up the host checker service
     checker = setupHostChecker(director)
     checker.setServiceParent(services)
 

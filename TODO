@@ -17,10 +17,6 @@ Duncan's TODO: break 'em changes
    . an algorigthm (or series of them) for determining the suitablity of a
      service to receive the next request based on a total evalution of current
      reported resource utilization
- * [maybe] move the "hidden" listener initialization/creation into something
-   explicit that the .tac file does
-   . possibly iterate through the director's listeners from the .tac file or a
-     utility function
  * I don't like the default behaviour of adding bad hosts back into circulation
    without any checks; I want to add something there...
  * write a manager implementation that can run as a twisted plugin
@@ -35,7 +31,8 @@ Duncan's TODO: break 'em changes
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
  * replace ad-hoc bad host checking with iteration over twisted services
-
+ * remove director.listeners list weirdness (there's one proxy per service, so
+   why's there a list?) (config.ServiceConfig.listen = [] --> = '')
 
 Lab Plan 1
 ----------

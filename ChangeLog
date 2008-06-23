@@ -31,6 +31,9 @@ scripts.
 * Added names to the services.
 * Moved the control socket creation out of manager and into application.
 * Renamed proxy.Listener to proxy.Proxy.
+* Cleaned up raises in config.
+* Fixed setupControlSocket to use UNIX client, not TCP client.
+* Moved proxy listening out of proxy and into txlb.application.
 
 2008.06.22 oubiwann
 

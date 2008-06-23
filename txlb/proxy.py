@@ -18,20 +18,19 @@ class Proxy(object):
     attribute .scheduler: read/write - a PDScheduler
     attribute .listening_address: read - a tuple of (host,port)
     """
-    def __init__(self, name, (bindhost, bindport), scheduler, director):
+    def __init__(self, name, host, port, scheduler, director):
         self.name = name
-        self.listening_address = (bindhost, bindport)
+        self.port = port
+        self.host = host
+        self.listening_address = (host, port)
         self.director = director
-        self.rfactory = ReceiverFactory(
-            (bindhost,bindport), scheduler, self.director)
+        self.factory = ReceiverFactory(
+            self.listening_address, scheduler, self.director)
         self.setScheduler(scheduler)
-        # XXX I don't like this here... I want to put the code that controls
-        # network connections in application code
-        reactor.listenTCP(bindport, self.rfactory, interface=bindhost)
 
     def setScheduler(self, scheduler):
         self.scheduler = scheduler
-        self.rfactory.setScheduler(scheduler)
+        self.factory.setScheduler(scheduler)
 
 
 class Sender(protocol.Protocol):

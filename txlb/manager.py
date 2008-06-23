@@ -1,7 +1,6 @@
 import time
 
 from twisted.protocols import amp
-from twisted.internet import reactor
 from twisted.internet import protocol
 
 from txlb import util
@@ -100,8 +99,8 @@ class ProxyManager(object):
             # handle multiple listeners for a service
             self.listeners[service.name] = []
             for lobj in service.listen:
-                l = proxy.Proxy(service.name, util.splitHostPort(lobj),
-                                   scheduler, self)
+                host, port = util.splitHostPort(lobj)
+                l = proxy.Proxy(service.name, host, port, scheduler, self)
                 self.listeners[service.name].append(l)
 
     def enableGroup(self, serviceName, groupName):
