@@ -3,6 +3,7 @@ import inspect
 from crypt import crypt
 from xml.dom import minidom
 
+from txlb import util
 from txlb import logging
 
 legalConfigSections = [
@@ -30,21 +31,18 @@ def getDefaultArgs(methodObj):
         ad[a] = v
     return ad
 
-def splitHostPort(s):
-    h,p = s.split(':')
-    p = int(p)
-    if h == '*':
-        h = ''
-    return h,p
 
 class ConfigError(Exception):
     pass
 
+
 class ServiceError(ConfigError):
     pass
 
+
 class GroupError(ServiceError):
     pass
+
 
 class HostConfig(object):
     __slots__ = [ 'name', 'ip' ]
@@ -55,6 +53,7 @@ class HostConfig(object):
             self.ip = ip.encode('ascii')
         else:
             self.ip = ip
+
 
 class GroupConfig(object):
     __slots__ = [ 'name', 'scheduler', 'hosts' ]
@@ -78,6 +77,7 @@ class GroupConfig(object):
 
     def delHost(self, name):
         del self.hosts[name]
+
 
 class ServiceConfig(object):
     def __init__(self, name):
@@ -129,6 +129,7 @@ class ServiceConfig(object):
             if not group.hosts: raise GroupError, \
                     "no hosts set for %s"%group.name
 
+
 class AdminUserConfig(object):
     __slots__ = [ 'name', 'password', 'access' ]
 
@@ -148,12 +149,14 @@ class AdminUserConfig(object):
         else:
             return 0
 
+
 class ManagerConfig(object):
     """
 
     """
     def __init__(self):
         self.hostCheckInterval = 120
+
 
 class AdminConfig(object):
     def __init__(self):
@@ -235,7 +238,7 @@ class Config(object):
 
     def loadAdmin(self, admin):
         adminCfg = AdminConfig()
-        adminCfg.listen = splitHostPort(admin.getAttribute('listen'))
+        adminCfg.listen = util.splitHostPort(admin.getAttribute('listen'))
         if admin.hasAttribute('secure'):
             adminCfg.secure = True
         if admin.hasAttribute('refresh'):

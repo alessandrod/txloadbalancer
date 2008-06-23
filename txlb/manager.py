@@ -4,7 +4,8 @@ from twisted.protocols import amp
 from twisted.internet import reactor
 from twisted.internet import protocol
 
-from txlb import conf
+from txlb import util
+from txlb import config
 from txlb import proxy
 from txlb import logging
 from txlb import schedulers
@@ -76,11 +77,11 @@ class ProxyManager(object):
     Note that this was formerly known as the Director, thus all the 'director'
     variable names.
     """
-    def __init__(self, config):
+    def __init__(self, configFile):
         self.listeners = {}
         self.schedulers = {}
         self._connections = {}
-        self.conf = conf.Config(config)
+        self.conf = config.Config(configFile)
         self.createListeners()
         if self.conf.socket != None:
             reactor.listenUNIX(self.conf.socket, ControlFactory(self))
@@ -101,7 +102,7 @@ class ProxyManager(object):
             # handle multiple listeners for a service
             self.listeners[service.name] = []
             for lobj in service.listen:
-                l = proxy.Listener(service.name, conf.splitHostPort(lobj),
+                l = proxy.Listener(service.name, util.splitHostPort(lobj),
                                    scheduler, self)
                 self.listeners[service.name].append(l)
 

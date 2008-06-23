@@ -5,6 +5,13 @@ from twisted.internet import ssl
 privKeyFile = 'etc/server.pem'
 certFile = 'etc/server.pem'
 
+def splitHostPort(s):
+    h,p = s.split(':')
+    p = int(p)
+    if h == '*':
+        h = ''
+    return h,p
+
 def createCertificate():
     # this is copied from test_sslverify.py
     dn = ssl.DistinguishedName(commonName="PyDirector HTTPS")

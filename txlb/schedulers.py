@@ -1,6 +1,6 @@
 import time
 
-from txlb import conf
+from txlb import util
 from txlb import logging
 
 def createScheduler(groupConfig):
@@ -96,7 +96,7 @@ class BaseScheduler:
 
     def newHost(self, ip, name):
         if type(ip) is not type(()):
-            ip = conf.splitHostPort(ip)
+            ip = util.splitHostPort(ip)
         self.hosts.append(ip)
         self.hostnames[ip] = name
         self.hostnames['%s:%d'%ip] = name
@@ -107,7 +107,7 @@ class BaseScheduler:
         "remove a host"
         if ip is not None:
             if type(ip) is not type(()):
-                ip = conf.splitHostPort(ip)
+                ip = util.splitHostPort(ip)
         elif name is not None:
             for ip in self.hostnames.keys():
                 if self.hostnames[ip] == name:

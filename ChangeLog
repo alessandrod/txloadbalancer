@@ -16,6 +16,8 @@ ahead by a minor versio number).
 * Updated TODO with some questions.
 * Added a scenarios doc for exploring development paths.
 * Really remove main.py.
+* Put conf and compare in their own module.
+* Moved splitHostPort function into utilities.
 
 2008.06.22 oubiwann
 
