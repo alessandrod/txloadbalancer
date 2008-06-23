@@ -23,8 +23,6 @@ Duncan's TODO: break 'em changes
      utility function
  * I don't like the default behaviour of adding bad hosts back into circulation
    without any checks; I want to add something there...
- * isolate all of admin functionality in its own space (so that we can
-   replace it with Divmod Mantissa)
  * write a manager implementation that can run as a twisted plugin
  * [maybe] remove XML; use the .tac file (or other python) to configure
    services, groups, and hosts
@@ -36,6 +34,9 @@ Duncan's TODO: break 'em changes
  * [maybe] make the "top" link point to a list of service groups, linked to
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
+ * provide an explicit means of setting up twisted services so that if people
+   aren't using a .tac file, they don't have to mangle txLoadBalancer code,
+   they just need to import the setup functions in their scripts.
 
 
 Lab Plan 1
