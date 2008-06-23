@@ -100,7 +100,7 @@ class ProxyManager(object):
             # handle multiple listeners for a service
             self.listeners[service.name] = []
             for lobj in service.listen:
-                l = proxy.Listener(service.name, util.splitHostPort(lobj),
+                l = proxy.Proxy(service.name, util.splitHostPort(lobj),
                                    scheduler, self)
                 self.listeners[service.name].append(l)
 

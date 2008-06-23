@@ -6,7 +6,7 @@ from twisted.internet import protocol
 from txlb import logging
 
 
-class Listener:
+class Proxy(object):
     """
     Listener object. Listens at a given host/port for connections.
     Creates a receiver to collect data from client, and a sender to

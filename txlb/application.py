@@ -65,6 +65,8 @@ def setup(configFile):
 
     # set up proxies for each service the proxy manager balances
     # XXX
+    # XXX setup a group collection for proxy groups (an LB'ed service)
+    # XXX setup a host collection for a group's proxies (hosts for the LB'd service)
 
     # set up the control socket
     control = setupControlSocket(director)

@@ -30,6 +30,7 @@ txLoadBalancer code, they just need to import the setup functions in their
 scripts.
 * Added names to the services.
 * Moved the control socket creation out of manager and into application.
+* Renamed proxy.Listener to proxy.Proxy.
 
 2008.06.22 oubiwann
 
