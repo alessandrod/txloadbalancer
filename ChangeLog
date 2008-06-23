@@ -23,6 +23,7 @@ ahead by a minor versio number).
 * Added more notes to the scheduler idea in TODO.
 * Cleaned up docstrings in schedulers.py.
 * Added missing text to scenarios.txt.
+* Added an application module and moved most of the .tac file contents there.
 
 2008.06.22 oubiwann
 
