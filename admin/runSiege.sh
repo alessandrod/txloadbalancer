@@ -15,7 +15,8 @@
 #  12) Balanced Host Count
 #
 LOG="data/stats.csv"
-URL="http://lorien:8080/index.html"
+#URL="http://lorien:8080/index.html"
+URL="http://fangorn:6080/index.html"
 LB="yes"
 LB_HOSTS=1
 WEB_SERVERS=4
