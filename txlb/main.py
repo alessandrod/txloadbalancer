@@ -74,7 +74,7 @@ class Director(object):
             for lobj in service.listen:
                 l = loaders.Listener(service.name,
                                    conf.splitHostPort(lobj),
-                                   scheduler)
+                                   scheduler, self)
                 self.listeners[service.name].append(l)
 
     def enableGroup(self, serviceName, groupName):

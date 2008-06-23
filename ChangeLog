@@ -31,6 +31,8 @@ changes from David Reid.
 * Added Sender fix from David Reid: "Make sure that when the server closes the
 connection cleanly we close the connection with the client. This can cause
 clients to hang and the loadbalancer to run out of filedescriptors."
+* Added missing change from Apple: updated the Director with the changed
+signature for the Listener.
 
 2008.06.21 oubiwann
 
