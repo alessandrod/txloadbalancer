@@ -1,9 +1,46 @@
 from twisted.protocols import amp
+from twisted.internet import reactor
 from twisted.internet import protocol
 
 from txlb import conf
 from txlb import loaders
 from txlb import schedulers
+
+
+class UnknownPortError(Exception):
+    pass
+
+
+class GetClientAddress(amp.Command):
+    arguments = [('host', amp.String()),
+                 ('port', amp.Integer())]
+
+    response = [('host', amp.String()),
+                ('port', amp.Integer())]
+
+    errors = {UnknownPortError: 'UNKNOWN_PORT'}
+
+
+class ControlProtocol(amp.AMP):
+    def __init__(self, director):
+        self.director = director
+
+    def getClientAddress(self, host, port):
+        host, port = self.director.getClientAddress(host, port)
+        if (host, port) == (None, None):
+            raise UnknownPortError()
+
+        return {'host': host, 'port': port}
+    GetClientAddress.responder(getClientAddress)
+
+
+class ControlFactory(protocol.ServerFactory):
+    def __init__(self, director):
+        self.director = director
+
+    def buildProtocol(self, addr):
+        return PDControlProtocol(self.director)
+
 
 class Director(object):
     """
@@ -13,8 +50,11 @@ class Director(object):
     def __init__(self, config):
         self.listeners = {}
         self.schedulers = {}
+        self._connections = {}
         self.conf = conf.Config(config)
         self.createListeners()
+        if hasattr(self.conf, "socket"):
+            reactor.listenUNIX(self.conf.socket, ControlFactory(self))
 
     def getScheduler(self, serviceName, groupName):
         return self.schedulers[(serviceName,groupName)]
@@ -55,36 +95,14 @@ class Director(object):
         for listener in self.listeners[serviceName]:
             listener.setScheduler(scheduler)
 
-class UnknownPortError(Exception):
-    pass
-
-
-class GetClientAddress(amp.Command):
-    arguments = [('host', amp.String()),
-                 ('port', amp.Integer())]
-
-    response = [('host', amp.String()),
-                ('port', amp.Integer())]
-
-    errors = {UnknownPortError: 'UNKNOWN_PORT'}
-
-
-class ControlProtocol(amp.AMP):
-    def __init__(self, director):
-        self.director = director
-
     def getClientAddress(self, host, port):
-        host, port = self.director.getClientAddress(host, port)
-        if (host, port) == (None, None):
-            raise UnknownPortError()
+        """
 
-        return {'host': host, 'port': port}
-    GetClientAddress.responder(getClientAddress)
+        """
+        return self._connections.get((host, port), (None, None))
 
+    def setClientAddress(self, host, peer):
+        """
 
-class ControlFactory(protocol.ServerFactory):
-    def __init__(self, director):
-        self.director = director
-
-    def buildProtocol(self, addr):
-        return PDControlProtocol(self.director)
+        """
+        self._connections[host] = peer
