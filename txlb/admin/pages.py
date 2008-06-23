@@ -144,7 +144,7 @@ class RunningPage(BasePage):
                     host = '%s:%s' % k
                     when, what = bad[k]
                     content += template.badHostInfo % (
-                        klass, hdict[host], host, what)
+                        klass, hdict[host], host, what.getErrorMessage())
             content += template.serviceClose
         content += self.getFooter(resultMessage)
         return content

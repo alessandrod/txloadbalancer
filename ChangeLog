@@ -5,6 +5,8 @@
 * Renamed proxy.Director to manager.ProxyManager.
 * Deleted main.py.
 * Removed completed tasks from TODO.
+* Cleaned up the error message that gets dumped into the admin UI when there's
+a problem with a host.
 
 2008.06.22 oubiwann
 
