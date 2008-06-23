@@ -1,8 +1,7 @@
-from twisted.internet import reactor
+from twisted.protocols import amp
 from twisted.internet import error
-from twisted.internet.protocol import Protocol
-from twisted.internet.protocol import ServerFactory
-from twisted.internet.protocol import ClientFactory
+from twisted.internet import reactor
+from twisted.internet import protocol
 
 from txlb import logging
 
@@ -36,7 +35,7 @@ class Listener:
         self.rfactory.setScheduler(scheduler)
 
 
-class Sender(Protocol):
+class Sender(protocol.Protocol):
     """
     A Sender object connects to the remote final server, and passes data
     back and forth. Unlike the receiver, it's not necessary to buffer up
@@ -97,7 +96,7 @@ class Sender(Protocol):
             self.setReceiver(None)
 
 
-class SenderFactory(ClientFactory):
+class SenderFactory(protocol.ClientFactory):
     """
     Create a Sender when needed. The sender connects to the remote host.
     """
@@ -111,7 +110,7 @@ class SenderFactory(ClientFactory):
     def buildProtocol(self, *args, **kw):
         # over-ride the base class method, because we want to connect
         # the objects together.
-        protObj = ClientFactory.buildProtocol(self, *args, **kw)
+        protObj = protocol.ClientFactory.buildProtocol(self, *args, **kw)
         protObj.setReceiver(self.receiver)
         return protObj
 
@@ -136,7 +135,7 @@ class SenderFactory(ClientFactory):
     def stopFactory(self):
         self.receiver.factory.scheduler.doneHost(self)
 
-class Receiver(Protocol):
+class Receiver(protocol.Protocol):
     """
     Listener bit for clients connecting to the director.
     """
@@ -207,7 +206,7 @@ class Receiver(Protocol):
             self.buffer += data
 
 
-class ReceiverFactory(ServerFactory):
+class ReceiverFactory(protocol.ServerFactory):
     """
     Factory for the listener bit of the load balancer.
     """
@@ -222,4 +221,5 @@ class ReceiverFactory(ServerFactory):
 
     def setScheduler(self, scheduler):
         self.scheduler = scheduler
+
 

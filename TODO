@@ -23,11 +23,10 @@ Duncan's TODO: break 'em changes
  * [maybe] make the "top" link point to a list of service groups, linked to
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
- * rename conf module to config.
- * rename loaders module to proxy
- * rename loaders.Listener to proxy.Proxy
- * rename main.Director to manager.ProxyManager
+ * rename conf module to config
  * rename compareconf to diff
+ * Clean up the error that gets dumped into the admin UI when a host is taken
+   out of rotation
 
 
 Lab Plan 1

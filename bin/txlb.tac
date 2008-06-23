@@ -7,8 +7,8 @@ from twisted.application import internet
 from twisted.application import strports
 
 from txlb import name
-from txlb import main
 from txlb import util
+from txlb import manager
 from txlb.admin import pages
 from txlb.manager import checkBadHosts
 
@@ -19,7 +19,7 @@ services = service.IServiceCollection(application)
 
 # set up the director
 configFile = './etc/config.xml'
-director = main.Director(configFile)
+director = manager.ProxyManager(configFile)
 
 # set up the web server
 site = server.Site(pages.AdminServer(director))

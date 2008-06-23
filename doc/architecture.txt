@@ -1,16 +1,20 @@
 Here is an ASCII diagram of the current architecture:
 
-               txlb.tac
-                   |
-                   |
-  +-------------+------------+
-  |             |            |
-manager       admin     main.Director
-  =             =            |
-reconfig,     web ui         |
-dead hosts,                  +-----------------+-------------------+
-                             |                 |                   |
-                         schedulers    loaders.Listeners     Control Socket
-                             =                 =
-                          lb type,          proxies
-                         algorithms,
+      txlb.tac
+         |
+         |
+  +--------------+
+  |              |
+admin          manager
+  =              |
+web ui     +-----+------------+
+           |                  |
+     checkBadHosts       ProxyManager
+                              |
+                              |
+                      +-----------------+----------------+
+                      |                 |                |
+                  schedulers        Listeners      Control Socket
+                      =                 =
+                   lb type,          proxies
+                  algorithms

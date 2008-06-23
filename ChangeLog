@@ -1,3 +1,11 @@
+2008.06.23 oubiwann
+
+* Renamed loaders to proxy.
+* Moved main.* code into manager.
+* Renamed proxy.Director to manager.ProxyManager.
+* Deleted main.py.
+* Removed completed tasks from TODO.
+
 2008.06.22 oubiwann
 
 * Added a script for getting stress test stats using the siege tool.
