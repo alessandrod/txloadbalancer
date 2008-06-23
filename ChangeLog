@@ -34,6 +34,7 @@ scripts.
 * Cleaned up raises in config.
 * Fixed setupControlSocket to use UNIX client, not TCP client.
 * Moved proxy listening out of proxy and into txlb.application.
+* Removed some print statements.
 
 2008.06.22 oubiwann
 
