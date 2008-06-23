@@ -111,3 +111,13 @@ A txLoadBalancer config consists of a number of XML directives.
     None
   Other notes:
     None
+
+<control> - configuration options for accurate tracking of connected IP
+            addresses
+  Child of: <pdconfig>
+  Attributes:
+    socket - the path and filename of the socket to connect to
+  Children:
+    None
+  Other notes:
+    None

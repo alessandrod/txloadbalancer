@@ -36,6 +36,7 @@ signature for the Listener.
 * Fixed typo.
 * Updated the driector's socket creation logic to accord with the configuration
 class's implementation in txLoadBalancer (vs. the Apple implementation).
+* Updated configuration docs with notes about Apple's "control" section.
 
 2008.06.21 oubiwann
 

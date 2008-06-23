@@ -83,9 +83,17 @@ regularly scheduled tasks.
 
 Log Section
 -----------
-The final section in the config is also optional, and specifies a log
-file target. If this section is not specified, the python director will
-write log entries to stderr.
+This section is  optional, and specifies a log file target. If this section is
+not specified, the python director will write log entries to stderr.
+
+
+Control Section
+---------------
+The control section was introduced by Apple's Calendar Server project and is
+used for accurate logging of connected IP addresses. I haven't seen an example
+from Apple, but my guess is that usage is something like this:
+
+  <control socket="/path/to/my.socket" />
 
 
 Comment Sections
