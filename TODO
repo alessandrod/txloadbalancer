@@ -9,6 +9,7 @@ Duncan's TODO: break 'em changes
      to be loadbalanced, how should that happen?
    . what about all of the services potentially being equal? any can be a
      manager, any can be balanced via another services proxy manager
+ * add a scheduler that accounts for memory and CPU utilization 
  * [maybe] move the "hidden" listener initialization/creation into something
    explicit that the .tac file does
    . possibly iterate through the director's listeners from the .tac file or a
