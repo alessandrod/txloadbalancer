@@ -173,9 +173,9 @@ class RoundRobinScheduler(BaseScheduler):
 
 class LeastConnsScheduler(BaseScheduler):
     """
-        This scheduler passes the connection to the destination with the
-        least number of current open connections. This is a very cheap
-        and quite accurate method of load balancing.
+    This scheduler passes the connection to the destination with the least
+    number of current open connections. This is a very cheap and quite accurate
+    method of load balancing.
     """
     schedulerName = "leastconns"
     counter = 0
@@ -189,10 +189,9 @@ class LeastConnsScheduler(BaseScheduler):
 
 class LeastConnsRRScheduler(BaseScheduler):
     """
-        The basic LeastConnsScheduler has a problem - it sorts by
-        open connections, then by hostname. So hostnames that are
-        earlier in the alphabet get many many more hits. This is
-        suboptimal.
+    The basic LeastConnsScheduler has a problem - it sorts by open connections,
+    then by hostname. So hostnames that are earlier in the alphabet get many
+    many more hits. This is suboptimal.
     """
     schedulerName = "leastconnsrr"
     counter = 0

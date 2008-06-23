@@ -9,7 +9,14 @@ Duncan's TODO: break 'em changes
      to be loadbalanced, how should that happen?
    . what about all of the services potentially being equal? any can be a
      manager, any can be balanced via another services proxy manager
- * add a scheduler that accounts for memory and CPU utilization 
+ * add a scheduler that accounts for memory and CPU utilization, which will
+   require:
+   . a standard python means for services to get system memory and other
+     resource utilization stats
+   . a means for services to report this to the ProxyManager
+   . an algorigthm (or series of them) for determining the suitablity of a
+     service to receive the next request based on a total evalution of current
+     reported resource utilization
  * [maybe] move the "hidden" listener initialization/creation into something
    explicit that the .tac file does
    . possibly iterate through the director's listeners from the .tac file or a

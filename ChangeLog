@@ -20,6 +20,9 @@ ahead by a minor versio number).
 * Moved splitHostPort function into utilities.
 * Added a scheuler to the TODO.
 * Started populating scenarios.txt.
+* Added more notes to the scheduler idea in TODO.
+* Cleaned up docstrings in schedulers.py.
+* Added missing text to scenarios.txt.
 
 2008.06.22 oubiwann
 

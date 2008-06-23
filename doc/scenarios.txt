@@ -1,0 +1,30 @@
+Classic Load Balancing
+----------------------
+
+Scenario:
+    * n Services to be balanced
+    * 1 Manager service that distributes load across n services
+
+Problems:
+    * number of remote connections limited by the number of file descriptors a
+      system can open
+
+
+Hierarchical LoadBalancing
+--------------------------
+
+Scenario:
+    * many nested Classic Load Balancing scenarios
+
+Problems:
+    * latency is increased with each level added
+
+
+Peered Load Balancing
+---------------------
+
+Scenario:
+    * n services to be balanced 
+    * m services can be managers, where m is anywhere from 1 to n (with Classic
+      Load Balancing being a special case of Peered Load Balancing)
+    * the managers are pre-configured by humans
