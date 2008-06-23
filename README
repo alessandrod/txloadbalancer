@@ -1,40 +1,42 @@
-README for pythondirector 1.0.0
+README for txLoadBalancer
 
-This is a pure python TCP load balancer. It takes inbound TCP
-connections and connects them to one of a number of backend
-servers.
+This is a pure python TCP load balancer. It takes inbound TCP connections and
+connects them to one of a number of backend servers.
 
-Project home: http://pythondirector.sourceforge.net/
-Contact email: Anthony Baxter <anthony@interlink.com.au>
+Project home: https://launchpad.net/txloadbalancer
+Contact email: Duncan McGreggor <oubiwann@divmod.com>
 
 ----------------------------------------------------------------------
 
 Usage:
 
-$ python pydir.py myconfig.xml
+$ twistd -noy ./bin/txlb.tac
 
-To enabled the admin interface, you will need to update your XML configuration.
+This will use the default configuration file in ./etc/config.xml; you can edit
+the .tac file to point to the config you prefer.
+
+To enabled the admin interface, your config file must have the admin section
+defined, with the required fields. For an example, be sure to see
+./etc/config.xml. For more details, please see the configuration information in
+the ./doc directory.
 
 ----------------------------------------------------------------------
 
 Features:
 
-  - by default, uses the Twisted framework for async I/O, but can
-    also use asyncore.
+  - a pure-Twisted TCP loadbalancer
 
-  - async i/o based, so much less overhead than fork/thread based
-    balancers
+  - async i/o based, so much less overhead than fork/thread based balancers
 
   - Multiple scheduling algorithms (random, round robin, leastconns,
     leastconns-least-recently-used)
 
-  - If a server fails to answer, it's removed from the pool - the
-    client that failed to connect gets transparently failed over to
-    a new host.
+  - If a server fails to answer, it's removed from the pool - the client that
+    failed to connect gets transparently failed over to a new host.
 
   - xml based configuration file
 
-  - seperate management thread that periodically re-adds failed hosts
+  - seperate management timer service that periodically re-adds failed hosts
     if they've come back up.
 
   - optional builtin webserver for admin
@@ -56,31 +58,30 @@ Performance:
 
 ----------------------------------------------------------------------
 
-API (web based):
+Changes from txLoadBalancer 1.0.1 to 1.1.0
 
-    See doc/webapi.txt for a full list of web api commands
+- Massive API changes: competely reorganzied the code base.
+- Integrated patches from Apple's Calendar Server project.
 
-----------------------------------------------------------------------
+Changes from txLoadBalancer 0.9.1 to 1.0.1
 
-Twisted vs. asyncore
+- 100% Twisted: removed all threading and asyncore code completely.
+- Significan API changes.
+- Dropped the web API.
 
-Pythondirector will use either twisted or asyncore for it's networking -
-it prefers twisted.  The twisted implementation is much, much faster,
-but does require an additional package - see http://www.twistedmatrix.com
-for the software.
+Changes from PyDirector 1.0.0 to 1.1.1 (AKA txLoadBalancer 0.9.1)
 
-I've also seen "weird failures" from asyncore with some sort of nasty
-race condition.
+- Added support for Twisted, providing the option for all management, admin and
+  load-balancing to utilize the Twisted reactor, skipping threading and asycore
+  altogether.
 
-----------------------------------------------------------------------
-
-Changes from 0.0.7 to 1.0.0
+Changes from PyDirector 0.0.7 to 1.0.0
 
 - Very few, mostly this is to update the project to 'stable' status.
 - The networking code now uses twisted if available, and falls back
   to asyncore.
 
-Changes from 0.0.6 to 0.0.7
+Changes from PyDirector 0.0.6 to 0.0.7
 
 - You can specify a hostname of '*' to the listen directive for both
   the scheduler and the administrative interface to mean 'listen on
@@ -95,7 +96,7 @@ Changes from 0.0.6 to 0.0.7
   (by preference) sent to the same backend server. The factory function
   for schedulers will change to allow things like "roundrobin,sticky".
 
-Changes from 0.0.5 to 0.0.6:
+Changes from PyDirector 0.0.5 to 0.0.6:
 
 - fixed an error in the (hopefully rare) case where all backend servers
   are down.
@@ -105,7 +106,7 @@ Changes from 0.0.5 to 0.0.6:
   more aggressive mode re-adding them.
 - handle comments in the config file
 
-Changes from 0.0.4 to 0.0.5:
+Changes from PyDirector 0.0.4 to 0.0.5:
 
 - bunch of bugfixes to the logging
 - re-implemented the networking code using the 'twisted' framework
@@ -119,7 +120,7 @@ Changes from 0.0.4 to 0.0.5:
     (5 way, 2000 fetches)
   )
 
-Changes from 0.0.3 to 0.0.4:
+Changes from PyDirector 0.0.3 to 0.0.4:
 
 - can now specify more than one listener for a service
 - 'client' in the config XML is now 'host'
@@ -133,7 +134,7 @@ Changes from 0.0.3 to 0.0.4:
   the new config
 - first cut at enabling https for web interface (needs m2crypto)
 
-Changes from 0.0.2 to 0.0.3:
+Changes from PyDirector 0.0.2 to 0.0.3:
 
 - delHost hooked up
 - running.xml added - XML dump of current config
@@ -142,33 +143,7 @@ Changes from 0.0.2 to 0.0.3:
   logging needs to be added.
 - Python2.1 compatibility fix: no socket.gaierror exception on 2.1
 
-Changes from 0.0.1 to 0.0.2:
+Changes from PyDirector 0.0.1 to 0.0.2:
 
 - refactored web publishing (babybobo)
 - package-ised and distutil-ised the code
-
-----------------------------------------------------------------------
-
-This software is covered by the following license:
-
-Copyright (c) 2002-2004 ekit.com Inc (http://www.ekit-inc.com/)
-and Anthony Baxter <anthony@interlink.com.au>
-
-Permission is hereby granted, free of charge, to any person obtaining a
-copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation
-the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the
-Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included
-in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-OTHER DEALINGS IN THE SOFTWARE.
-

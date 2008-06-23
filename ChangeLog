@@ -7,6 +7,10 @@
 * Removed completed tasks from TODO.
 * Cleaned up the error message that gets dumped into the admin UI when there's
 a problem with a host.
+* Updated a docstring.
+* Updated README.
+* Readjusted the version number to the proper next increment (it had skipped
+ahead by a minor versio number).
 
 2008.06.22 oubiwann
 

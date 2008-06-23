@@ -72,6 +72,9 @@ class ProxyManager(object):
     """
     The purpose of this class is to start the load-balancer listeners for
     enabled groups.
+
+    Note that this was formerly known as the Director, thus all the 'director'
+    variable names.
     """
     def __init__(self, config):
         self.listeners = {}
