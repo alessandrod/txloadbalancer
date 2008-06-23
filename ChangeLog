@@ -28,6 +28,8 @@ ahead by a minor versio number).
 so that if people aren't using a .tac file, they don't have to mangle
 txLoadBalancer code, they just need to import the setup functions in their
 scripts.
+* Added names to the services.
+* Moved the control socket creation out of manager and into application.
 
 2008.06.22 oubiwann
 

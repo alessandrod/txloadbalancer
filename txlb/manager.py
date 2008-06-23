@@ -83,10 +83,6 @@ class ProxyManager(object):
         self._connections = {}
         self.conf = config.Config(configFile)
         self.createListeners()
-        # XXX I don't like this here... I want to put the code that controls
-        # network connections in application code
-        if self.conf.socket != None:
-            reactor.listenUNIX(self.conf.socket, ControlFactory(self))
 
     def getScheduler(self, serviceName, groupName):
         return self.schedulers[(serviceName,groupName)]

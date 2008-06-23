@@ -25,6 +25,7 @@ def setupAdminServer(director):
         admin = internet.SSLServer(adminPort, site, context)
     else:
         admin = internet.TCPServer(adminPort, site)
+    admin.setName('admin')
     return admin
 
 
@@ -33,7 +34,22 @@ def setupHostChecker(director):
     This is the setup for the "bad host check" management task.
     """
     checkInterval = director.conf.manager.hostCheckInterval
-    return internet.TimerService(checkInterval, checkBadHosts, director)
+    checker = internet.TimerService(checkInterval, checkBadHosts, director)
+    checker.setName('hostChecker')
+    return checker
+
+
+def setupControlSocket(director):
+    """
+    This is for the functionaity that Apple introduced in the patches from its
+    Calendar Server project.
+    """
+    control = service.Service()
+    socket = director.conf.socket
+    if socket != None:
+        control = internet.TCPClient(socket, manager.ControlFactory(director))
+    control.setName('control')
+    return control
 
 
 def setup(configFile):
@@ -51,7 +67,8 @@ def setup(configFile):
     # XXX
 
     # set up the control socket
-    # XXX
+    control = setupControlSocket(director)
+    control.setServiceParent(services)
 
     # set up the web server
     admin = setupAdminServer(director)

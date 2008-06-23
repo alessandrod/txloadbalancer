@@ -34,6 +34,7 @@ Duncan's TODO: break 'em changes
  * [maybe] make the "top" link point to a list of service groups, linked to
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
+ * replace ad-hoc bad host checking with iteration over twisted services
 
 
 Lab Plan 1
