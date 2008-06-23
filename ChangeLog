@@ -15,6 +15,7 @@ ahead by a minor versio number).
 * Added copyright information for Apple's contributions.
 * Updated TODO with some questions.
 * Added a scenarios doc for exploring development paths.
+* Really remove main.py.
 
 2008.06.22 oubiwann
 
