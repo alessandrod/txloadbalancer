@@ -1,6 +1,10 @@
 Roadmap
 =======
 
+Placeholders
+------------
+ * look at iterating over service collections from inside the host checker
+ * look at stopping and starting services from inside checker functions
 
 Version 1.1.0
 -------------
