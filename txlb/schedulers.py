@@ -1,10 +1,14 @@
 import time
+import random
 
 from txlb import util
 from txlb import logging
 
 
-def createScheduler(groupConfig):
+def schedulerFactory(groupConfig):
+    """
+    A dispatch function for a service's scheduler.
+    """
     schedulerName = groupConfig.scheduler
     if schedulerName == "random":
         return RandomScheduler(groupConfig)
@@ -18,11 +22,12 @@ def createScheduler(groupConfig):
         raise ValueError, "Unknown scheduler type `%s'" % schedulerName
 
 
-class BaseScheduler:
+class BaseScheduler(object):
     """
-
+    Schedulers are responsible for selecting the next proxied host that will
+    recieve the client request.
     """
-    schedulerName = "base"
+    schedulerName = None
 
     def __init__(self, groupConfig):
         self.hosts = []
@@ -39,7 +44,6 @@ class BaseScheduler:
         hosts = self.group.getHosts()
         for host in hosts:
             self.newHost(host.ip, host.name)
-        #print self.hosts
 
     def getStats(self, verbose=0):
         out = {}
@@ -70,11 +74,10 @@ class BaseScheduler:
         return "\n".join(out)
 
     def getHost(self, s_id, client_addr=None):
-        from time import time
         host = self.nextHost(client_addr)
         if host:
             cur = self.openconns.get(host)
-            self.open[s_id] = (time(),host)
+            self.open[s_id] = (time.time(),host)
             self.openconns[host] = cur+1
             return host
         else:
@@ -131,7 +134,9 @@ class BaseScheduler:
         return 1
 
     def deadHost(self, s_id, reason=''):
-        from time import time
+        """
+        This method gets called when a proxied host is unreachable.
+        """
         t,host = self.open[s_id]
         if host in self.hosts:
             logging.log("marking host %s down (%s)\n"%(str(host), reason),
@@ -141,7 +146,7 @@ class BaseScheduler:
             del self.openconns[host]
         if self.totalconns.has_key(host):
             del self.totalconns[host]
-        self.badhosts[host] = (time(), reason)
+        self.badhosts[host] = (time.time(), reason)
         # make sure we also mark this session as done.
         self.doneHost(s_id)
 
@@ -151,12 +156,11 @@ class BaseScheduler:
 
 class RandomScheduler(BaseScheduler):
     """
-
+    Select a random proxied host to receive the next request.
     """
     schedulerName = "random"
 
     def nextHost(self, client_addr):
-        import random
         if self.hosts:
             pick = random.choice(self.hosts)
             return pick
@@ -166,7 +170,8 @@ class RandomScheduler(BaseScheduler):
 
 class RoundRobinScheduler(BaseScheduler):
     """
-
+    This scheduler presents a simple algorighm for selecting hosts based on
+    nothing other than who's next in the list.
     """
     schedulerName = "roundrobin"
     counter = 0

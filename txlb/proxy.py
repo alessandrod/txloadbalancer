@@ -14,7 +14,7 @@ class Proxy(object):
 
     Public API:
 
-    method __init__(self, name, (bindhost, bindport), scheduler)
+    method __init__(self, name, host, port, scheduler, director)
     attribute .scheduler: read/write - a PDScheduler
     attribute .listening_address: read - a tuple of (host,port)
     """
@@ -112,8 +112,8 @@ class SenderFactory(protocol.ClientFactory):
     def clientConnectionFailed(self, connector, reason):
         # this would hang up the inbound. We don't want that.
         self.receiver.factory.scheduler.deadHost(self, reason)
-        next =  self.receiver.factory.scheduler.getHost(self,
-                                                    self.receiver.client_addr)
+        next =  self.receiver.factory.scheduler.getHost(
+            self, self.receiver.client_addr)
         if next:
             logging.log("retrying with %s\n"%repr(next), datestamp=1)
             host, port = next
@@ -147,7 +147,9 @@ class Receiver(protocol.Protocol):
         dest = self.factory.scheduler.getHost(sender, self.client_addr)
         if dest:
             host, port = dest
-            sender = reactor.connectTCP(host, port, sender)
+            reactor.connectTCP(host, port, sender)
+            connection = reactor.connectTCP(host, port, sender)
+            # XXX add optional support for logging these connections
         else:
             self.transport.loseConnection()
 
@@ -205,9 +207,9 @@ class ReceiverFactory(protocol.ServerFactory):
     protocol = Receiver
     noisy = 0
 
-    def __init__(self, (bindhost, bindport), scheduler, director):
-        self.bindhost = bindhost
-        self.bindport = bindport
+    def __init__(self, (host, port), scheduler, director):
+        self.host = host
+        self.port = port
         self.scheduler = scheduler
         self.director = director
 

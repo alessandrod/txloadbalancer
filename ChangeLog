@@ -7,6 +7,15 @@
 * Updated TODO with notes about unit tests.
 * Updated README.
 * Updated TODO with placeholders.
+* Replaced the proxy manager "listeners" attribute with the "proxies"
+attribute.
+* Added methods to the proxy manager for setting and getting the Twisted
+service collections for the proxy TCP services.
+* Changed application.setProxies to create a reference on the proxy manager
+(director) for the proxy service collection.
+* Fixed some imports in schedulers.
+* Updated plans for fixing up schedulers.
+* Updated plans for examining a general Twisted service load-balancing API.
 
 2008.06.23 oubiwann
 

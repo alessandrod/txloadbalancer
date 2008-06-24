@@ -5,24 +5,29 @@ Placeholders
 ------------
  * look at iterating over service collections from inside the host checker
  * look at stopping and starting services from inside checker functions
+ * look at the reason for bad host data to be stored on the scheduler
+ * consider having the proxy manager manage bad hosts
+ * consider creating proxy manager methods for starting and stopping services
+   for bad hosts put back into and taken out of rotation
+ * rename 'manager' attributes to 'taskManager'
+ * rename 'director' attributes to 'proxyManager'
 
 Version 1.1.0
 -------------
  * Fill in all docstrings (at the very least, for classes and module-level
    functions)
- * replace ad-hoc bad host checking with iteration over twisted services
- * remove director.listeners list weirdness (there's one proxy per service, so
-   why's there a list?) (config.ServiceConfig.listen = [] --> = '')
+   . tx.proxy - DONE
+   . tx.schedulers - DONE
+   . tx.application - DONE
  * eliminate old methods (such as AdminUserConfig.checkAccess) that were part
    of the old API
  * add weighted host scheduler (use code from when I was at PBS)
  * add a configuration checker and write out the new ones to disk
    . back up the old ones
    . disable by default; add configuration option in manager
- * convert the reactor calls for the Receivers and Senders to use t.i.app
-   instead (if possible)
-   . this might make connections easier to manage
-   . should give better logging/tracking of requests
+   . store initial configuration in memory as an unparsed string (for
+     comparison)
+ * add web admin UI support for enabling groups
 
 
 Version 1.2.0
@@ -43,6 +48,7 @@ Version 1.2.0
  * sort service groups in admin UI by name
  * cache DNS lookups
  * start adding unit tests
+ * support a configurable option to log connections to balanced servers
 
 
 Version 1.3.0
@@ -67,6 +73,13 @@ Version 1.4.0
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
  * examine the benefits of schedulers having write control over host data
+   . all that information is connection-oriented, and thogh the schedulers need
+     that info, it is not part of their purpose: determining where the current
+     request should be directed
+   . connection information should be at the proxy level (the TCP server
+     that opens connections to the proxied host)
+   . proxies should track information for each of its connections (really, the
+     connections being made to the proxy's receiver)
  * examine breaking out listeners and managers across different processes/hosts
    . if a Twisted service is to be loadbalanced how should that happen?
    . if we are running a manger daemon for twisted services that are configured
@@ -96,3 +109,17 @@ Version 2.0.0
  * connection count scheduler
   . could be used to track licensing of a service, or limit it
 
+Exploratory
+-----------
+ * developer a twisted.application API that can be used by other applications
+   to load balancing
+   . a service needs to indicate that it is load balancing
+   . if it is, it needs to read its load balancing configuration object
+   . it needs to start up one or more proxies
+   . it needs shutdown its main service and replace it with a listening service
+ * static load balancring service
+   . number of proxies are determined by configuration
+ * dynamic load balancing service
+   . number of proxies are determined by load
+   . need to define "load"
+ * possible add proxy mixins/subclasses for different protocols

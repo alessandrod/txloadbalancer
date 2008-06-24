@@ -54,19 +54,20 @@ def setupControlSocket(director):
 
 def setupProxies(director):
     """
-    Set up proxies for each service the proxy manager balances.
+    Set up proxies for each service the proxy manager balances. Additionally,
+    the director gets a reference to the proxies.
     """
     proxyCollection = service.MultiService()
     proxyCollection.setName('proxies')
-    for proxyList in director.listeners.values():
-        # XXX for some reason, there's only one in each list... probably need
-        # to look at the old code and see why, then fix it (like make it a
-        # string, and not a list)
-        proxy = proxyList[0]
-        proxyService = internet.TCPServer(
-            proxy.port, proxy.factory, interface=proxy.host)
-        proxyService.setName(proxy.name)
-        proxyService.setServiceParent(proxyCollection)
+    for proxyList in director.proxies.values():
+        # a service can listen on multiple hosts/ports
+        for proxy in proxyList:
+            proxyService = internet.TCPServer(
+                proxy.port, proxy.factory, interface=proxy.host)
+            proxyService.setName("%s %s:%s" % (
+                proxy.name, proxy.host, proxy.port))
+            proxyService.setServiceParent(proxyCollection)
+    director.setServices(proxyCollection)
     return proxyCollection
 
 
