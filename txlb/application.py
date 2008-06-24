@@ -60,13 +60,15 @@ def setupProxies(director):
     proxyCollection.setName('proxies')
     for proxyList in director.listeners.values():
         # XXX for some reason, there's only one in each list... probably need
-        # to look at the old code and see why, then fix it
+        # to look at the old code and see why, then fix it (like make it a
+        # string, and not a list)
         proxy = proxyList[0]
         proxyService = internet.TCPServer(
             proxy.port, proxy.factory, interface=proxy.host)
         proxyService.setName(proxy.name)
         proxyService.setServiceParent(proxyCollection)
     return proxyCollection
+
 
 def setup(configFile):
     """
@@ -95,6 +97,7 @@ def setup(configFile):
     checker = setupHostChecker(director)
     checker.setServiceParent(services)
 
+    # return the application object so that the .tac file can use it
     return application
 
 

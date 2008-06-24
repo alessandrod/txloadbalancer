@@ -61,7 +61,6 @@ class Sender(protocol.Protocol):
             self.receiver.transport.loseConnection()
 
     def dataReceived(self, data):
-        #print "client data", len(data)
         if self.receiver is None:
             logging.log("client got data, no receiver, tho\n", datestamp=1)
         else:
@@ -78,7 +77,6 @@ class Sender(protocol.Protocol):
         self.receiver.factory.director.setClientAddress(
             (outSrc.host, outSrc.port),
             (inSrc.host, inSrc.port))
-        #print "client connection",self.factory
         if self.receiver.receiverOk:
             self.receiver.setSender(self)
         else:
@@ -102,7 +100,6 @@ class SenderFactory(protocol.ClientFactory):
     noisy = 0
 
     def setReceiver(self, receiver):
-        #print "senderfactory.setreceiver", receiver
         self.receiver = receiver
 
     def buildProtocol(self, *args, **kw):
@@ -113,10 +110,7 @@ class SenderFactory(protocol.ClientFactory):
         return protObj
 
     def clientConnectionFailed(self, connector, reason):
-        #print "bzzt. we failed,", connector, reason
-
         # this would hang up the inbound. We don't want that.
-        #self.receiver.transport.loseConnection()
         self.receiver.factory.scheduler.deadHost(self, reason)
         next =  self.receiver.factory.scheduler.getHost(self,
                                                     self.receiver.client_addr)
@@ -132,6 +126,7 @@ class SenderFactory(protocol.ClientFactory):
 
     def stopFactory(self):
         self.receiver.factory.scheduler.doneHost(self)
+
 
 class Receiver(protocol.Protocol):
     """
@@ -154,7 +149,6 @@ class Receiver(protocol.Protocol):
             host, port = dest
             sender = reactor.connectTCP(host, port, sender)
         else:
-            #print "(still) no working servers!"
             self.transport.loseConnection()
 
     def setSender(self, sender):

@@ -3,18 +3,18 @@ Here is an ASCII diagram of the current architecture:
     application
          |
          |
-  +--------------+
-  |              |
-admin          manager
+  +--------------+-----------------+
+  |              |                 |
+admin          manager       Control Socket
   =              |
 web ui     +-----+------------+
            |                  |
      checkBadHosts       ProxyManager
                               |
                               |
-                      +-----------------+----------------+
-                      |                 |                |
-                  schedulers        Listeners      Control Socket
+                      +-----------------+
+                      |                 |
+                  schedulers        Listeners
                       =                 =
                    lb type,          proxies
                   algorithms

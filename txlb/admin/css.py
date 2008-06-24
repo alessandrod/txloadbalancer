@@ -1,3 +1,5 @@
+# XXX this was put here for convenience, from the old code base
+# needs to be moved into a static file
 adminCSS = """
     body {
         font-family: helvetica;

@@ -3,6 +3,7 @@ import time
 from txlb import util
 from txlb import logging
 
+
 def createScheduler(groupConfig):
     schedulerName = groupConfig.scheduler
     if schedulerName == "random":
@@ -15,6 +16,7 @@ def createScheduler(groupConfig):
         return LeastConnsRRScheduler(groupConfig)
     else:
         raise ValueError, "Unknown scheduler type `%s'" % schedulerName
+
 
 class BaseScheduler:
     """
@@ -146,7 +148,11 @@ class BaseScheduler:
     def nextHost(self):
         raise NotImplementedError
 
+
 class RandomScheduler(BaseScheduler):
+    """
+
+    """
     schedulerName = "random"
 
     def nextHost(self, client_addr):
@@ -157,7 +163,11 @@ class RandomScheduler(BaseScheduler):
         else:
             return None
 
+
 class RoundRobinScheduler(BaseScheduler):
+    """
+
+    """
     schedulerName = "roundrobin"
     counter = 0
 
@@ -170,6 +180,7 @@ class RoundRobinScheduler(BaseScheduler):
             d = self.hosts[self.counter]
             self.counter += 1
             return d
+
 
 class LeastConnsScheduler(BaseScheduler):
     """
@@ -186,6 +197,7 @@ class LeastConnsScheduler(BaseScheduler):
         hosts = [ (x[1],x[0]) for x in self.openconns.items() ]
         hosts.sort()
         return hosts[0][1]
+
 
 class LeastConnsRRScheduler(BaseScheduler):
     """

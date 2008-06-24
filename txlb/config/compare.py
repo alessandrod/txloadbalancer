@@ -1,7 +1,11 @@
-class DiffError(Exception): pass
+from txlb.config import Config
+
+class DiffError(Exception):
+    """
+
+    """
 
 def diffXML(oldxml, newxml):
-    from pydirector.pdconf import Config
     ret = []
     oldconf = Config(xml=oldxml)
     newconf = Config(xml=newxml)
@@ -9,6 +13,7 @@ def diffXML(oldxml, newxml):
     ret.extend( compareAdmin(oldconf, newconf) )
     ret.extend( compareLogging(oldconf, newconf) )
     return ret
+
 
 def compareServices(oldconf, newconf):
     ret = []
@@ -49,6 +54,7 @@ def compareGroups(serviceName, oldservice, newservice):
                  'scheduler': ng.scheduler}))
     return ret
 
+
 def compareHosts(serviceName, groupName, oldgroup, newgroup):
     ret = []
     oldhosts = oldgroup.hosts.keys()
@@ -76,6 +82,7 @@ def compareHosts(serviceName, groupName, oldgroup, newgroup):
             raise DiffError, "what the hey?"
     return ret
 
+
 def mergelists(l1, l2):
     d = {}
     for i in l1+l2:
@@ -84,15 +91,18 @@ def mergelists(l1, l2):
     l.sort()
     return l
 
+
 def compareEnable(serviceName, oldservice, newservice):
     ret = []
     # to do. or not? do we care?
     return ret
 
+
 def compareListeners(serviceName, oldservice, newservice):
     ret = []
     # how do we handle this? no API for listener changes
     return ret
+
 
 def compareAdmin(oldconf, newconf):
     ret = []
@@ -106,6 +116,7 @@ def compareAdmin(oldconf, newconf):
         # when added). needs web api commands.
         compareUsers(oldconf.admin.userdb, newconf.admin.userdb)
     return ret
+
 
 def compareUsers(olduserdb, newuserdb):
     ret = []

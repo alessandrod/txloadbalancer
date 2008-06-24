@@ -1,3 +1,10 @@
+2008.06.24 oubiwann
+
+* Cleaned up TODO, reorganized by milestones.
+* Updated architecture diagram.
+* Formatted some white space/places for docstrings.
+* Removed unused, commented-out code.
+
 2008.06.23 oubiwann
 
 * Renamed loaders to proxy.

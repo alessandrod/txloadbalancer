@@ -11,7 +11,11 @@ import txlb
 from txlb.admin import css
 from txlb.admin import template
 
+
 class UnauthorizedResource(resource.Resource):
+    """
+
+    """
     isLeaf = 1
     unauthorizedPage = static.Data(template.unauth, 'text/html')
 
@@ -20,6 +24,7 @@ class UnauthorizedResource(resource.Resource):
         request.setHeader(
             'WWW-authenticate', 'basic realm="PyDirector"')
         return self.unauthorizedPage.render(request)
+
 
 class StyleSheet(resource.Resource):
     """
@@ -30,6 +35,7 @@ class StyleSheet(resource.Resource):
 
         """
         return css.adminCSS
+
 
 class BasePage(resource.Resource):
     """
@@ -77,6 +83,7 @@ class BasePage(resource.Resource):
 
         """
         return str(self.getPage(request))
+
 
 class RunningPage(BasePage):
     """
@@ -148,6 +155,7 @@ class RunningPage(BasePage):
             content += template.serviceClose
         content += self.getFooter(resultMessage)
         return content
+
 
 class RunningConfig(BasePage):
     """
@@ -229,6 +237,7 @@ class RunningConfig(BasePage):
         # and spit out the XML
         return doc.toxml()
 
+
 class StoredConfig(BasePage):
     """
 
@@ -239,6 +248,7 @@ class StoredConfig(BasePage):
         """
         request.setHeader('Content-type', 'text/plain')
         return self.parent.director.conf.dom.toxml()
+
 
 class DeleteHost(BasePage):
     """
@@ -268,6 +278,7 @@ class DeleteHost(BasePage):
         request.redirect('/running?resultMessage=%s' % urllib.quote(msg))
         return "OK"
 
+
 class AddHost(BasePage):
     """
 
@@ -287,6 +298,7 @@ class AddHost(BasePage):
         msg = 'Host %s(%s) added to %s / %s' % (name, ip, group, service)
         request.redirect('/running?resultMessage=%s' % urllib.quote(msg))
         return "OK"
+
 
 class AdminServer(resource.Resource):
     """

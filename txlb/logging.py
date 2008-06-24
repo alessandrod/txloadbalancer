@@ -5,7 +5,8 @@ from asyncore import compact_traceback
 import sys, time
 
 
-# look at replacing this later
+# XXX
+# look at replacing this later; can probably just use twisted's logging
 class _LoggerClass:
     def __init__(self, logfile=None):
         self.logfile = logfile
@@ -40,10 +41,12 @@ def initlog(filename):
     global Logger
     Logger = _LoggerClass(filename)
 
+
 def log(message, datestamp=0):
     global Logger
     if Logger is None: Logger = _LoggerClass()
     Logger.log(message, datestamp)
+
 
 def reload():
     global Logger

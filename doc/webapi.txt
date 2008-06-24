@@ -110,7 +110,7 @@ Miscellaneous
 
   - retryHost?service=NNN&group=NNN&host=NNN
 
-      force the manager thread to re-add a host now. unimplemented.
+      force the manager to re-add a host now. unimplemented.
 
   - hostAdminDown?service=NNN&group=NNN&name=NNN
 

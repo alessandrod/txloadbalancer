@@ -1,14 +1,28 @@
-Duncan's TODO: break 'em changes
---------------------------------
- * add an architecture diagram for the classes in the loaders module that
-   summarizes the releationships of the classes in that model
- * examine the benefits of schedulers having write control over host data
- * examine breaking out listeners and managers across different processes/hosts
-   . if a Twisted service is to be loadbalanced how should that happen?
-   . if we are running a manger daemon for twisted services that are configured
-     to be loadbalanced, how should that happen?
-   . what about all of the services potentially being equal? any can be a
-     manager, any can be balanced via another services proxy manager
+Roadmap
+=======
+
+
+Version 1.1.0
+-------------
+ * Fill in all docstrings (at the very least, for classes and module-level
+   functions)
+ * replace ad-hoc bad host checking with iteration over twisted services
+ * remove director.listeners list weirdness (there's one proxy per service, so
+   why's there a list?) (config.ServiceConfig.listen = [] --> = '')
+ * eliminate old methods (such as AdminUserConfig.checkAccess) that were part
+   of the old API
+ * add weighted host scheduler (use code from when I was at PBS)
+ * add a configuration checker and write out the new ones to disk
+   . back up the old ones
+   . disable by default; add configuration option in manager
+ * convert the reactor calls for the Receivers and Senders to use t.i.app
+   instead (if possible)
+   . this might make connections easier to manage
+   . should give better logging/tracking of requests
+
+
+Version 1.2.0
+-------------
  * add a scheduler that accounts for memory and CPU utilization, which will
    require:
    . a standard python means for services to get system memory and other
@@ -19,104 +33,58 @@ Duncan's TODO: break 'em changes
      reported resource utilization
  * I don't like the default behaviour of adding bad hosts back into circulation
    without any checks; I want to add something there...
- * write a manager implementation that can run as a twisted plugin
- * [maybe] remove XML; use the .tac file (or other python) to configure
-   services, groups, and hosts
+   . store away more info about the down hosts
+   . when, how long til next test, etc.
+   . track the count of faults.
+ * sort service groups in admin UI by name
+ * cache DNS lookups
+
+
+Version 1.3.0
+-------------
  * add heartbeat/HA features for lb'ed services to communicate back up to the
    lb manager
- * implement heartbeat/HA features as a twisted plugin
  * add an XML-RPC service instead of the custom web API
- * sort service groups in admin UI by name
+   . including adding methods for bouncing the admin UI
+ * replace old PyDirector logging with Twisted logging
+ * figure out a way to restart/upgrade pydir. Idea: close down listener, start
+   new code immediately
+   . let old connections on old pydir finish (run to completion) before exiting
+   . look at (again) JP's live process migration work from several years ago
+ * add diffs for examining running/stored configurations
+ * move CSS into a static file
+
+
+Version 1.4.0
+-------------
  * [maybe] make the "top" link point to a list of service groups, linked to
    pages that just display that one section (as opposed to the view that
    "running" gives, which is all sections)
- * replace ad-hoc bad host checking with iteration over twisted services
- * remove director.listeners list weirdness (there's one proxy per service, so
-   why's there a list?) (config.ServiceConfig.listen = [] --> = '')
+ * examine the benefits of schedulers having write control over host data
+ * examine breaking out listeners and managers across different processes/hosts
+   . if a Twisted service is to be loadbalanced how should that happen?
+   . if we are running a manger daemon for twisted services that are configured
+     to be loadbalanced, how should that happen?
+   . what about all of the services potentially being equal? any can be a
+     manager, any can be balanced via another services proxy manager
+ * sticky connections. keep a cache of 'client_ip':'backend_ip'
+   . manager needs to be able to call "scheduler.cleanup()" to allow the
+     cache to be manageable.
 
-Lab Plan 1
-----------
-Dell Laptop: txlb.tac
-Gateway Laptop: siege runner
-PowerBook Al: 1 twistd
-PowerBook Ti: 1 twistd
-Gateway tower1: 1 twistd
-Gateway tower2: 1 twistd
-iMac: 2 twistd
-Netra: 2 twistd
 
-Original TODO:
---------------
-Things that could be added:
-    logging cleanup
-    scheduler stats structures cleanup
-    adminUp/adminDown host
-    'weighted' hosts
+Version 1.5.0
+-------------
+ * convert the user auth to use cred
 
-    more doco
-    write a client that compares config xml and running xml, and updates
-      the latter to match the former. mostly there now, see compareconf
-    Figure out a way to restart/upgrade pydir. Idea: close down listener, start
-      new code immediately. Let old connections on old pydir finish (run to
-      completion) before exiting.
 
-    Caching of DNS lookups
-    dump out curBadHosts/histBadHosts/open
-    make the connection checker work
-    sticky connections. keep a cache of 'client_ip':'backend_ip'.
-      manager needs to be able to call "scheduler.cleanup()" to allow the
-      cache to be manageable.
-
-Admin interface bits left to do:
-
-  Information:
-    [maybe] config / config.txt ?
-    [maybe] config vs. running
-    [maybe] reload config, making changes
-  Host mgmt:
-    delAllHosts?service=NNN&group=NNN
-  Group mgmt:
-    changeScheduler?service=NNN&group=NNN&scheduler=NNN
-  Service mgmt:
-    newService?service=NNN&listen=NNN
-    newGroup?service=NNN&group=NNN&scheduler=NNN
-    delGroup?service=NNN&group=NNN
-  other
-    closeLog
-    retryHost?service=NNN&group=NNN&client=NNN
-    hostAdminDown
-    hostAdminUp
-    [maybe] shutdown?
-
-multiple admins for a pydir (e.g. one http, one https)
-
-make enable optional
-
-logging options?
-
-Document the various return results from the text mode interfaces -
-eg running.txt
-
-additional schedulers.
-
-better testing stuff in SchedulerManager, rather than just dropping the
-dead entry back into the mix. In the case of "it's down", this is harmless,
-but nonetheless. Store away more info about the down hosts - when, how long
-til next test, &c.
-
-expires on the CSS.
-
-seriously refactor the CSS and also the pdadmin_running HTML. Nasty nasty.
-
-specify users not in the config.xml file, but somewhere else.
-
-what does 'host unknown' raise under 2.1?
-
-Clean up all the logging. Logging now goes to a single place, but in
-inconsistent format. Still, it's better than it was.
-
-Track the count of faults.
-
-Additional idea: connection count scheduler. could be used to track
-licensing of a service, or limit it.
+Version 2.0.0
+-------------
+ * the AMP-based "bottle" protocol
+ * messaging, process control
+ * cluster management
+ * add additional authentication support
+   . LDAP
+   . RADIUS
+ * connection count scheduler
+  . could be used to track licensing of a service, or limit it
 

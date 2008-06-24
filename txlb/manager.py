@@ -28,16 +28,23 @@ def checkBadHosts(director):
             del badHosts[bh]
             scheduler.newHost(bh, name)
 
+
 def checkConfigChanges():
     pass
 
 
 class UnknownPortError(Exception):
-    pass
+    """
 
+    """
 
 
 class GetClientAddress(amp.Command):
+    """
+
+
+    Note: supplied by Apple.
+    """
     arguments = [('host', amp.String()),
                  ('port', amp.Integer())]
 
@@ -48,6 +55,10 @@ class GetClientAddress(amp.Command):
 
 
 class ControlProtocol(amp.AMP):
+    """
+
+    Note: supplied by Apple.
+    """
     def __init__(self, director):
         self.director = director
 
@@ -61,6 +72,10 @@ class ControlProtocol(amp.AMP):
 
 
 class ControlFactory(protocol.ServerFactory):
+    """
+
+    Note: supplied by Apple.
+    """
     def __init__(self, director):
         self.director = director
 
@@ -132,3 +147,4 @@ class ProxyManager(object):
 
         """
         self._connections[host] = peer
+

@@ -6,6 +6,7 @@ from xml.dom import minidom
 from txlb import util
 from txlb import logging
 
+
 legalConfigSections = [
     u'service',
     u'admin',
@@ -14,6 +15,7 @@ legalConfigSections = [
     u'control',
     ]
 
+
 legalCommentSections = [
     'note',
     '#text',
@@ -21,7 +23,11 @@ legalCommentSections = [
     '#cdata-section',
     ]
 
+
 def getDefaultArgs(methodObj):
+    """
+
+    """
     arglist, vaarg, kwarg, defargs = inspect.getargspec(methodObj.im_func)
     arglist.reverse()
     defargs = list(defargs)
@@ -33,20 +39,27 @@ def getDefaultArgs(methodObj):
 
 
 class ConfigError(Exception):
-    pass
+    """
+
+    """
 
 
 class ServiceError(ConfigError):
-    pass
+    """
+
+    """
 
 
 class GroupError(ServiceError):
-    pass
+    """
+
+    """
 
 
 class HostConfig(object):
-    __slots__ = [ 'name', 'ip' ]
+    """
 
+    """
     def __init__(self, name, ip):
         self.name = name
         if type(ip) is type(u''):
@@ -56,8 +69,9 @@ class HostConfig(object):
 
 
 class GroupConfig(object):
-    __slots__ = [ 'name', 'scheduler', 'hosts' ]
+    """
 
+    """
     def __init__(self, name):
         self.name = name
         self.scheduler = None
@@ -80,6 +94,9 @@ class GroupConfig(object):
 
 
 class ServiceConfig(object):
+    """
+
+    """
     def __init__(self, name):
         self.name = name
         self.groups = {}
@@ -137,23 +154,27 @@ class ServiceConfig(object):
 
 
 class AdminUserConfig(object):
-    __slots__ = [ 'name', 'password', 'access' ]
+    """
+
+    """
+    def __init__(self):
+        self.name = ''
+        self.password = ''
+        self.access = ''
 
     def checkPW(self, password):
         if crypt(password, self.password[:2]) == self.password:
-            return 1
-        else:
-            return 0
+            return True
+        return False
 
     def checkAccess(self, methodObj, argdict):
         a = getDefaultArgs(methodObj)
         required = a.get('Access', 'NoAccess')
         if required == "Read" and self.access in ('full', 'readonly'):
-            return 1
+            return True
         elif required == "Write" and self.access == 'full':
-            return 1
-        else:
-            return 0
+            return True
+        return False
 
 
 class ManagerConfig(object):
@@ -165,6 +186,9 @@ class ManagerConfig(object):
 
 
 class AdminConfig(object):
+    """
+
+    """
     def __init__(self):
         self.listen = None
         self.secure = False
@@ -202,6 +226,9 @@ class AdminConfig(object):
 
 
 class Config(object):
+    """
+
+    """
     def __init__(self, filename=None, xml=None):
         self.services = {}
         self.admin = None
