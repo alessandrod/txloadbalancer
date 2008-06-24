@@ -4,7 +4,8 @@ This is a pure python TCP load balancer. It takes inbound TCP connections and
 connects them to one of a number of backend servers.
 
 Project home: https://launchpad.net/txloadbalancer
-Contact email: Duncan McGreggor <oubiwann@divmod.com>
+Maintainer email: Duncan McGreggor <oubiwann@divmod.com>
+Original author: Anthony Baxter <anthony@interlink.com.au>
 
 ----------------------------------------------------------------------
 
