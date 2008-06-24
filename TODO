@@ -38,6 +38,7 @@ Version 1.2.0
    . track the count of faults.
  * sort service groups in admin UI by name
  * cache DNS lookups
+ * start adding unit tests
 
 
 Version 1.3.0
@@ -53,6 +54,7 @@ Version 1.3.0
    . look at (again) JP's live process migration work from several years ago
  * add diffs for examining running/stored configurations
  * move CSS into a static file
+ * continue adding unit tests
 
 
 Version 1.4.0
@@ -70,11 +72,13 @@ Version 1.4.0
  * sticky connections. keep a cache of 'client_ip':'backend_ip'
    . manager needs to be able to call "scheduler.cleanup()" to allow the
      cache to be manageable.
+ * continue adding unit tests
 
 
 Version 1.5.0
 -------------
  * convert the user auth to use cred
+ * complete unit tests
 
 
 Version 2.0.0
