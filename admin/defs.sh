@@ -1,5 +1,6 @@
 LIB=./txlb/
-BZR=lp:txloadbalancer
+#BZR=lp:txloadbalancer
+BZR=lp:~oubiwann/txloadbalancer/twisted-lb-service
 FLAG='skip_tests'
 MSG=commit-msg
 export PYTHONPATH=.:./test
