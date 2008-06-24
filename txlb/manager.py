@@ -137,7 +137,6 @@ class ProxyManager(object):
 
     def createListeners(self):
         for service in self.conf.getServices():
-            print "service ", service
             self.createSchedulers(service)
             eg = service.getEnabledGroup()
             scheduler = self.getScheduler(service.name, eg.name)
@@ -145,7 +144,6 @@ class ProxyManager(object):
             # will need to be changed
             self.proxies[service.name] = []
             for lobj in service.listen:
-                print "lobj ", lobj
                 host, port = util.splitHostPort(lobj)
                 l = proxy.Proxy(service.name, host, port, scheduler, self)
                 self.proxies[service.name].append(l)

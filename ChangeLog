@@ -16,6 +16,7 @@ service collections for the proxy TCP services.
 * Fixed some imports in schedulers.
 * Updated plans for fixing up schedulers.
 * Updated plans for examining a general Twisted service load-balancing API.
+* Removed print statements.
 
 2008.06.23 oubiwann
 
