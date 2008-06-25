@@ -131,21 +131,20 @@ class ProxyManager(object):
         return self.schedulers[(serviceName,groupName)]
 
     def createSchedulers(self, service):
+        # XXX groups are configuration level metadata and should be handled at
+        # the application level, not the library level; schedulers only need
+        # the lb algorithm type passed to them in order to be created
         for group in service.getGroups():
             s = schedulers.schedulerFactory(group)
             self.schedulers[(service.name,group.name)] = s
 
     def createListeners(self):
         for service in self.conf.getServices():
-            print "service ", service
             self.createSchedulers(service)
             eg = service.getEnabledGroup()
             scheduler = self.getScheduler(service.name, eg.name)
-            # if we ever need to support multiple proxies per service, this
-            # will need to be changed
             self.proxies[service.name] = []
             for lobj in service.listen:
-                print "lobj ", lobj
                 host, port = util.splitHostPort(lobj)
                 l = proxy.Proxy(service.name, host, port, scheduler, self)
                 self.proxies[service.name].append(l)

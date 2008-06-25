@@ -2,7 +2,6 @@ from twisted.web import server
 from twisted.internet import ssl
 from twisted.application import service
 from twisted.application import internet
-from twisted.application import strports
 
 from txlb import name
 from txlb import util

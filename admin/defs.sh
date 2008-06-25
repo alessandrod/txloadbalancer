@@ -1,6 +1,7 @@
 LIB=./txlb/
 #BZR=lp:txloadbalancer
-BZR=lp:~oubiwann/txloadbalancer/twisted-lb-service
+BZR='lp:~oubiwann/txloadbalancer/twisted-lb-service'
+echo $BZR_DEST
 FLAG='skip_tests'
 MSG=commit-msg
 export PYTHONPATH=.:./test
@@ -33,7 +34,7 @@ function pushSucceed {
 }
 
 function pushLaunchpad {
-    echo "Pushing to Launchpad now ..."
+    echo "Pushing to Launchpad now ($BZR) ..."
     bzr push $BZR && pushSucceed
     cleanup
 }

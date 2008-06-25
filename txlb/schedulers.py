@@ -29,6 +29,10 @@ class BaseScheduler(object):
     """
     schedulerName = None
 
+    # XXX passing a configuration object is uncool and application-level; a
+    # scheduler doesn't need the name of every host to function as it should;
+    # host data and tracking belong elsewhere; a scheduler should only be in
+    # charge of scheduling (lb algorithm)
     def __init__(self, groupConfig):
         self.hosts = []
         self.hostnames = {}
@@ -90,7 +94,6 @@ class BaseScheduler(object):
         try:
             t,host = self.open[s_id]
         except KeyError:
-            #print "Couldn't find %s in %s"%(repr(s_id), repr(self.open.keys()))
             return
         del self.open[s_id]
         cur = self.openconns.get(host)

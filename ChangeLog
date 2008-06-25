@@ -17,6 +17,13 @@ service collections for the proxy TCP services.
 * Updated plans for fixing up schedulers.
 * Updated plans for examining a general Twisted service load-balancing API.
 * Set up commit script to work with the new branch.
+* Created an application subpackage and moved txlb.application to
+txlb.application.services.
+* Created a service module in txlb.application for exploring the viability of
+load balancing arbitrary services in a twisted application.
+* Removed print statements.
+* Added an example .tac file for a load balanced service.
+* Took more notes on what's going to be needed in order to support this work.
 
 2008.06.23 oubiwann
 
