@@ -25,11 +25,19 @@ lbType = 'leastconns'
 
 application = service.Application('Demo Web Server')
 
+# the config file for this would only contain a single group (never any more)
+# with a series of hosts to proxy
+director = manager.ProxyManager(configFile)
+tracker = manager.HostTracking(groupConfig)
+
 lbs = txervice.LoadBalancedService()
 lbs.addServiceParent(application)
-lbs.proxiesFactory(hosts, lbType)
+lbs.proxiesFactory(hosts, lbType, director, tracker)
 
 site = server.Site(static.File('./data'))
 server = internet.TCPServer(8080, site)
 
+# non-load-balanced, we do the following
 lbs.setPrimaryService(server)
+
+# in a load-balanced scenario, we set the ProxyManager as the primary service

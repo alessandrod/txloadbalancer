@@ -1,4 +1,4 @@
-LIB=./txlb/
+LIB=txlb
 #BZR=lp:txloadbalancer
 BZR='lp:~oubiwann/txloadbalancer/twisted-lb-service'
 echo $BZR_DEST

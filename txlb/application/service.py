@@ -42,7 +42,7 @@ class LoadBalancedService(service.Service):
         """
         self.scheduler = schedulers.schedulerFactory(lbType)
 
-    def proxiesFactory(self, hosts, lbType):
+    def proxiesFactory(self, hosts, lbType, director, tracker):
         """
 
         """
@@ -50,8 +50,7 @@ class LoadBalancedService(service.Service):
             # XXX need to figure out naming in order to have accurate lookup...
             # this is just a temporary solution
             name = self._stringifyHostPort(host, port)
-            director = manager.ProxyManager(host, port)
-            proxy = Proxy(name, host, port, scheduler, director)
+            proxy = Proxy(name, host, port, tracker, director)
             proxyService = internet.TCPServer(
                 proxy.port, proxy.factory, interface=proxy.host)
             proxyService.setServiceParent(self.proxies)

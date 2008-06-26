@@ -3,6 +3,8 @@
 * Found the bug documented in ticket #242868
 (https://bugs.launchpad.net/txloadbalancer/+bug/242868).
 * Removed debugging print statements.
+* Removed the bug from the TODO.
+* Started fleshing out the txlbWeb.tac some more.
 
 2008.06.25 oubiwann
 

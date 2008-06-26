@@ -4,23 +4,11 @@ Roadmap
 Bugs
 ----
 
-*** something's seriously wrong with the host tracking
-*** symptoms:
- * adding a bad host and then hitting the proxy causes the bad host to take a
-   good host down with it (the good host is added to the bad hosts dict
- * adding two bad hosts and then hitting the proxy very quickly can cause all
-   hosts to be marked as bad
- * when the hosts are cleared by the scheduled checker, all counts are reset to
-   0
- * if all hosts are up and one reloads the page slowly, three hosts tend to get
-   taken out of the rotation and one stays in
 
 Placeholders
 ------------
  * add error tracking as well as open host tracking
    . put it in the admin GUI too
- * change all tracking actions to use the trackers attribute of the manager,
-   and not the schedulers attribute
  * where does nextHost() get called? who calls it? who calls the caller?
  * can nextHost() get unburried? How "close" can we bring it to the receiver
    factory?
@@ -129,6 +117,7 @@ Version 2.0.0
    . RADIUS
  * connection count scheduler
   . could be used to track licensing of a service, or limit it
+
 
 Exploratory
 -----------
