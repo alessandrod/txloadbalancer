@@ -71,7 +71,7 @@ class HostTrackingTests(unittest.TestCase):
         s1 = schedulerFactory(ht1.group.scheduler, ht1)
         stats = ht1.getStats()
         self.assertEquals(len(stats['bad'].keys()), 0)
-        self.assertEquals(sum(stats['open'].values()), 0)
+        self.assertEquals(sum(stats['openconns'].values()), 0)
         self.assertEquals(sum(stats['totals'].values()), 0)
 
     def test_openHostStats(self):
@@ -84,7 +84,7 @@ class HostTrackingTests(unittest.TestCase):
         host = ht1.getHost(fakeSenderFactory)
         stats = ht1.getStats()
         self.assertEquals(len(stats['bad'].keys()), 0)
-        self.assertEquals(sum(stats['open'].values()), 1)
+        self.assertEquals(sum(stats['openconns'].values()), 1)
         self.assertEquals(sum(stats['totals'].values()), 0)
 
     def test_deadHostStats(self):
@@ -96,11 +96,11 @@ class HostTrackingTests(unittest.TestCase):
         fakeSenderFactory = object()
         ht1 = HostTracking(self.group1)
         s1 = schedulerFactory(ht1.group.scheduler, ht1)
-        ht1.open[fakeSenderFactory] = (time, badHost)
+        ht1.openconns[fakeSenderFactory] = (time, badHost)
         ht1.deadHost(fakeSenderFactory, doLog=False)
         stats = ht1.getStats()
         self.assertEquals(len(stats['bad'].keys()), 1)
-        self.assertEquals(sum(stats['open'].values()), 0)
+        self.assertEquals(sum(stats['openconns'].values()), 0)
         self.assertEquals(sum(stats['totals'].values()), 0)
 
     def test_getHostRoundRobin(self):
@@ -130,22 +130,22 @@ class HostTrackingTests(unittest.TestCase):
         # check the stats
         stats = ht1.getStats()
         self.assertEquals(len(stats['bad'].keys()), 0)
-        self.assertEquals(sum(stats['open'].values()), 8)
+        self.assertEquals(sum(stats['openconns'].values()), 8)
         self.assertEquals(sum(stats['totals'].values()), 0)
         # finish them up
         [ht1.doneHost(x) for x in fakeSenderFactories]
         # check the clenaup stats
         stats = ht1.getStats()
         self.assertEquals(len(stats['bad'].keys()), 0)
-        self.assertEquals(sum(stats['open'].values()), 0)
+        self.assertEquals(sum(stats['openconns'].values()), 0)
         self.assertEquals(sum(stats['totals'].values()), 8)
         # now let's do a bad host
         fakeSenderFactory = object()
         host = ht1.getHost(fakeSenderFactory)
         stats = ht1.getStats()
-        # make sure that the bad host is open
-        self.assertEquals(sum(stats['open'].values()), 1)
-        ht1.open[fakeSenderFactory] = (time, host)
+        # make sure that the bad host is listed in the open connections
+        self.assertEquals(sum(stats['openconns'].values()), 1)
+        ht1.openconns[fakeSenderFactory] = (time, host)
         ht1.deadHost(fakeSenderFactory, doLog=False)
         stats = ht1.getStats()
         # make sure that the previous stats for the bad host are not deleted

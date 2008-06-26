@@ -128,7 +128,7 @@ class RunningPage(BasePage):
                 content += desc
                 content += template.groupHeaderForm % (
                     service.name, group.name, klass)
-                counts = stats['open']
+                counts = stats['openconns']
                 totals = stats['totals']
                 k = counts.keys()
                 k.sort()
@@ -200,7 +200,7 @@ class RunningConfig(BasePage):
                 stats = tracker.getStats()
                 hosts = group.getHosts()
                 hdict = tracker.getHostNames()
-                counts = stats['open']
+                counts = stats['openconns']
                 ahosts = counts.keys() # ahosts is now a list of active hosts
                 # now add disabled hosts.
                 for k in stats['bad'].keys():

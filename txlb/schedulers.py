@@ -77,9 +77,9 @@ class LeastConnsScheduler(BaseScheduler):
     counter = 0
 
     def nextHost(self, client_addr):
-        if not self.tracker.openconns.keys():
+        if not self.tracker.available.keys():
             return None
-        hosts = [ (x[1],x[0]) for x in self.tracker.openconns.items() ]
+        hosts = [(x[1],x[0]) for x in self.tracker.available.items()]
         hosts.sort()
         return hosts[0][1]
 
@@ -94,10 +94,10 @@ class LeastConnsRRScheduler(BaseScheduler):
     counter = 0
 
     def nextHost(self, client_addr):
-        if not self.tracker.openconns.keys():
+        if not self.tracker.available.keys():
             return None
-        hosts = [ (x[1], self.tracker.lastclose.get(x[0],0), x[0])
-                            for x in self.tracker.openconns.items() ]
+        hosts = [(x[1], self.tracker.lastclose.get(x[0],0), x[0])
+                            for x in self.tracker.available.items()]
         hosts.sort()
         return hosts[0][2]
 

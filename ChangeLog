@@ -1,4 +1,4 @@
-2008.06.25 oubiwann
+2008.06.26 oubiwann
 
 * Found the bug documented in ticket #242868
 (https://bugs.launchpad.net/txloadbalancer/+bug/242868).
@@ -6,6 +6,7 @@
 * Removed the bug from the TODO.
 * Started fleshing out the txlbWeb.tac some more.
 * Updated the TODO with some next steps in this exploration.
+* Renamed some of the host tracking attributes to reflect their use better.
 
 2008.06.25 oubiwann
 

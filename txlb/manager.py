@@ -215,8 +215,8 @@ class HostTracking(object):
         self.hosts = []
         self.hostnames = {}
         self.badhosts = {}
-        self.open = {}
         self.openconns = {}
+        self.available = {}
         self.totalconns = {}
         self.lastclose = {}
         self.loadConfig(groupConfig)
@@ -232,12 +232,12 @@ class HostTracking(object):
 
     def getStats(self):
         stats = {}
-        stats['open'] = {}
+        stats['openconns'] = {}
         stats['totals'] = {}
-        hostPortCounts = self.openconns.items()
+        hostPortCounts = self.available.items()
         hostPortCounts.sort()
         for hostPort, count in hostPortCounts:
-            stats['open']['%s:%s' % hostPort] = count
+            stats['openconns']['%s:%s' % hostPort] = count
         hostPortCount = self.totalconns.items()
         hostPortCount.sort()
         for hostPort, count in hostPortCount:
@@ -248,12 +248,12 @@ class HostTracking(object):
 
     def showStats(self, verbose=1):
         stats = []
-        stats.append( "%d open connections" % len(self.open.keys()) )
-        hostPortCounts = self.openconns.items()
+        stats.append("%d open connections" % len(self.openconns.keys()))
+        hostPortCounts = self.available.items()
         hostPortCounts.sort()
         stats = stats + [str(x) for x in hostPortCounts]
         if verbose:
-            openHosts = [x[1] for x in self.open.values()]
+            openHosts = [x[1] for x in self.openconns.values()]
             openHosts.sort()
             stats = stats + [str(x) for x in openHosts]
         return "\n".join(stats)
@@ -262,9 +262,9 @@ class HostTracking(object):
         host = self.scheduler.nextHost(client_addr)
         if not host:
             return None
-        cur = self.openconns.get(host)
-        self.open[senderFactory] = (time.time(), host)
-        self.openconns[host] += 1
+        cur = self.available.get(host)
+        self.openconns[senderFactory] = (time.time(), host)
+        self.available[host] += 1
         return host
 
     def getHostNames(self):
@@ -272,12 +272,12 @@ class HostTracking(object):
 
     def doneHost(self, senderFactory):
         try:
-            t, host = self.open[senderFactory]
+            t, host = self.openconns[senderFactory]
         except KeyError:
             return
-        del self.open[senderFactory]
-        if self.openconns.get(host) is not None:
-            self.openconns[host] -= 1
+        del self.openconns[senderFactory]
+        if self.available.get(host) is not None:
+            self.available[host] -= 1
             self.totalconns[host] += 1
         self.lastclose[host] = time.time()
 
@@ -288,7 +288,7 @@ class HostTracking(object):
         self.hostnames[ip] = name
         # XXX why is this needed too?
         self.hostnames['%s:%d' % ip] = name
-        self.openconns[ip] = 0
+        self.available[ip] = 0
         self.totalconns[ip] = 0
 
     def delHost(self, ip=None, name=None, activegroup=0):
@@ -310,7 +310,7 @@ class HostTracking(object):
         if ip in self.hosts:
             self.hosts.remove(ip)
             del self.hostnames[ip]
-            del self.openconns[ip]
+            del self.available[ip]
             del self.totalconns[ip]
         elif self.badhosts.has_key(ip):
             del self.badhosts[ip]
@@ -325,7 +325,7 @@ class HostTracking(object):
         # if this throws an exception here, I think it's because all the hosts
         # have been removed from the pool
         try:
-            epochTime, hostPort = self.open[senderFactory]
+            epochTime, hostPort = self.openconns[senderFactory]
         except KeyError:
             if doLog:
                 msg = """Wow, Bender says "We're boned." No hosts available.\n"""
@@ -336,8 +336,8 @@ class HostTracking(object):
                 logging.log("marking host %s down (%s)\n" % (
                     str(hostPort), reason.getErrorMessage()))
             self.hosts.remove(hostPort)
-        if self.openconns.has_key(hostPort):
-            del self.openconns[hostPort]
+        if self.available.has_key(hostPort):
+            del self.available[hostPort]
         # XXX I don't think we want to delete the previously gathered stats for
         # the hosts that go bad... I'll keep this code here (but commented out)
         # in case there's a good reason for it and I'm nost not thinking of it

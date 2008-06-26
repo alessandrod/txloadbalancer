@@ -208,6 +208,9 @@ class Receiver(protocol.Protocol):
         """
         Received data from the client. either send it on, or save it.
         """
+        # XXX remove this after testing
+        import pprint
+        pprint.pprint(self.factory.tracker.__dict__)
         if self.sender is not None:
             self.sender.transport.write(data)
         else:
