@@ -1,3 +1,13 @@
+2008.06.25 oubiwann
+
+* Added tests for HostTracking class.
+* Added notes to the architecture doc about the relationship of the proxy
+classes to one another.
+* Added notes to the architecture doc about who talks to who in the proxy
+module.
+* Added a stub for a read-only admin UI page.
+* Added the logic to admin.pages and ProxyManager to enabled read-only pages.
+
 2008.06.24 oubiwann
 
 * Cleaned up TODO, reorganized by milestones.
@@ -24,6 +34,8 @@ load balancing arbitrary services in a twisted application.
 * Removed print statements.
 * Added an example .tac file for a load balanced service.
 * Took more notes on what's going to be needed in order to support this work.
+* Moved the host-tracking code out of schedulers and into manager (temporary
+location, while it gets sorted out).
 
 2008.06.23 oubiwann
 

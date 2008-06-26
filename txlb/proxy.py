@@ -14,23 +14,27 @@ class Proxy(object):
 
     Public API:
 
-    method __init__(self, name, host, port, scheduler, director)
-    attribute .scheduler: read/write - a PDScheduler
+    method __init__(self, name, host, port, tracker, director)
+    attribute .tracker: read/write - a HostTracking object
     attribute .listening_address: read - a tuple of (host,port)
     """
-    def __init__(self, name, host, port, scheduler, director):
+    def __init__(self, name, host, port, tracker, director):
         self.name = name
-        self.port = port
         self.host = host
+        self.port = port
+        self.tracker = tracker
         self.listening_address = (host, port)
         self.director = director
         self.factory = ReceiverFactory(
-            self.listening_address, scheduler, self.director)
-        self.setScheduler(scheduler)
+            self.listening_address, tracker, self.director)
 
-    def setScheduler(self, scheduler):
-        self.scheduler = scheduler
-        self.factory.setScheduler(scheduler)
+    def setTracker(self, tracker):
+        """
+        This is not actually redundant; setTracker is needed by the proxy
+        manager when the group for a service is changed.
+        """
+        self.tracker = tracker
+        self.factory.setTracker(tracker)
 
 
 class Sender(protocol.Protocol):
@@ -56,7 +60,6 @@ class Sender(protocol.Protocol):
             elif reason.type is error.ConnectionLost:
                 pass
             else:
-                #print id(self),"connection to server lost:",reason
                 pass
             self.receiver.transport.loseConnection()
 
@@ -100,32 +103,52 @@ class SenderFactory(protocol.ClientFactory):
     noisy = 0
 
     def setReceiver(self, receiver):
+        """
+        This method is by the reveiver which instantiates this class to set
+        its receiver, just after instantiation of this class.
+        """
         self.receiver = receiver
 
     def buildProtocol(self, *args, **kw):
-        # over-ride the base class method, because we want to connect
-        # the objects together.
+        """
+        This method overrides the base class method, because we want to connect
+        the objects together. Note that the setReseiver method that is called
+        is from this factory's protocol, not from the factory itself.
+        """
         protObj = protocol.ClientFactory.buildProtocol(self, *args, **kw)
         protObj.setReceiver(self.receiver)
         return protObj
 
     def clientConnectionFailed(self, connector, reason):
-        # this would hang up the inbound. We don't want that.
-        self.receiver.factory.scheduler.deadHost(self, reason)
-        next =  self.receiver.factory.scheduler.getHost(
+        """
+
+        """
+        # without overriding, this would hang up the inbound. We don't want
+        # that
+        #print connector
+        #print reason.getErrorMessage()
+        from pprint import pprint
+        #pprint(connector.__dict__)
+        pprint(self.receiver.factory.tracker.__dict__)
+        self.receiver.factory.tracker.deadHost(self, reason)
+        print "self: %s" % self
+        print "client_addr: %s" % str(self.receiver.client_addr)
+        #print "bad host: %s" % self.receiver.factory.tracker.open[self]
+        next = self.receiver.factory.tracker.getHost(
             self, self.receiver.client_addr)
+        print "next host: %s" % str(next)
         if next:
-            logging.log("retrying with %s\n"%repr(next), datestamp=1)
+            logging.log("retrying with %s\n" % repr(next), datestamp=1)
             host, port = next
             reactor.connectTCP(host, port, self)
         else:
             # No working servers!?
             logging.log("no working servers, manager -> aggressive\n",
-                          datestamp=1)
+                        datestamp=1)
             self.receiver.transport.loseConnection()
 
     def stopFactory(self):
-        self.receiver.factory.scheduler.doneHost(self)
+        self.receiver.factory.tracker.doneHost(self)
 
 
 class Receiver(protocol.Protocol):
@@ -144,7 +167,7 @@ class Receiver(protocol.Protocol):
         self.client_addr = self.transport.client
         sender = SenderFactory()
         sender.setReceiver(self)
-        dest = self.factory.scheduler.getHost(sender, self.client_addr)
+        dest = self.factory.tracker.getHost(sender, self.client_addr)
         if dest:
             host, port = dest
             reactor.connectTCP(host, port, sender)
@@ -164,7 +187,7 @@ class Receiver(protocol.Protocol):
 
     def connectionLost(self, reason):
         """
-        The client has hung up/disconnected. send the rest of the
+        The client has hung up/disconnected. Send the rest of the
         data through before disconnecting. Let the client know that
         it can just discard the data.
         """
@@ -179,9 +202,10 @@ class Receiver(protocol.Protocol):
             self.receiverOk = 0
         else:
             # there's a race condition here - we could be in the process of
-            # setting up the director->server connection. This then comes in
-            # after this, and you end up with a hosed receiver that's hanging
-            # around.
+            # setting up the proxy manager -> host connection. This then comes
+            # in after this, and you end up with a hosed receiver that's
+            # hanging around.
+            # XXX probably want a test for this
             self.receiverOk = 0
 
     def getBuffer(self):
@@ -207,13 +231,17 @@ class ReceiverFactory(protocol.ServerFactory):
     protocol = Receiver
     noisy = 0
 
-    def __init__(self, (host, port), scheduler, director):
+    def __init__(self, (host, port), tracker, director):
         self.host = host
         self.port = port
-        self.scheduler = scheduler
+        self.tracker = tracker
         self.director = director
 
-    def setScheduler(self, scheduler):
-        self.scheduler = scheduler
+    def setTracker(self, tracker):
+        """
+        This is called by the proxy's setTracker, which in turn is called by
+        the proxy manager when the active group for a service is changed.
+        """
+        self.tracker = tracker
 
 

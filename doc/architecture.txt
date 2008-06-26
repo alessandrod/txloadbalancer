@@ -1,3 +1,7 @@
+===========
+Application
+===========
+
 Here is an ASCII diagram of the current architecture:
 
     application
@@ -18,3 +22,54 @@ web ui     +-----+------------+
                       =                 =
                    lb type,          proxies
                   algorithms
+
+===========
+Connections
+===========
+
+      proxy.Proxy (+ tracker, directer)
+           |
+           |
+      receiverFactory (+ tracker, directer)
+           |
+    +-------+-------+
+    |               |
+ setTracker      Reciever
+                 protocol
+                    |
+   +-------+--------------+--------------+
+   |                      |              |
+destination         SenderFactory     setSender
+(tracker.getHost)         |
+                          |
+                   +------+-----------+
+                   |                  |
+              setReceiver           Sender
+                                   protocol
+                                      |
+                             +--------+---------+
+                             |
+                        setReceiver
+
+
+Look Who's Talking:
+ * Proxy sets tracker attribute
+ * Proxy calls ReceiverFactory's setTracker merhod
+ * ReceiverFactory sets director attribute
+ * ReceiverFactory sets tracker attribute (this seems to be redundant)
+ * ReceiverFactory sets the protocol attribute to Receiver
+ * Receiver creates a sender from SenderFactory
+ * Receiver calls the sender's setReceiver method
+ * Receiver passes the sender to connectTCP
+ * Receiver makes calls to the factory's tracker
+ * Receiver makes calls to the senders's transport
+ * SenderFactory sets the protocol attribute to Sender
+ * SenderFactory sets the receiver attribute with setReceiver
+ * SenderFactory builds the Sender protocol and call's Sender.setReceiver
+ * SenderFactory makes calls to the receiver's factory's tracker
+ * SenderFactory passes itself to connectTCP
+ * Sender sets the receiver attribute
+ * Sender makes calls to the receiver's transport
+ * Sender makes calls to its own transport
+ * Sender makes calls to the receiver's factory's director
+
