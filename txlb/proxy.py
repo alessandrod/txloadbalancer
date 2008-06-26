@@ -125,18 +125,9 @@ class SenderFactory(protocol.ClientFactory):
         """
         # without overriding, this would hang up the inbound. We don't want
         # that
-        #print connector
-        #print reason.getErrorMessage()
-        from pprint import pprint
-        #pprint(connector.__dict__)
-        pprint(self.receiver.factory.tracker.__dict__)
         self.receiver.factory.tracker.deadHost(self, reason)
-        print "self: %s" % self
-        print "client_addr: %s" % str(self.receiver.client_addr)
-        #print "bad host: %s" % self.receiver.factory.tracker.open[self]
         next = self.receiver.factory.tracker.getHost(
             self, self.receiver.client_addr)
-        print "next host: %s" % str(next)
         if next:
             logging.log("retrying with %s\n" % repr(next), datestamp=1)
             host, port = next
@@ -170,7 +161,6 @@ class Receiver(protocol.Protocol):
         dest = self.factory.tracker.getHost(sender, self.client_addr)
         if dest:
             host, port = dest
-            reactor.connectTCP(host, port, sender)
             connection = reactor.connectTCP(host, port, sender)
             # XXX add optional support for logging these connections
         else:

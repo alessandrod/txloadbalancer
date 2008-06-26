@@ -1,5 +1,11 @@
 2008.06.25 oubiwann
 
+* Found the bug documented in ticket #242868
+(https://bugs.launchpad.net/txloadbalancer/+bug/242868).
+* Removed debugging print statements.
+
+2008.06.25 oubiwann
+
 * Added tests for HostTracking class.
 * Added notes to the architecture doc about the relationship of the proxy
 classes to one another.
