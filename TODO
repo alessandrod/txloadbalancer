@@ -133,12 +133,15 @@ Exploratory
      configurations
  * likewise, connection tracking and managerment need to be taken out of the
    scheduler code and put into the service management code
-   . schedulers need to have all host data removed from them
-   . they need to be passed only one parameter upon initialization: the lb
-     algorithm type
    . the proxy should not access the scheduler directly, it should ask the
      proxy manager to do it on its behalf (by calling the appropriate pm
      method)
+ * configuration-oriented libraries need to be rewritten to accept
+   non-configuration python parameters/objects
+   . this includes manager.ProxyManager
+   . and manager.HostTracking
+ * configuration-oriented methods need to be moved onto new objects in a module
+   of the txlb.application sub package.
  * static load balancring service
    . number of proxies are determined by configuration
  * dynamic load balancing service
