@@ -7,9 +7,6 @@ Bugs
 
 Placeholders
 ------------
- * add error tracking as well as open host tracking
-   . put it in the admin GUI too
- * where does nextHost() get called? who calls it? who calls the caller?
  * can nextHost() get unburried? How "close" can we bring it to the receiver
    factory?
  * look at iterating over service collections from inside the host checker
@@ -53,7 +50,6 @@ Version 1.2.0
    without any checks; I want to add something there...
    . store away more info about the down hosts
    . when, how long til next test, etc.
-   . track the count of faults.
  * sort service groups in admin UI by name
  * cache DNS lookups
  * start adding unit tests

@@ -7,6 +7,10 @@
 * Started fleshing out the txlbWeb.tac some more.
 * Updated the TODO with some next steps in this exploration.
 * Renamed some of the host tracking attributes to reflect their use better.
+* Fixed a bug in the task manager config.
+* Consolidated the code in HostTracking.getStats.
+* Added failure tracking.
+* Removed redundant datestamps from log calls.
 
 2008.06.25 oubiwann
 

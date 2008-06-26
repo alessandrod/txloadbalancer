@@ -287,9 +287,9 @@ class Config(object):
 
     def loadManager(self, manager):
         manageCfg = ManagerConfig()
-        if manageCfg.hasAttribute('hostCheckInterval'):
-            manageCfg.hostCheckInterval = manageCfg.getAttribute(
-                'hostCheckInterval')
+        if manager.hasAttribute('hostCheckInterval'):
+            manageCfg.hostCheckInterval = float(manager.getAttribute(
+                'hostCheckInterval'))
         self.manager = manageCfg
 
     def getService(self, serviceName):

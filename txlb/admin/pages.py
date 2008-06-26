@@ -129,10 +129,14 @@ class RunningPage(BasePage):
                 content += template.groupHeaderForm % (
                     service.name, group.name, klass)
                 counts = stats['openconns']
+                failed = stats['failed']
                 totals = stats['totals']
                 k = counts.keys()
                 k.sort()
                 for h in k:
+                    f = 0
+                    if failed.has_key(h):
+                        f = failed[h]
                     if counts.has_key(h):
                         oc = counts[h]
                     else:
@@ -142,8 +146,9 @@ class RunningPage(BasePage):
                     else:
                         tc = '--'
                     content += template.hostInfo % (
-                        klass, hdict[h], h, oc, tc, urllib.quote(service.name),
-                        urllib.quote(group.name), urllib.quote(h))
+                        klass, hdict[h], h, oc, tc, f,
+                        urllib.quote(service.name), urllib.quote(group.name),
+                        urllib.quote(h))
                 bad = stats['bad']
                 if bad:
                     content += template.badHostGroup % klass

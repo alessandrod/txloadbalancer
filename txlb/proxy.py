@@ -65,7 +65,7 @@ class Sender(protocol.Protocol):
 
     def dataReceived(self, data):
         if self.receiver is None:
-            logging.log("client got data, no receiver, tho\n", datestamp=1)
+            logging.log("client got data, no receiver, tho\n")
         else:
             self.receiver.transport.write(data)
 
@@ -129,13 +129,12 @@ class SenderFactory(protocol.ClientFactory):
         next = self.receiver.factory.tracker.getHost(
             self, self.receiver.client_addr)
         if next:
-            logging.log("retrying with %s\n" % repr(next), datestamp=1)
+            logging.log("retrying with %s\n" % repr(next))
             host, port = next
             reactor.connectTCP(host, port, self)
         else:
             # No working servers!?
-            logging.log("no working servers, manager -> aggressive\n",
-                        datestamp=1)
+            logging.log("no working servers, manager -> aggressive\n")
             self.receiver.transport.loseConnection()
 
     def stopFactory(self):
@@ -208,9 +207,6 @@ class Receiver(protocol.Protocol):
         """
         Received data from the client. either send it on, or save it.
         """
-        # XXX remove this after testing
-        import pprint
-        pprint.pprint(self.factory.tracker.__dict__)
         if self.sender is not None:
             self.sender.transport.write(data)
         else:

@@ -22,8 +22,7 @@ def checkBadHosts(director):
         badHosts = tracker.badhosts
         for hostPort, timeAndError in badHosts.items():
             when, what = badHosts[hostPort]
-            logging.log("re-adding %s automatically\n" % str(hostPort),
-                    datestamp=1)
+            logging.log("re-adding %s automatically\n" % str(hostPort))
             hostname = tracker.getHostNames()[hostPort]
             del badHosts[hostPort]
             tracker.newHost(hostPort, hostname)
@@ -216,7 +215,10 @@ class HostTracking(object):
         self.hostnames = {}
         self.badhosts = {}
         self.openconns = {}
+        # the values in self.available indicate the number of connections that
+        # are currently being attempted
         self.available = {}
+        self.failed = {}
         self.totalconns = {}
         self.lastclose = {}
         self.loadConfig(groupConfig)
@@ -231,19 +233,20 @@ class HostTracking(object):
             self.newHost(host.ip, host.name)
 
     def getStats(self):
+        def sorter(attr):
+            sorts = {}
+            data = getattr(self, attr)
+            hostPortCounts = data.items()
+            hostPortCounts.sort()
+            for hostPort, count in hostPortCounts:
+                sorts['%s:%s' % hostPort] = count
+            return sorts
         stats = {}
-        stats['openconns'] = {}
-        stats['totals'] = {}
-        hostPortCounts = self.available.items()
-        hostPortCounts.sort()
-        for hostPort, count in hostPortCounts:
-            stats['openconns']['%s:%s' % hostPort] = count
-        hostPortCount = self.totalconns.items()
-        hostPortCount.sort()
-        for hostPort, count in hostPortCount:
-            stats['totals']['%s:%s' % hostPort] = count
-        badHosts = self.badhosts
-        stats['bad'] = badHosts
+        # we don't present open connections for hosts that aren't available
+        stats['openconns'] = sorter('available')
+        stats['totals'] = sorter('totalconns')
+        stats['failed'] = sorter('failed')
+        stats['bad'] = self.badhosts
         return stats
 
     def showStats(self, verbose=1):
@@ -311,6 +314,7 @@ class HostTracking(object):
             self.hosts.remove(ip)
             del self.hostnames[ip]
             del self.available[ip]
+            del self.failed[ip]
             del self.totalconns[ip]
         elif self.badhosts.has_key(ip):
             del self.badhosts[ip]
@@ -331,6 +335,10 @@ class HostTracking(object):
                 msg = """Wow, Bender says "We're boned." No hosts available.\n"""
                 logging.log(msg)
             return
+        if not self.failed.has_key(hostPort):
+            self.failed[hostPort] = 1
+        else:
+            self.failed[hostPort] += 1
         if hostPort in self.hosts:
             if doLog:
                 logging.log("marking host %s down (%s)\n" % (
