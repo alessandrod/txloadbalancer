@@ -34,7 +34,7 @@ lbs.setServiceParent(application)
 site = server.Site(static.File('./data'))
 server = internet.TCPServer(servicePort, site)
 
-# non-load-balanced, we do the following
+# for load-balancing on this server, with different processes that have been
+# starteed up independently, as configured above in the ProxyHost model
+# instances
 lbs.setPrimaryService(server)
-
-# in a load-balanced scenario, we set the ProxyManager as the primary service
