@@ -245,10 +245,11 @@ class ReceiverFactory(protocol.ServerFactory):
     noisy = 0
 
 
-    def __init__(self, (host, port), tracker, director):
+    def __init__(self, name, (host, port), director):
+        self.name = name
         self.host = host
         self.port = port
-        self.tracker = tracker
+        # XXX self.tracker = tracker
         self.director = director
 
 

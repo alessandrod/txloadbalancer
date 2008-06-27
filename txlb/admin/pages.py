@@ -52,7 +52,7 @@ class BasePage(resource.Resource):
         refresh = ''
         if refreshURL:
             refresh = template.refresh % (
-                self.parent.director.conf.admin.refresh, refreshURL)
+                self.parent.conf.admin.refresh, refreshURL)
         return template.header % (
             txlb.name, refresh, txlb.name, self.parent.serverVersion,
             socket.gethostname())
@@ -106,7 +106,7 @@ class RunningPage(BasePage):
             stopStart = template.startRefresh % time.time()
         content += template.refreshButtons % (
             time.ctime(time.time()), time.time(), stopStart)
-        for service in self.parent.director.conf.getServices():
+        for service in self.parent.conf.getServices():
             content += template.serviceName % service.name
             for l in service.listen:
                 content += template.listeningService % l
@@ -180,7 +180,7 @@ class RunningConfig(BasePage):
         """
         request.setHeader('Content-type', 'text/plain')
         verbose = False
-        conf = self.parent.director.conf
+        conf = self.parent.conf
         doc = minidom.Document()
         top = doc.createElement("pdconfig")
         doc.appendChild(top)
@@ -226,7 +226,7 @@ class RunningConfig(BasePage):
             serv.appendChild(doc.createTextNode("\n    "))
         top.appendChild(doc.createTextNode("\n    "))
         # now the admin block
-        admin = self.parent.director.conf.admin
+        admin = self.parent.conf.admin
         if admin is not None:
             xa = doc.createElement("admin")
             xa.setAttribute("listen", "%s:%s"%admin.listen)
@@ -260,7 +260,7 @@ class StoredConfig(BasePage):
 
         """
         request.setHeader('Content-type', 'text/plain')
-        return self.parent.director.conf.dom.toxml()
+        return self.parent.conf.dom.toxml()
 
 
 class DeleteHost(BasePage):
@@ -276,7 +276,7 @@ class DeleteHost(BasePage):
         ip = request.args['ip'][0]
         tracker = self.parent.director.getTracker(
             serviceName=service, groupName=group)
-        service = self.parent.director.conf.getService(service)
+        service = self.parent.conf.getService(service)
         eg = service.getEnabledGroup()
         if group == eg.name:
             if tracker.delHost(ip=ip, activegroup=1):
@@ -317,10 +317,10 @@ class AdminServer(resource.Resource):
     """
 
     """
-    def __init__(self, director):
+    def __init__(self, conf, director):
         resource.Resource.__init__(self)
+        self.conf = conf
         self.director = director
-        self.config = director.conf.admin
         self.starttime = time.time()
         self.serverVersion = "%s/%s" % (txlb.shortName, txlb.version)
 
@@ -336,7 +336,7 @@ class AdminServer(resource.Resource):
             return False
         auth = auth.decode('base64')
         user, pw = auth.split(':',1)
-        userObj = self.config.getUser(user)
+        userObj = self.conf.admin.getUser(user)
         if (userObj and userObj.checkPW(pw)):
             return True
         return False

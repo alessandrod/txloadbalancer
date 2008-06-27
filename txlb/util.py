@@ -7,15 +7,16 @@ privKeyFile = 'etc/server.pem'
 certFile = 'etc/server.pem'
 
 
-def splitHostPort(s):
+def splitHostPort(hostPortString):
     """
-
+    A utility needed for converting host:port string values in configuration
+    files to a form that is actually useful.
     """
-    h,p = s.split(':')
-    p = int(p)
-    if h == '*':
-        h = ''
-    return h,p
+    host, port = hostPortString.split(':')
+    port = int(port)
+    if host == '*':
+        host = ''
+    return (host, port)
 
 
 def createCertificate():

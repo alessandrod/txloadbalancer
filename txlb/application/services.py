@@ -5,6 +5,7 @@ from twisted.application import internet
 
 from txlb import name
 from txlb import util
+from txlb import model
 from txlb import config
 from txlb import manager
 from txlb.admin import pages
@@ -12,35 +13,48 @@ from txlb.manager import checkBadHosts
 
 
 
-def configuredProxyManagerFactory(configFile):
+def configuredProxyManagerFactory(configuration):
     """
-
+    A factory for generating a ProxyManager, complete with pre-created
+    services, groups, and data from a configuration file. Most of the work here
+    is mapping configuration to models. The collection of models is what is
+    passed to the proxyManagerFactory.
     """
     services = {}
-    # get config object
-    conf = config.Config(configFile)
     # build services from configuration
-    for serviceConf in 
+    for serviceName, serviceConf in configuration.services.items():
+        pservice = model.ProxyService(serviceName, ports=serviceConf.listen)
         # build groups
-        for groupConf in 
+        for groupName, groupConf in serviceConf.groups.items():
             # build hosts
-            for hostConf in 
+            # XXX ugh; some of the configuration XML is braindead
+            enabled = False
+            if groupConf == serviceConf.getEnabledGroup():
+                enabled = True
+            pgroup = model.ProxyGroup(groupName, groupConf.scheduler, enabled)
+            for hostName, hostConf in groupConf.hosts.items():
+                host, port = util.splitHostPort(hostConf.ip)
+                phost = model.ProxyHost(hostName, host, port)
                 # add the host to the group
+                pgroup.addHost(phost)
             # add the group to the service
+            pservice.addGroup(pgroup)
         # add the service to the service collection
+        services[pservice.name] = pservice
     # call the proxyManagerFactory and return it
     return manager.proxyManagerFactory(services)
 
 
 
-def setupAdminServer(director):
+def setupAdminServer(configuration, director):
     """
     Given the director, set up a potentially SSL-enabled admin web UI on the
     configured port.
     """
-    site = server.Site(pages.AdminServer(director))
-    adminPort = director.conf.admin.listen[1]
-    if director.conf.admin.secure:
+    root = pages.AdminServer(configuration, director)
+    site = server.Site(root)
+    adminPort = configuration.admin.listen[1]
+    if configuration.admin.secure:
         util.setupServerCert()
         context = ssl.DefaultOpenSSLContextFactory(
             util.privKeyFile, util.certFile)
@@ -52,24 +66,24 @@ def setupAdminServer(director):
 
 
 
-def setupHostChecker(director):
+def setupHostChecker(configuration, director):
     """
     This is the setup for the "bad host check" management task.
     """
-    checkInterval = director.conf.manager.hostCheckInterval
+    checkInterval = configuration.manager.hostCheckInterval
     checker = internet.TimerService(checkInterval, checkBadHosts, director)
     checker.setName('hostChecker')
     return checker
 
 
 
-def setupControlSocket(director):
+def setupControlSocket(configuration, director):
     """
     This is for the functionaity that Apple introduced in the patches from its
     Calendar Server project.
     """
     control = service.Service()
-    socket = director.conf.socket
+    socket = configuration.socket
     if socket != None:
         control = internet.UNIXServer(socket, manager.ControlFactory(director))
     control.setName('control')
@@ -84,7 +98,7 @@ def setupProxies(director):
     """
     proxyCollection = service.MultiService()
     proxyCollection.setName('proxies')
-    for proxyList in director.proxies.values():
+    for proxyName, proxyList in director.getProxies():
         # a service can listen on multiple hosts/ports
         for proxy in proxyList:
             proxyService = internet.TCPServer(
@@ -92,7 +106,6 @@ def setupProxies(director):
             proxyService.setName("%s %s:%s" % (
                 proxy.name, proxy.host, proxy.port))
             proxyService.setServiceParent(proxyCollection)
-    director.setServices(proxyCollection)
     return proxyCollection
 
 
@@ -102,26 +115,29 @@ def setup(configFile):
     Given the configuration file, instantiate the proxy manager and setup the
     necessary services.
     """
+    # get config object
+    conf = config.Config(configFile)
+
     application = service.Application(name)
     services = service.IServiceCollection(application)
 
     # instantiate the proxy manager (that which will direct the proxies)
-    director = manager.ProxyManager(configFile)
+    director = configuredProxyManagerFactory(conf)
 
     # set up the proxies
     proxies = setupProxies(director)
     proxies.setServiceParent(services)
 
     # set up the control socket
-    control = setupControlSocket(director)
+    control = setupControlSocket(conf, director)
     control.setServiceParent(services)
 
     # set up the web server
-    admin = setupAdminServer(director)
+    admin = setupAdminServer(conf, director)
     admin.setServiceParent(services)
 
     # set up the host checker service
-    checker = setupHostChecker(director)
+    checker = setupHostChecker(conf, director)
     checker.setServiceParent(services)
 
     # return the application object so that the .tac file can use it

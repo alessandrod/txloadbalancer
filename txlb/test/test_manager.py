@@ -1,6 +1,6 @@
 from twisted.trial import unittest
 
-from txlb.config import GroupConfig
+from txlb import model
 from txlb.manager import HostTracking
 from txlb.schedulers import schedulerFactory
 
@@ -12,33 +12,32 @@ class HostTrackingTests(unittest.TestCase):
         """
 
         """
-        group1 = GroupConfig('test_group1')
-        group1.scheduler = 'roundrobin'
-        group1.addHost('goodhost1', 'ip1:1')
-        group1.addHost('goodhost2', 'ip1:2')
-        group1.addHost('badhost1', 'ip1:3')
-        group1.addHost('badhost2', 'ip1:4')
+        group1 = model.ProxyGroup('test_group1', 'roundrobin', True)
+        group1.addHost(model.ProxyHost('goodhost1', 'ip1', 1))
+        group1.addHost(model.ProxyHost('goodhost2', 'ip1', 2))
+        group1.addHost(model.ProxyHost('badhost1', 'ip1', 3))
+        group1.addHost(model.ProxyHost('badhost2', 'ip1', 4))
         self.group1 = group1
 
-        group2 = GroupConfig('test_group2')
+        group2 = model.ProxyGroup('test_group2', 'leastconns', True)
         group2.scheduler = 'leastconns'
-        group2.addHost('goodhost3', 'ip1:5')
-        group2.addHost('goodhost4', 'ip1:6')
-        group2.addHost('badhost3', 'ip1:7')
-        group2.addHost('badhost4', 'ip1:8')
+        group2.addHost(model.ProxyHost('goodhost3', 'ip1', 5))
+        group2.addHost(model.ProxyHost('goodhost4', 'ip1', 6))
+        group2.addHost(model.ProxyHost('badhost3', 'ip1', 7))
+        group2.addHost(model.ProxyHost('badhost4', 'ip1', 8))
         self.group2 = group2
 
         self.ht1 = HostTracking(self.group1)
         self.ht2 = HostTracking(self.group2)
 
-        self.s1 = schedulerFactory(self.ht1.group.scheduler, self.ht1)
-        self.s2 = schedulerFactory(self.ht2.group.scheduler, self.ht2)
+        self.s1 = schedulerFactory(self.ht1.group.lbType, self.ht1)
+        self.s2 = schedulerFactory(self.ht2.group.lbType, self.ht2)
 
     def test_schedulerName(self):
         """
 
         """
-        self.assertEquals(self.ht1.group.scheduler, self.group1.scheduler)
+        self.assertEquals(self.ht1.group.lbType, self.group1.lbType)
 
     def test_trackerScheduler(self):
         """
@@ -68,7 +67,7 @@ class HostTrackingTests(unittest.TestCase):
         We can't use self.ht1, because it might be contaminated by other tests.
         """
         ht1 = HostTracking(self.group1)
-        s1 = schedulerFactory(ht1.group.scheduler, ht1)
+        s1 = schedulerFactory(ht1.group.lbType, ht1)
         stats = ht1.getStats()
         self.assertEquals(len(stats['bad'].keys()), 0)
         self.assertEquals(sum(stats['openconns'].values()), 0)
@@ -80,7 +79,7 @@ class HostTrackingTests(unittest.TestCase):
         """
         fakeSenderFactory = object()
         ht1 = HostTracking(self.group1)
-        s1 = schedulerFactory(ht1.group.scheduler, ht1)
+        s1 = schedulerFactory(ht1.group.lbType, ht1)
         host = ht1.getHost(fakeSenderFactory)
         stats = ht1.getStats()
         self.assertEquals(len(stats['bad'].keys()), 0)
@@ -95,7 +94,7 @@ class HostTrackingTests(unittest.TestCase):
         time = None
         fakeSenderFactory = object()
         ht1 = HostTracking(self.group1)
-        s1 = schedulerFactory(ht1.group.scheduler, ht1)
+        s1 = schedulerFactory(ht1.group.lbType, ht1)
         ht1.openconns[fakeSenderFactory] = (time, badHost)
         ht1.deadHost(fakeSenderFactory, doLog=False)
         stats = ht1.getStats()
@@ -123,7 +122,7 @@ class HostTrackingTests(unittest.TestCase):
         """
         time = None
         ht1 = HostTracking(self.group1)
-        s1 = schedulerFactory(ht1.group.scheduler, ht1)
+        s1 = schedulerFactory(ht1.group.lbType, ht1)
         # let's cycle through all the hosts twice
         fakeSenderFactories = [object() for x in xrange(8)]
         sequence = [ht1.getHost(x) for x in fakeSenderFactories]

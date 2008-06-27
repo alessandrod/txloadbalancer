@@ -7,6 +7,7 @@ from txlb import util
 from txlb import logging
 
 
+
 legalConfigSections = [
     u'service',
     u'admin',
@@ -16,12 +17,14 @@ legalConfigSections = [
     ]
 
 
+
 legalCommentSections = [
     'note',
     '#text',
     '#comment',
     '#cdata-section',
     ]
+
 
 
 def getDefaultArgs(methodObj):
@@ -38,10 +41,12 @@ def getDefaultArgs(methodObj):
     return ad
 
 
+
 class ConfigError(Exception):
     """
 
     """
+
 
 
 class ServiceError(ConfigError):
@@ -50,16 +55,20 @@ class ServiceError(ConfigError):
     """
 
 
+
 class GroupError(ServiceError):
     """
 
     """
 
 
+
 class HostConfig(object):
     """
 
     """
+
+
     def __init__(self, name, ip):
         self.name = name
         if type(ip) is type(u''):
@@ -68,40 +77,51 @@ class HostConfig(object):
             self.ip = ip
 
 
+
 class GroupConfig(object):
     """
 
     """
+
+
     def __init__(self, name):
         self.name = name
         self.scheduler = None
         self.hosts = {}
 
+
     def getHost(self,name):
         return self.hosts[name]
+
 
     def getHostNamess(self):
         return self.hosts.keys()
 
+
     def getHosts(self):
         return self.hosts.values()
+
 
     def addHost(self, name, ip):
         self.hosts[name] = HostConfig(name, ip)
 
+
     def delHost(self, name):
         del self.hosts[name]
+
 
 
 class ServiceConfig(object):
     """
 
     """
+
     def __init__(self, name):
         self.name = name
         self.groups = {}
         self.listen = []
         self.enabledgroup = None
+
 
     def loadGroup(self, groupobj):
         groupName = groupobj.getAttribute('name')
@@ -120,17 +140,22 @@ class ServiceConfig(object):
             cc += 1
         self.groups[groupName] = newgroup
 
+
     def getGroup(self, groupName):
         return self.groups.get(groupName)
+
 
     def getGroups(self):
         return self.groups.values()
 
+
     def getGroupNames(self):
         return self.groups.keys()
 
+
     def getEnabledGroup(self):
         return self.groups.get(self.enabledgroup)
+
 
     def checkSanity(self):
         if not self.name:
@@ -153,19 +178,24 @@ class ServiceConfig(object):
                 raise GroupError, "no hosts set for %s" % group.name
 
 
+
 class AdminUserConfig(object):
     """
 
     """
+
+
     def __init__(self):
         self.name = ''
         self.password = ''
         self.access = ''
 
+
     def checkPW(self, password):
         if crypt(password, self.password[:2]) == self.password:
             return True
         return False
+
 
     def checkAccess(self, methodObj, argdict):
         a = getDefaultArgs(methodObj)
@@ -177,23 +207,30 @@ class AdminUserConfig(object):
         return False
 
 
+
 class ManagerConfig(object):
     """
 
     """
+
+
     def __init__(self):
         self.hostCheckInterval = 120
+
 
 
 class AdminConfig(object):
     """
 
     """
+
+
     def __init__(self):
         self.listen = None
         self.secure = False
         self.refresh = 30
         self.userdb = {}
+
 
     def addUser(self, name, password, access):
         u = AdminUserConfig()
@@ -202,6 +239,7 @@ class AdminConfig(object):
         u.access = access
         self.userdb[name] = u
 
+
     def delUser(self, name):
         if self.userdb.has_key(name):
             del self.userdb[name]
@@ -209,17 +247,21 @@ class AdminConfig(object):
         else:
             return 0
 
+
     def loadUser(self, userobj):
         name = userobj.getAttribute('name')
         password = userobj.getAttribute('password')
         access = userobj.getAttribute('access')
         self.addUser(name, password, access)
 
+
     def getUser(self, name):
         return self.userdb.get(name)
 
+
     def getUsers(self):
         return self.userdb.values()
+
 
     def getUserNames(self):
         return self.userdb.keys()
@@ -229,6 +271,8 @@ class Config(object):
     """
 
     """
+
+
     def __init__(self, filename=None, xml=None):
         self.services = {}
         self.admin = None
@@ -261,6 +305,7 @@ class Config(object):
         if self.manager == None:
             self.manager = ManagerConfig()
 
+
     def _loadDOM(self, filename, xml):
         if filename is not None:
             xml = open(filename).read()
@@ -268,6 +313,7 @@ class Config(object):
             raise ConfigError, "need filename or xml"
         self.dom = minidom.parseString(xml)
         return self.dom.childNodes[0]
+
 
     def loadAdmin(self, admin):
         adminCfg = AdminConfig()
@@ -285,6 +331,7 @@ class Config(object):
                 raise ConfigError, "only expect to see users in admin block"
         self.admin = adminCfg
 
+
     def loadManager(self, manager):
         manageCfg = ManagerConfig()
         if manager.hasAttribute('hostCheckInterval'):
@@ -292,14 +339,18 @@ class Config(object):
                 'hostCheckInterval'))
         self.manager = manageCfg
 
+
     def getService(self, serviceName):
         return self.services.get(serviceName)
+
 
     def getServices(self):
         return self.services.values()
 
+
     def getServiceNames(self):
         return self.services.keys()
+
 
     def loadService(self, service):
         serviceName = service.getAttribute('name')

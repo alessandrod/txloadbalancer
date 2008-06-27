@@ -17,6 +17,11 @@ library code).
 * Added methods to ProxyManager for getting services, groups, and hosts.
 * Defined some exceptions.
 * Moved tracker and listener creation into a factory.
+* Moved the Proxy* classes into a new model module.
+* Filled in services.configuredProxyManagerFactory.
+* Cleaned up util.splitHostPort.
+* Fixed up the HostTracking class to not use configuration directly, but to use
+the model classes instead.
 
 2008.06.25 oubiwann
 

@@ -4,7 +4,7 @@ from twisted.protocols import amp
 from twisted.internet import protocol
 
 from txlb import util
-
+from txlb import proxy
 from txlb import proxy
 from txlb import logging
 from txlb import schedulers
@@ -120,61 +120,6 @@ class ControlFactory(protocol.ServerFactory):
 
 
 
-class ProxyService(object):
-    """
-    A class that represents a collection of groups whose hosts need to be
-    proxied.
-    """
-    def __init__(self, ports=[], groups={}):
-        self.ports = ports
-        self.groups =groups
-
-
-    def getEnabledGroup(self):
-        """
-        There should only ever be one enabled group. This method returns it
-        """
-        groups = [x for x in self.groups if x.isEnabled]
-        if groups:
-            return groups[0]
-
-
-
-class ProxyGroup(object):
-    """
-    A class that represnts a group of hosts that need to be proxied.
-    """
-    def __init__(self):
-        self.hosts = {}
-        self.isEnabled = False
-
-
-    def enable(self):
-        """
-        This method is required to be called in order for a group to be
-        enabled. Only an enabled group can generate connection proxies.
-        """
-        self.isEnabled = True
-
-
-    def disable(self):
-        """
-
-        """
-        self.isEnabled = False
-
-
-
-class ProxyHost(object):
-    """
-    A class that represents a host that needs to be proxied.
-    """
-    def __init__(self, name='', ipOrHost='', port=None):
-        self.name = name
-        self.hostname = ipOrHost
-        self.port = port
-
-
 class ProxyManager(object):
     """
     The purpose of this class is to start the load-balancer proxies for
@@ -183,6 +128,8 @@ class ProxyManager(object):
     Note that this was formerly known as the Director, thus all the 'director'
     variable names.
     """
+
+
     def __init__(self, services={}):
         self.services = services
         self.proxies = {}
@@ -190,8 +137,9 @@ class ProxyManager(object):
         self.trackers = {}
         self._connections = {}
         # XXX need to get rid of this call once the rewrite is finished
-        self.createListeners()
+        #self.createListeners()
         self.isReadOnly = False
+
 
     def setReadOnly(self):
         """
@@ -199,24 +147,28 @@ class ProxyManager(object):
         """
         self.isReadOnly = True
 
+
     def setReadWrite(self):
         """
 
         """
         self.isReadOnly = False
 
+
     def setServices(self, services):
         """
         This method is for use when it is necssary to set a collection of
-        ProxyService objects at once.
+        model.ProxyService objects at once.
         """
         self.services = services
 
+
     def getServices(self):
         """
-        Return the service collection of proxies.
+        Return the keys and values of the services attribute.
         """
-        return self.services
+        return self.services.items()
+
 
     def addService(self, service):
         """
@@ -224,23 +176,27 @@ class ProxyManager(object):
         """
         self.services[service.name] = service
 
+
     def getService(self, serviceName):
         """
 
         """
         return self.services[serviceName]
 
+
     def getGroups(self, serviceName):
         """
-        Get the list of groups in a given service.
+        Get the keys and values for the groups in a given service.
         """
-        return self.getService(serviceName).groups
+        return self.getService(serviceName).getGroups()
+
 
     def getGroup(self, serviceName, groupName):
         """
 
         """
         return self.getService(serviceName).getGroup(groupName)
+
 
 
     def getHost(self, serviceName, groupName, hostName):
@@ -272,7 +228,7 @@ class ProxyManager(object):
         return self.getGroup(serviceName, groupName).scheduler
 
 
-    def createTrackers(self, service):
+    def _createTrackers(self, service):
         if not self.services:
             raise UndefinedServiceError
         # XXX groups are configuration level metadata and should be handled at
@@ -307,7 +263,15 @@ class ProxyManager(object):
         p = proxy.Proxy(serviceName, host, port, self)
         self.addProxy(serviceName, p)
 
-    def createListeners(self):
+
+    def getProxies(self):
+        """
+        Return the keys and values for the proxies attribute.
+        """
+        return self.proxies.items()
+
+
+    def _createListeners(self):
         for service in self.conf.getServices():
             self.createTrackers(service)
             eg = service.getEnabledGroup()
@@ -318,6 +282,7 @@ class ProxyManager(object):
                 l = proxy.Proxy(service.name, host, port, tracker, self)
                 self.proxies[service.name].append(l)
 
+
     def enableGroup(self, serviceName, groupName):
         # XXX probably going to rewrite this one completely...
         serviceConf = self.conf.getService(serviceName)
@@ -325,6 +290,7 @@ class ProxyManager(object):
         if group:
             serviceConf.enabledgroup = groupName
         self.switchTracker(serviceName)
+
 
     def switchTracker(self, serviceName):
         """
@@ -338,11 +304,13 @@ class ProxyManager(object):
         for proxy in self.proxies[serviceName]:
             proxy.setTracker(tracker)
 
+
     def getClientAddress(self, host, port):
         """
 
         """
         return self._connections.get((host, port), (None, None))
+
 
     def setClientAddress(self, host, peer):
         """
@@ -351,41 +319,44 @@ class ProxyManager(object):
         self._connections[host] = peer
 
 
+
 def proxyManagerFactory(services):
     """
     This factory is for simplifying the common task of creating a proxy manager
     with presets for many attributes and/or much data.
     """
     # create the manager
-    pm = proxyManager(services)
-    for service in pm.getServices():
+    pm = ProxyManager(services)
+    for serviceName, service in pm.getServices():
         # set up the trackers for each group
-        for group in pm.getGroups(service.name):
-            tracker = HostingTracking(group)
-            scheduler = schedulers.schedulerFactory(group.scheduler, tracker)
-            pm.addTracker(service.name, group.name, tracker)
+        for groupName, group in pm.getGroups(serviceName):
+            tracker = HostTracking(group)
+            scheduler = schedulers.schedulerFactory(group.lbType, tracker)
+            pm.addTracker(serviceName, groupName, tracker)
         # now let's setup actual proxies for the hosts in the enabled group
-        for group in esrvice.getEnabledGroup():
-            # XXX maybe won't need this next line
-            enabledTracker = pm.getTracker(service.name, group.name)
-            for host, port in service.x:
-                pm.createProxy(service.name, host, port)
+        group = service.getEnabledGroup()
+        # XXX maybe won't need this next line
+        enabledTracker = pm.getTracker(service.name, group.name)
+        for hostName, host in group.getHosts():
+            pm.createProxy(service.name, host.hostname, host.port)
         # return proxy manager
     return pm
 
 
+
 class HostTracking(object):
     """
+    This class is responsible for tracking proxied host metadata (such as
+    connection information and failure counts).
+
     Schedulers are responsible for selecting the next proxied host that will
-    recieve the client request.
+    recieve the client request. Schedulers dependent upon their related
+    trackers for connection information.
     """
-    # XXX passing a configuration object is uncool and application-level; we
-    # should only pass what is necessary here, and let configuration happen
-    # higher up; it might be appropriate, however, to have objeects that model
-    # services, groups, and hosts with information from the configuration file
-    # stored in these model isntances; passing a model instance would be fine,
-    # if it's absolutely necessary
-    def __init__(self, groupConfig):
+
+
+    def __init__(self, proxyGroup):
+        self.group = proxyGroup
         self.hosts = []
         self.hostnames = {}
         self.badhosts = {}
@@ -396,16 +367,16 @@ class HostTracking(object):
         self.failed = {}
         self.totalconns = {}
         self.lastclose = {}
-        self.loadConfig(groupConfig)
         # this next attribute gets set when a Scheduler is iniated; this class
         # needs the scheduler attribute for nextHost calls
         self.scheduler = None
+        self.initializeGroupHosts()
 
-    def loadConfig(self, groupConfig):
-        self.group = groupConfig
-        hosts = self.group.getHosts()
-        for host in hosts:
-            self.newHost(host.ip, host.name)
+
+    def initializeGroupHosts(self):
+        for hostName, host in self.group.getHosts():
+            self.newHost((host.hostname, host.port), hostName)
+
 
     def getStats(self):
         def sorter(attr):
@@ -424,6 +395,7 @@ class HostTracking(object):
         stats['bad'] = self.badhosts
         return stats
 
+
     def showStats(self, verbose=1):
         stats = []
         stats.append("%d open connections" % len(self.openconns.keys()))
@@ -436,6 +408,7 @@ class HostTracking(object):
             stats = stats + [str(x) for x in openHosts]
         return "\n".join(stats)
 
+
     def getHost(self, senderFactory, client_addr=None):
         host = self.scheduler.nextHost(client_addr)
         if not host:
@@ -445,8 +418,10 @@ class HostTracking(object):
         self.available[host] += 1
         return host
 
+
     def getHostNames(self):
         return self.hostnames
+
 
     def doneHost(self, senderFactory):
         try:
@@ -459,6 +434,7 @@ class HostTracking(object):
             self.totalconns[host] += 1
         self.lastclose[host] = time.time()
 
+
     def newHost(self, ip, name):
         if type(ip) is not type(()):
             ip = util.splitHostPort(ip)
@@ -468,6 +444,7 @@ class HostTracking(object):
         self.hostnames['%s:%d' % ip] = name
         self.available[ip] = 0
         self.totalconns[ip] = 0
+
 
     def delHost(self, ip=None, name=None, activegroup=0):
         """
@@ -496,6 +473,7 @@ class HostTracking(object):
         else:
             raise ValueError, "Couldn't find host"
         return 1
+
 
     def deadHost(self, senderFactory, reason='', doLog=True):
         """
