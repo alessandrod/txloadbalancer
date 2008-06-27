@@ -36,10 +36,11 @@ def checkBadHosts(director):
     This function checks the director's hosts marked as "unavailable" and puts
     them back into use.
     """
-    for name, proxy in director.proxies.items():
+    for name, service in director.getServices():
         # since all proxies for a service share a tracker,
         # we only need to check the first proxy.
-        tracker = proxy[0].tracker
+        group = service.getEnabledGroup()
+        tracker = director.getTracker(name, group.name)
         badHosts = tracker.badhosts
         for hostPort, timeAndError in badHosts.items():
             when, what = badHosts[hostPort]
@@ -336,9 +337,9 @@ def proxyManagerFactory(services):
         # now let's setup actual proxies for the hosts in the enabled group
         group = service.getEnabledGroup()
         # XXX maybe won't need this next line
-        enabledTracker = pm.getTracker(service.name, group.name)
-        for hostName, host in group.getHosts():
-            pm.createProxy(service.name, host.hostname, host.port)
+        #enabledTracker = pm.getTracker(service.name, group.name)
+        for host, port in service.addresses:
+            pm.createProxy(serviceName, host, port)
         # return proxy manager
     return pm
 

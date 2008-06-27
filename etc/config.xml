@@ -34,6 +34,6 @@
   <admin listen="localhost:7000" secure="secure" refresh="10">
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
-  <manager hostCheckInterval="20" />
+  <manager hostCheckInterval="500" />
 </pdconfig>
 

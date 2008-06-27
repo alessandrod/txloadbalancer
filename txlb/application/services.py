@@ -23,7 +23,8 @@ def configuredProxyManagerFactory(configuration):
     services = {}
     # build services from configuration
     for serviceName, serviceConf in configuration.services.items():
-        pservice = model.ProxyService(serviceName, ports=serviceConf.listen)
+        addresses = [util.splitHostPort(x) for x in serviceConf.listen]
+        pservice = model.ProxyService(serviceName, addresses=addresses)
         # build groups
         for groupName, groupConf in serviceConf.groups.items():
             # build hosts
@@ -53,7 +54,7 @@ def setupAdminServer(configuration, director):
     """
     root = pages.AdminServer(configuration, director)
     site = server.Site(root)
-    adminPort = configuration.admin.listen[1]
+    adminPort = int(configuration.admin.listen[1])
     if configuration.admin.secure:
         util.setupServerCert()
         context = ssl.DefaultOpenSSLContextFactory(
@@ -91,20 +92,20 @@ def setupControlSocket(configuration, director):
 
 
 
-def setupProxies(director):
+def setupProxyServices(director):
     """
     Set up proxies for each service the proxy manager balances. Additionally,
     the director gets a reference to the proxies.
     """
     proxyCollection = service.MultiService()
     proxyCollection.setName('proxies')
-    for proxyName, proxyList in director.getProxies():
+    for serviceName, proxies in director.getProxies():
         # a service can listen on multiple hosts/ports
-        for proxy in proxyList:
+        for proxy in proxies:
             proxyService = internet.TCPServer(
                 proxy.port, proxy.factory, interface=proxy.host)
             proxyService.setName("%s %s:%s" % (
-                proxy.name, proxy.host, proxy.port))
+                serviceName, proxy.host, proxy.port))
             proxyService.setServiceParent(proxyCollection)
     return proxyCollection
 
@@ -125,7 +126,7 @@ def setup(configFile):
     director = configuredProxyManagerFactory(conf)
 
     # set up the proxies
-    proxies = setupProxies(director)
+    proxies = setupProxyServices(director)
     proxies.setServiceParent(services)
 
     # set up the control socket

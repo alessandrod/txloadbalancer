@@ -13,10 +13,10 @@ class ProxyService(object):
     A class that represents a collection of groups whose hosts need to be
     proxied.
     """
-    def __init__(self, name, ports=[], groups={}):
+    def __init__(self, name, addresses=[], groups={}):
         self.name = name
-        self.ports = ports
-        self.groups =groups
+        self.addresses = addresses
+        self.groups = groups
 
 
     def getEnabledGroup(self):
@@ -91,10 +91,10 @@ class ProxyHost(object):
     """
     A class that represents a host that needs to be proxied.
     """
-    def __init__(self, name='', ipOrHost='', port=None):
+    def __init__(self, name='', ipOrHost='', port=0):
         self.name = name
         self.hostname = ipOrHost
-        self.port = port
+        self.port = int(port)
 
 
 

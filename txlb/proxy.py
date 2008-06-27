@@ -6,7 +6,23 @@ from twisted.internet import protocol
 from txlb import logging
 
 
-class Proxy(object):
+
+class TrackerMixin(object):
+    """
+    This is a simple class for setting the tracker attribute, something that is
+    necessary when switching the active group.
+    """
+    def setTracker(self, groupName=''):
+        if not groupName:
+            group = self.director.getService(self.name).getEnabledGroup()
+            groupName = group.name
+        self.tracker = self.director.getTracker(self.name, groupName)
+        if hasattr(self, 'factory'):
+            self.factory.setTracker(groupName)
+
+
+
+class Proxy(TrackerMixin):
     """
     Listener object. Listens at a given host/port for connections.
     Creates a receiver to collect data from client, and a sender to
@@ -25,23 +41,12 @@ class Proxy(object):
     def __init__(self, name, host, port, director):
         self.name = name
         self.host = host
-        self.port = port
-        self.listening_address = (host, port)
+        self.port = int(port)
+        self.listening_address = (self.host, self.port)
         self.director = director
-        # XXX removed tracker here, but need to rewrite pm.switchTracker before
-        # I can confirm that this will really work
         self.factory = ReceiverFactory(name, self.listening_address, director)
+        self.setTracker()
 
-
-    def setTracker(self, tracker):
-        """
-        This is not actually redundant; setTracker is needed by the proxy
-        manager when the group for a service is changed.
-        """
-        # XXX I don't think this is needed any more, but I need to rewrite
-        # pm.switchTracker first...
-        self.tracker = tracker
-        self.factory.setTracker(tracker)
 
 
 
@@ -237,7 +242,7 @@ class Receiver(protocol.Protocol):
 
 
 
-class ReceiverFactory(protocol.ServerFactory):
+class ReceiverFactory(TrackerMixin, protocol.ServerFactory):
     """
     Factory for the listener bit of the load balancer.
     """
@@ -251,16 +256,4 @@ class ReceiverFactory(protocol.ServerFactory):
         self.port = port
         # XXX self.tracker = tracker
         self.director = director
-
-
-    def setTracker(self, tracker):
-        """
-        This is called by the proxy's setTracker, which in turn is called by
-        the proxy manager when the active group for a service is changed.
-        """
-        # XXX this method may not be needed after the rewrite (As long as there
-        # is access to the proxy namd and the proxy manager, we should be able
-        # to look up the tracker for the proxy)
-        self.tracker = tracker
-
 

@@ -22,6 +22,9 @@ library code).
 * Cleaned up util.splitHostPort.
 * Fixed up the HostTracking class to not use configuration directly, but to use
 the model classes instead.
+* Fixed broken logic in services.setupProxyServices.
+* Updated the bad host checker to use the new API.
+* Added proxy.TrackerMixin for use by Proxy and ReceiverFactory.
 
 2008.06.25 oubiwann
 

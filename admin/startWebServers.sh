@@ -1,6 +1,6 @@
 MAX=$1
-#DOC_ROOT=/Users/oubiwann/Sites/
-DOC_ROOT=/home/oubiwann/public_html/
+DOC_ROOT=/Users/oubiwann/Sites/
+#DOC_ROOT=/home/oubiwann/public_html/
 FILE_PREFIX=/tmp/twistd
 STARTING_PORT=7001
 cd /tmp
