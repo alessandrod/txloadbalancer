@@ -6,10 +6,14 @@ from twisted.application import internet
 from txlb import proxy
 from txlb import schedulers
 
+
+
 class ProxiedService(service.Service):
     """
 
     """
+
+
 
 class LoadBalancedService(service.MultiService):
     """
@@ -22,20 +26,19 @@ class LoadBalancedService(service.MultiService):
     """
     implements(service.IService)
 
-    def __init__(self, lbType, tracker):
+
+    def __init__(self):
         """
 
         """
-        # XXX this may not be necessary if we can pull the proxy service name
-        # and the group name out of the proxy collection
-        self.tracker = tracker
         service.MultiService.__init__(self)
         self.primaryName = 'primary'
         self.proxyCollection = service.MultiService()
         self.proxyCollection.setName('proxies')
         self.proxyCollection.setServiceParent(self)
+        # this gets set with setScheduler when the proxies are created
         self.scheduler = None
-        self.setScheduler(lbType)
+
 
     def _stringifyHostPort(self, host, port):
         """
@@ -43,16 +46,22 @@ class LoadBalancedService(service.MultiService):
         """
         return "%s:%s" % (host, port)
 
-    def setScheduler(self, lbType):
+
+    def setScheduler(self, lbType, tracker):
         """
 
         """
-        self.scheduler = schedulers.schedulerFactory(lbType, self.tracker)
+        self.scheduler = schedulers.schedulerFactory(lbType, tracker)
+
 
     def proxiesFactory(self, pm):
         """
 
         """
+        serviceName, service = pm.getFirstService()
+        group = service.getEnabledGroup()
+        tracker = pm.getTracker(serviceName, group.name)
+        self.setScheduler(group.lbType, tracker)
         for serviceName, proxies in pm.getProxies():
             # a service can listen on multiple hosts/ports
             for proxy in proxies:
@@ -63,6 +72,7 @@ class LoadBalancedService(service.MultiService):
                 proxyService.setServiceParent(self.proxyCollection)
         return self.proxyCollection
 
+
     def setPrimaryService(self, tcpService):
         """
 
@@ -70,11 +80,14 @@ class LoadBalancedService(service.MultiService):
         tcpService.setName(self.primaryName)
         tcpService.setServiceParent(self)
 
+
     def getProxyService(self, host, port):
         # XXX need to figure out naming in order to have accurate lookup...
         # this is just a temporary solution
         name = self._stringifyHostPort(host, port)
         return self.proxies.getNamedService(name)
+
+
 
 class DynamicLoadBalancedService(LoadBalancedService):
     """

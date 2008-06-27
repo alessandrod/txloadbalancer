@@ -174,6 +174,14 @@ class ProxyManager(object):
         return self.services.items()
 
 
+    def getFirstService(self):
+        """
+        This is useful when load balancing a service via the API, something
+        that one only does with a single service.
+        """
+        return self.getServices()[0]
+
+
     def addService(self, service):
         """
 

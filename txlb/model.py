@@ -97,11 +97,38 @@ class ProxyHost(object):
     """
     A class that represents a host that needs to be proxied.
     """
-    def __init__(self, name='', ipOrHost='', port=0):
+    def __init__(self, name='', ipOrHost='', port=0, weight=1):
         self.name = name
         self.hostname = ipOrHost
         self.port = int(port)
+        self.weight = weight
+        self.fileTypes = []
+        self.protocols = []
 
 
+    def setWeight(self, weight):
+        """
+        This method is useful when the weighting for a host needs to be changed
+        programmatically while a service is actively being load-balanced.
+        """
+        self.weight = weight
 
+
+    def setAcceptedFileTypes(self, fileTypes=[]):
+        """
+        This sets the list of file types that the proxied host should accept.
+
+        An empty list means "accept all."
+        """
+        self.fileTypes = fileTypes
+
+
+    def setAcceptedProtcols(self, protocols=[]):
+        """
+        This sets the protocols (e.g., schema, for HTTP requests) that the
+        proxied host should accept.
+
+        An empty list means "accept all."
+        """
+        self.protocols = protocols
 

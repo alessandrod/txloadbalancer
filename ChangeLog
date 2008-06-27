@@ -4,6 +4,11 @@
 * Updated ProxyManager to do the same.
 * Cleaned up the config in txlbWeb.tac.
 * Updated configuredProxyManagerFactory to pass a list instead of a dict.
+* Added the getFirstService convenience method to ProxyManager.
+* Moved tracker and enabled group code from txlbWeb.tac into
+LoadBalancedService.proxiesFactory.
+* Updated the ProxyHost model with attributes that could be useful in the near
+future.
 
 2008.06.26 oubiwann
 
