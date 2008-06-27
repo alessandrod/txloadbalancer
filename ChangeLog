@@ -11,6 +11,7 @@ LoadBalancedService.proxiesFactory.
 future.
 * Corrected a comment in txlbWeb.tac.
 * Updated setupProxyServices to use the new API.
+* Fixed typo in a comment.
 
 2008.06.26 oubiwann
 

@@ -35,6 +35,6 @@ site = server.Site(static.File('./data'))
 server = internet.TCPServer(servicePort, site)
 
 # for load-balancing on this server, with different processes that have been
-# starteed up independently, as configured above in the ProxyHost model
+# started up independently, as configured above in the ProxyHost model
 # instances
 lbs.setPrimaryService(server)
