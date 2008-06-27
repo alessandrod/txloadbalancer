@@ -10,7 +10,7 @@ from txlb import config
 from txlb import manager
 from txlb.admin import pages
 from txlb.manager import checkBadHosts
-
+from txlb.application import service as txervice
 
 
 def configuredProxyManagerFactory(configuration):
@@ -97,17 +97,8 @@ def setupProxyServices(director):
     Set up proxies for each service the proxy manager balances. Additionally,
     the director gets a reference to the proxies.
     """
-    proxyCollection = service.MultiService()
-    proxyCollection.setName('proxies')
-    for serviceName, proxies in director.getProxies():
-        # a service can listen on multiple hosts/ports
-        for proxy in proxies:
-            proxyService = internet.TCPServer(
-                proxy.port, proxy.factory, interface=proxy.host)
-            proxyService.setName("%s %s:%s" % (
-                serviceName, proxy.host, proxy.port))
-            proxyService.setServiceParent(proxyCollection)
-    return proxyCollection
+    lbs = txervice.LoadBalancedService()
+    return lbs.proxiesFactory(director)
 
 
 

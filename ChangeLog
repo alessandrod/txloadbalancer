@@ -10,6 +10,7 @@ LoadBalancedService.proxiesFactory.
 * Updated the ProxyHost model with attributes that could be useful in the near
 future.
 * Corrected a comment in txlbWeb.tac.
+* Updated setupProxyServices to use the new API.
 
 2008.06.26 oubiwann
 
