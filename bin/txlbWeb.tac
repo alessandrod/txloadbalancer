@@ -3,6 +3,8 @@ from twisted.web import server
 from twisted.application import service
 from twisted.application import internet
 
+from txlb import model
+from txlb import manager
 from txlb.application import service as txervice
 
 # perhaps the schedulers *should* have the list of hosts, since they may need
@@ -14,25 +16,31 @@ from txlb.application import service as txervice
 #   * filetype (file types that the host accepts, determined by extension)
 #   * protocol (protocols that the host accepts, determined by URL scheme, if
 #              applicable)
-hosts = [
-    ('lorien', 7001),
-    ('lorien', 7002),
-    ('lorien', 7003),
-    ('lorien', 7004),
+
+proxyServices =[
+    model.ProxyService(
+        'test proxy service', addresses=[('localhost', 8080)],
+        groups=[
+            model.ProxyGroup('test proxy group', 'leastconns', enabled=True,
+                hosts=[
+                    model.ProxyHost('myhost1', '127.0.0.1', port=7001),
+                    model.ProxyHost('myhost2', '127.0.0.1', port=7002),
+                    model.ProxyHost('badhost2', '127.0.0.1', port=7003),
+            ]),
+        ]),
     ]
 
-lbType = 'leastconns'
+pm = manager.proxyManagerFactory(proxyServices)
 
 application = service.Application('Demo Web Server')
 
-# the config file for this would only contain a single group (never any more)
-# with a series of hosts to proxy
-director = manager.ProxyManager(configFile)
-tracker = manager.HostTracking(groupConfig)
-
-lbs = txervice.LoadBalancedService()
-lbs.addServiceParent(application)
-lbs.proxiesFactory(hosts, lbType, director, tracker)
+lbType = proxyServices[0].getEnabledGroup().lbType
+tracker = pm.getTracker(
+    proxyServices[0].name,
+    proxyServices[0].getEnabledGroup().name)
+lbs = txervice.LoadBalancedService(lbType, tracker)
+lbs.proxiesFactory(pm)
+lbs.setServiceParent(application)
 
 site = server.Site(static.File('./data'))
 server = internet.TCPServer(8080, site)

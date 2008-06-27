@@ -1,3 +1,10 @@
+2008.06.27 oubiwann
+
+* Updated models to take list parameters for the model objects they contain.
+* Updated ProxyManager to do the same.
+* Cleaned up the config in txlbWeb.tac.
+* Updated configuredProxyManagerFactory to pass a list instead of a dict.
+
 2008.06.26 oubiwann
 
 * Found the bug documented in ticket #242868

@@ -20,7 +20,7 @@ def configuredProxyManagerFactory(configuration):
     is mapping configuration to models. The collection of models is what is
     passed to the proxyManagerFactory.
     """
-    services = {}
+    services = []
     # build services from configuration
     for serviceName, serviceConf in configuration.services.items():
         addresses = [util.splitHostPort(x) for x in serviceConf.listen]
@@ -41,7 +41,7 @@ def configuredProxyManagerFactory(configuration):
             # add the group to the service
             pservice.addGroup(pgroup)
         # add the service to the service collection
-        services[pservice.name] = pservice
+        services.append(pservice)
     # call the proxyManagerFactory and return it
     return manager.proxyManagerFactory(services)
 

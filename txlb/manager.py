@@ -131,8 +131,11 @@ class ProxyManager(object):
     """
 
 
-    def __init__(self, services={}):
-        self.services = services
+    def __init__(self, services=[]):
+        self.services = {}
+        if services:
+            for service in services:
+                self.addService(service)
         self.proxies = {}
         # XXX hopefully, the trackers attribute is temporary
         self.trackers = {}
