@@ -136,6 +136,7 @@ Exploratory
    non-configuration python parameters/objects
    . this includes manager.ProxyManager
    . and manager.HostTracking
+   . 
  * configuration-oriented methods need to be moved onto new objects in a module
    of the txlb.application sub package.
  * static load balancring service

@@ -4,10 +4,31 @@ from twisted.protocols import amp
 from twisted.internet import protocol
 
 from txlb import util
-from txlb import config
+
 from txlb import proxy
 from txlb import logging
 from txlb import schedulers
+
+
+
+class Error(Exception):
+    pass
+
+
+
+class UnknownHostAndPortError(Exception):
+    """
+    An operation was attempted that needed both host and port values to be
+    defined.
+    """
+
+
+
+class UnknowndServiceError(Error):
+    """
+    An operation was invalid due to the fact that no service has been defined.
+    """
+
 
 
 def checkBadHosts(director):
@@ -26,6 +47,7 @@ def checkBadHosts(director):
             hostname = tracker.getHostNames()[hostPort]
             del badHosts[hostPort]
             tracker.newHost(hostPort, hostname)
+
 
 
 def checkConfigChanges(director):
@@ -47,11 +69,6 @@ def checkConfigChanges(director):
     director.setReadWrite()
 
 
-class UnknownPortError(Exception):
-    """
-
-    """
-
 
 class GetClientAddress(amp.Command):
     """
@@ -62,10 +79,13 @@ class GetClientAddress(amp.Command):
     arguments = [('host', amp.String()),
                  ('port', amp.Integer())]
 
+
     response = [('host', amp.String()),
                 ('port', amp.Integer())]
 
-    errors = {UnknownPortError: 'UNKNOWN_PORT'}
+
+    errors = {UnknownHostAndPortError: 'UNKNOWN_PORT'}
+
 
 
 class ControlProtocol(amp.AMP):
@@ -76,13 +96,14 @@ class ControlProtocol(amp.AMP):
     def __init__(self, director):
         self.director = director
 
+
     def getClientAddress(self, host, port):
         host, port = self.director.getClientAddress(host, port)
         if (host, port) == (None, None):
-            raise UnknownPortError()
-
+            raise UnknownHostAndPortError()
         return {'host': host, 'port': port}
     GetClientAddress.responder(getClientAddress)
+
 
 
 class ControlFactory(protocol.ServerFactory):
@@ -93,8 +114,65 @@ class ControlFactory(protocol.ServerFactory):
     def __init__(self, director):
         self.director = director
 
+
     def buildProtocol(self, addr):
         return ControlProtocol(self.director)
+
+
+
+class ProxyService(object):
+    """
+    A class that represents a collection of groups whose hosts need to be
+    proxied.
+    """
+    def __init__(self, ports=[], groups={}):
+        self.ports = ports
+        self.groups =groups
+
+
+    def getEnabledGroup(self):
+        """
+        There should only ever be one enabled group. This method returns it
+        """
+        groups = [x for x in self.groups if x.isEnabled]
+        if groups:
+            return groups[0]
+
+
+
+class ProxyGroup(object):
+    """
+    A class that represnts a group of hosts that need to be proxied.
+    """
+    def __init__(self):
+        self.hosts = {}
+        self.isEnabled = False
+
+
+    def enable(self):
+        """
+        This method is required to be called in order for a group to be
+        enabled. Only an enabled group can generate connection proxies.
+        """
+        self.isEnabled = True
+
+
+    def disable(self):
+        """
+
+        """
+        self.isEnabled = False
+
+
+
+class ProxyHost(object):
+    """
+    A class that represents a host that needs to be proxied.
+    """
+    def __init__(self, name='', ipOrHost='', port=None):
+        self.name = name
+        self.hostname = ipOrHost
+        self.port = port
 
 
 class ProxyManager(object):
@@ -105,14 +183,14 @@ class ProxyManager(object):
     Note that this was formerly known as the Director, thus all the 'director'
     variable names.
     """
-    def __init__(self, configFile):
+    def __init__(self, services={}):
+        self.services = services
         self.proxies = {}
         # XXX hopefully, the trackers attribute is temporary
         self.trackers = {}
         self._connections = {}
-        self.conf = config.Config(configFile)
+        # XXX need to get rid of this call once the rewrite is finished
         self.createListeners()
-        self.proxyCollection = None
         self.isReadOnly = False
 
     def setReadOnly(self):
@@ -127,27 +205,76 @@ class ProxyManager(object):
         """
         self.isReadOnly = False
 
-    def setServices(self, serviceCollection):
+    def setServices(self, services):
         """
-        This method is for use when a collection of Twisted services has been
-        created, contining named services (actually TCP servers) that map to
-        the proxy.Proxy instances tracked in ProxyManager.proxies.
+        This method is for use when it is necssary to set a collection of
+        ProxyService objects at once.
         """
-        self.proxyCollection = serviceCollection
+        self.services = services
 
     def getServices(self):
         """
         Return the service collection of proxies.
         """
-        return self.proxyCollection
+        return self.services
+
+    def addService(self, service):
+        """
+
+        """
+        self.services[service.name] = service
+
+    def getService(self, serviceName):
+        """
+
+        """
+        return self.services[serviceName]
+
+    def getGroups(self, serviceName):
+        """
+        Get the list of groups in a given service.
+        """
+        return self.getService(serviceName).groups
+
+    def getGroup(self, serviceName, groupName):
+        """
+
+        """
+        return self.getService(serviceName).getGroup(groupName)
+
+
+    def getHost(self, serviceName, groupName, hostName):
+        """
+
+        """
+        return self.getGroup().getHost(hostName)
+
+
+    def addTracker(self, serviceName, groupName, tracker):
+        """
+
+        """
+        self.trackers[(serviceName, groupName)] = tracker
+
 
     def getTracker(self, serviceName, groupName):
+        """
+
+        """
         return self.trackers[(serviceName,groupName)]
 
+
     def getScheduler(self, serviceName, groupName):
-        return self.getTracker(serviceName, groupName).scheduler
+        """
+        The sceduler is the object responsible for determining which host will
+        accpet the latest proxied request.
+        """
+        return self.getGroup(serviceName, groupName).scheduler
+
 
     def createTrackers(self, service):
+        if not self.services:
+            raise UndefinedServiceError
         # XXX groups are configuration level metadata and should be handled at
         # the application level, not the library level; schedulers only need
         # the lb algorithm type passed to them in order to be created
@@ -156,6 +283,29 @@ class ProxyManager(object):
             scheduler = schedulers.schedulerFactory(
                 groupConfig.scheduler, tracker)
             self.trackers[(service.name, groupConfig.name)] = tracker
+
+
+    def addProxy(self, serviceName, proxy):
+        """
+        Add an already-created instance of proxy.Proxy to the manager's proxy
+        list.
+        """
+        if not self.proxies.has_key(serviceName):
+            self.proxies[serviceName] = []
+        self.proxies[serviceName].append(proxy)
+
+
+    def createProxy(self, serviceName, host, port):
+        """
+        Create a new Proxy and add it to the internal data structure.
+        """
+        # proxies are associated with a specific tracker; trackers are
+        # associated with a specific service; proxies are also associated with
+        # a specific service, so there doesn't seem to be any need for an
+        # explicit association between proxies and trackers. The proxy can
+        # access the pm, which get get the tracker it needs.
+        p = proxy.Proxy(serviceName, host, port, self)
+        self.addProxy(serviceName, p)
 
     def createListeners(self):
         for service in self.conf.getServices():
@@ -169,6 +319,7 @@ class ProxyManager(object):
                 self.proxies[service.name].append(l)
 
     def enableGroup(self, serviceName, groupName):
+        # XXX probably going to rewrite this one completely...
         serviceConf = self.conf.getService(serviceName)
         group = serviceConf.getGroup(groupName)
         if group:
@@ -180,6 +331,7 @@ class ProxyManager(object):
         switch the tracker for a proxy. this is needed, e.g. if we change the
         active group
         """
+        # XXX this needs to be completely reworked
         serviceConf = self.conf.getService(serviceName)
         eg = serviceConf.getEnabledGroup()
         tracker = self.getTracker(serviceName, eg.name)
@@ -197,6 +349,29 @@ class ProxyManager(object):
 
         """
         self._connections[host] = peer
+
+
+def proxyManagerFactory(services):
+    """
+    This factory is for simplifying the common task of creating a proxy manager
+    with presets for many attributes and/or much data.
+    """
+    # create the manager
+    pm = proxyManager(services)
+    for service in pm.getServices():
+        # set up the trackers for each group
+        for group in pm.getGroups(service.name):
+            tracker = HostingTracking(group)
+            scheduler = schedulers.schedulerFactory(group.scheduler, tracker)
+            pm.addTracker(service.name, group.name, tracker)
+        # now let's setup actual proxies for the hosts in the enabled group
+        for group in esrvice.getEnabledGroup():
+            # XXX maybe won't need this next line
+            enabledTracker = pm.getTracker(service.name, group.name)
+            for host, port in service.x:
+                pm.createProxy(service.name, host, port)
+        # return proxy manager
+    return pm
 
 
 class HostTracking(object):

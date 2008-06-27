@@ -11,6 +11,12 @@
 * Consolidated the code in HostTracking.getStats.
 * Added failure tracking.
 * Removed redundant datestamps from log calls.
+* Added ProxyHost, ProxyGroup, and ProxySerivce classes for use with
+ProxyManager (elminating the need for mixing application configuration with
+library code).
+* Added methods to ProxyManager for getting services, groups, and hosts.
+* Defined some exceptions.
+* Moved tracker and listener creation into a factory.
 
 2008.06.25 oubiwann
 

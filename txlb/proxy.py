@@ -15,26 +15,34 @@ class Proxy(object):
     Public API:
 
     method __init__(self, name, host, port, tracker, director)
+
+    The 'name' attribute is actually the service name, and this is what
+    provies the proxy manager the ability to look up a proxy in a service.
+
     attribute .tracker: read/write - a HostTracking object
     attribute .listening_address: read - a tuple of (host,port)
     """
-    def __init__(self, name, host, port, tracker, director):
+    def __init__(self, name, host, port, director):
         self.name = name
         self.host = host
         self.port = port
-        self.tracker = tracker
         self.listening_address = (host, port)
         self.director = director
-        self.factory = ReceiverFactory(
-            self.listening_address, tracker, self.director)
+        # XXX removed tracker here, but need to rewrite pm.switchTracker before
+        # I can confirm that this will really work
+        self.factory = ReceiverFactory(name, self.listening_address, director)
+
 
     def setTracker(self, tracker):
         """
         This is not actually redundant; setTracker is needed by the proxy
         manager when the group for a service is changed.
         """
+        # XXX I don't think this is needed any more, but I need to rewrite
+        # pm.switchTracker first...
         self.tracker = tracker
         self.factory.setTracker(tracker)
+
 
 
 class Sender(protocol.Protocol):
@@ -46,8 +54,10 @@ class Sender(protocol.Protocol):
     """
     receiver = None
 
+
     def setReceiver(self, receiver):
         self.receiver = receiver
+
 
     def connectionLost(self, reason):
         """
@@ -63,11 +73,13 @@ class Sender(protocol.Protocol):
                 pass
             self.receiver.transport.loseConnection()
 
+
     def dataReceived(self, data):
         if self.receiver is None:
             logging.log("client got data, no receiver, tho\n")
         else:
             self.receiver.transport.write(data)
+
 
     def connectionMade(self):
         """
@@ -95,6 +107,7 @@ class Sender(protocol.Protocol):
             self.setReceiver(None)
 
 
+
 class SenderFactory(protocol.ClientFactory):
     """
     Create a Sender when needed. The sender connects to the remote host.
@@ -102,12 +115,14 @@ class SenderFactory(protocol.ClientFactory):
     protocol = Sender
     noisy = 0
 
+
     def setReceiver(self, receiver):
         """
         This method is by the reveiver which instantiates this class to set
         its receiver, just after instantiation of this class.
         """
         self.receiver = receiver
+
 
     def buildProtocol(self, *args, **kw):
         """
@@ -118,6 +133,7 @@ class SenderFactory(protocol.ClientFactory):
         protObj = protocol.ClientFactory.buildProtocol(self, *args, **kw)
         protObj.setReceiver(self.receiver)
         return protObj
+
 
     def clientConnectionFailed(self, connector, reason):
         """
@@ -137,8 +153,10 @@ class SenderFactory(protocol.ClientFactory):
             logging.log("no working servers, manager -> aggressive\n")
             self.receiver.transport.loseConnection()
 
+
     def stopFactory(self):
         self.receiver.factory.tracker.doneHost(self)
+
 
 
 class Receiver(protocol.Protocol):
@@ -148,6 +166,7 @@ class Receiver(protocol.Protocol):
     sender = None
     buffer = ''
     receiverOk = 0
+
 
     def connectionMade(self):
         """
@@ -165,6 +184,7 @@ class Receiver(protocol.Protocol):
         else:
             self.transport.loseConnection()
 
+
     def setSender(self, sender):
         """
         The sender side of the proxy is connected.
@@ -173,6 +193,7 @@ class Receiver(protocol.Protocol):
         if self.buffer:
             self.sender.transport.write(self.buffer)
             self.buffer = ''
+
 
     def connectionLost(self, reason):
         """
@@ -197,11 +218,13 @@ class Receiver(protocol.Protocol):
             # XXX probably want a test for this
             self.receiverOk = 0
 
+
     def getBuffer(self):
         """
         Return any buffered data.
         """
         return self.buffer
+
 
     def dataReceived(self, data):
         """
@@ -213,6 +236,7 @@ class Receiver(protocol.Protocol):
             self.buffer += data
 
 
+
 class ReceiverFactory(protocol.ServerFactory):
     """
     Factory for the listener bit of the load balancer.
@@ -220,17 +244,22 @@ class ReceiverFactory(protocol.ServerFactory):
     protocol = Receiver
     noisy = 0
 
+
     def __init__(self, (host, port), tracker, director):
         self.host = host
         self.port = port
         self.tracker = tracker
         self.director = director
 
+
     def setTracker(self, tracker):
         """
         This is called by the proxy's setTracker, which in turn is called by
         the proxy manager when the active group for a service is changed.
         """
+        # XXX this method may not be needed after the rewrite (As long as there
+        # is access to the proxy namd and the proxy manager, we should be able
+        # to look up the tracker for the proxy)
         self.tracker = tracker
 
 

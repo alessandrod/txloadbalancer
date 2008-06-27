@@ -5,9 +5,32 @@ from twisted.application import internet
 
 from txlb import name
 from txlb import util
+from txlb import config
 from txlb import manager
 from txlb.admin import pages
 from txlb.manager import checkBadHosts
+
+
+
+def configuredProxyManagerFactory(configFile):
+    """
+
+    """
+    services = {}
+    # get config object
+    conf = config.Config(configFile)
+    # build services from configuration
+    for serviceConf in 
+        # build groups
+        for groupConf in 
+            # build hosts
+            for hostConf in 
+                # add the host to the group
+            # add the group to the service
+        # add the service to the service collection
+    # call the proxyManagerFactory and return it
+    return manager.proxyManagerFactory(services)
+
 
 
 def setupAdminServer(director):
@@ -28,6 +51,7 @@ def setupAdminServer(director):
     return admin
 
 
+
 def setupHostChecker(director):
     """
     This is the setup for the "bad host check" management task.
@@ -36,6 +60,7 @@ def setupHostChecker(director):
     checker = internet.TimerService(checkInterval, checkBadHosts, director)
     checker.setName('hostChecker')
     return checker
+
 
 
 def setupControlSocket(director):
@@ -49,6 +74,7 @@ def setupControlSocket(director):
         control = internet.UNIXServer(socket, manager.ControlFactory(director))
     control.setName('control')
     return control
+
 
 
 def setupProxies(director):
@@ -68,6 +94,7 @@ def setupProxies(director):
             proxyService.setServiceParent(proxyCollection)
     director.setServices(proxyCollection)
     return proxyCollection
+
 
 
 def setup(configFile):
