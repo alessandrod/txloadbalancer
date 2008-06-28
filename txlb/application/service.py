@@ -37,12 +37,13 @@ class LoadBalancedService(service.MultiService):
         """
         return "%s:%s" % (host, port)
 
-    def getProxyName(self, host, port, index):
+
+    def getProxyName(self, name, index):
         """
         A convenience function for getting the proxy name by host, port, and
         index.
         """
-        return self._stringifyHostPort(host, port) + '-%s' % index
+        return '%s-%s' % (name, index)
 
 
     def setScheduler(self, lbType, tracker):
@@ -66,9 +67,11 @@ class LoadBalancedService(service.MultiService):
         for serviceName, proxies in pm.getProxies():
             # a service can listen on multiple hosts/ports
             for index, proxy in enumerate(proxies):
-                name = self.getProxyName(proxy.host, proxy.port, index)
+                index += 1
+                name = self.getProxyName(serviceName, index)
                 proxyService = internet.TCPServer(
                     proxy.port, proxy.factory, interface=proxy.host)
+                proxyService.setName(name)
                 proxyService.setServiceParent(self.proxyCollection)
         return self.proxyCollection
 
@@ -81,11 +84,20 @@ class LoadBalancedService(service.MultiService):
         tcpService.setServiceParent(self)
 
 
-    def getProxyService(self, host, port, index):
+    def getProxyService(self, serviceName, index=None):
         # XXX need to figure out naming in order to have accurate lookup...
         # this is just a temporary solution
-        name = self.getProxyName(host, port, index)
-        return self.proxies.getNamedService(name)
+        if index:
+            serviceName = self.getProxyName(serviceName, index)
+        return self.proxyCollection.getServiceNamed(serviceName)
+
+
+    def getProxyNames(self):
+        """
+        A convenience method for getting a list of names used in the proxies
+        collection of named services.
+        """
+        return self.proxyCollection.namedServices.keys()
 
 
 

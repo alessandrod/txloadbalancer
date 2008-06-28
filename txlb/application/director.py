@@ -21,6 +21,7 @@ from txlb.admin import auth
 from txlb.admin import pages
 from txlb.manager import checkBadHosts
 from txlb.application import service as txervice
+from txlb.application.service import LoadBalancedService
 
 
 def configuredProxyManagerFactory(configuration):
@@ -151,14 +152,17 @@ def setup(configFile):
     conf = config.Config(configFile)
 
     application = service.Application(name)
-    services = service.IServiceCollection(application)
+    services = LoadBalancedService()
+    services.setServiceParent(application)
+    #services = service.IServiceCollection(application)
 
     # instantiate the proxy manager (that which will direct the proxies)
     director = configuredProxyManagerFactory(conf)
 
     # set up the proxies
-    proxies = setupProxyServices(director)
-    proxies.setServiceParent(services)
+    services.proxiesFactory(director)
+    #proxies = setupProxyServices(director)
+    #proxies.setServiceParent(services)
 
     # set up the control socket
     control = setupControlSocket(conf, director)
