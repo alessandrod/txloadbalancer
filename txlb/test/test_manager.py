@@ -2,7 +2,7 @@ from twisted.trial import unittest
 
 from txlb import model
 from txlb.manager import HostTracking
-from txlb.schedulers import schedulerFactory
+from txlb.schedulers import schedulerFactory, roundr, leastc
 
 class HostTrackingTests(unittest.TestCase):
     """
@@ -12,15 +12,14 @@ class HostTrackingTests(unittest.TestCase):
         """
 
         """
-        group1 = model.ProxyGroup('test_group1', 'roundrobin', True)
+        group1 = model.ProxyGroup('test_group1', roundr, True)
         group1.addHost(model.ProxyHost('goodhost1', 'ip1', 1))
         group1.addHost(model.ProxyHost('goodhost2', 'ip1', 2))
         group1.addHost(model.ProxyHost('badhost1', 'ip1', 3))
         group1.addHost(model.ProxyHost('badhost2', 'ip1', 4))
         self.group1 = group1
 
-        group2 = model.ProxyGroup('test_group2', 'leastconns', True)
-        group2.scheduler = 'leastconns'
+        group2 = model.ProxyGroup('test_group2', leastc, True)
         group2.addHost(model.ProxyHost('goodhost3', 'ip1', 5))
         group2.addHost(model.ProxyHost('goodhost4', 'ip1', 6))
         group2.addHost(model.ProxyHost('badhost3', 'ip1', 7))

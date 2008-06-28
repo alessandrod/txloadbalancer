@@ -18,6 +18,8 @@ future.
 * Updated txlbWeb.tac with a HostMapper version of configuration.
 * Added some explanatory docstrings to the example app, txlbWeb.tac.
 * Added a converted for a list of HostMapper to model.Proxy*.
+* Updated code and docs to reference the new lb type constants as objects (not
+strings).
 
 2008.06.26 oubiwann
 

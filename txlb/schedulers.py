@@ -13,13 +13,14 @@ def schedulerFactory(lbType, tracker):
     """
     A dispatch function for a service's scheduler.
     """
-    if lbType == "random":
+    if lbType == rand:
         return RandomScheduler(tracker)
-    elif lbType == "leastconns":
+    # XXX remove this one
+    elif lbType == None:
         return LeastConnsScheduler(tracker)
-    elif lbType == "roundrobin":
+    elif lbType == roundr:
         return RoundRobinScheduler(tracker)
-    elif lbType == "leastconnsrr":
+    elif lbType == leastc:
         return LeastConnsRRScheduler(tracker)
     else:
         raise ValueError, "Unknown scheduler type `%s'" % lbType
@@ -42,7 +43,7 @@ class RandomScheduler(BaseScheduler):
     """
     Select a random proxied host to receive the next request.
     """
-    schedulerName = "random"
+    schedulerName = rand
 
     def nextHost(self, client_addr):
         if self.hosts:
@@ -57,7 +58,7 @@ class RoundRobinScheduler(BaseScheduler):
     This scheduler presents a simple algorighm for selecting hosts based on
     nothing other than who's next in the list.
     """
-    schedulerName = "roundrobin"
+    schedulerName = roundr
     counter = 0
 
     def nextHost(self, client_addr):
@@ -77,7 +78,7 @@ class LeastConnsScheduler(BaseScheduler):
     number of current open connections. This is a very cheap and quite accurate
     method of load balancing.
     """
-    schedulerName = "leastconns"
+    schedulerName = leastc
     counter = 0
 
     def nextHost(self, client_addr):
@@ -94,7 +95,7 @@ class LeastConnsRRScheduler(BaseScheduler):
     then by hostname. So hostnames that are earlier in the alphabet get many
     many more hits. This is suboptimal.
     """
-    schedulerName = "leastconnsrr"
+    schedulerName = leastc
     counter = 0
 
     def nextHost(self, client_addr):

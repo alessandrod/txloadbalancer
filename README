@@ -66,6 +66,8 @@ Changes from txLoadBalancer 1.0.1 to 1.1.0
 
 - Massive API changes: competely reorganzied the code base.
 - Integrated patches from Apple's Calendar Server project.
+- A new API for creating load-balanced services within a Twisted application
+  (without the need to run a separate load-balancingn daemon).
 
 Changes from txLoadBalancer 0.9.1 to 1.0.1
 

@@ -32,13 +32,13 @@ proxyServices = [
     model.ProxyService(
         'web', addresses=[('localhost', servicePort)],
         groups=[
-            model.ProxyGroup('prod', 'leastconns', enabled=True,
+            model.ProxyGroup('prod', leastc, enabled=True,
                 hosts=[
                     model.ProxyHost('host1', '127.0.0.1', port=7001),
                     model.ProxyHost('host2', '127.0.0.1', port=7002),
                     model.ProxyHost('host3', '127.0.0.1', port=7003),
             ]),
-            model.ProxyGroup('test', 'roundrobin', enabled=True,
+            model.ProxyGroup('test', roundr, enabled=True,
                 hosts=[
                     model.ProxyHost('host4', '127.0.0.1', port=7004),
                     model.ProxyHost('host5', '127.0.0.1', port=7005),

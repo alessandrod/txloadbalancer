@@ -5,7 +5,7 @@ from xml.dom import minidom
 
 from txlb import util
 from txlb import logging
-
+from txlb import schedulers
 
 
 legalConfigSections = [
@@ -126,7 +126,8 @@ class ServiceConfig(object):
     def loadGroup(self, groupobj):
         groupName = groupobj.getAttribute('name')
         newgroup = GroupConfig(groupName)
-        newgroup.scheduler = groupobj.getAttribute('scheduler')
+        schedulerStr = groupobj.getAttribute('scheduler')
+        newgroup.scheduler = getattr(schedulers, schedulerStr)
         cc = 0
         for host in groupobj.childNodes:
             if host.nodeName in legalCommentSections:
@@ -172,7 +173,7 @@ class ServiceConfig(object):
         for group in self.groups.values():
             if not group.name:
                 raise GroupError, "no group name set"
-            if not group.scheduler:
+            if group.scheduler == None:
                 raise GroupError, "no scheduler set for %s" % group.name
             if not group.hosts:
                 raise GroupError, "no hosts set for %s" % group.name
