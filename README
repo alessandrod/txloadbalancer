@@ -16,13 +16,16 @@ $ twistd -noy ./bin/txlb.tac
 This will use the default configuration file in ./etc/config.xml; you can edit
 the .tac file to point to the config you prefer.
 
-To enabled the admin interface, your config file must have the admin section
+To enable the admin interface, your config file must have the admin section
 defined, with the required fields. For an example, be sure to see
 ./etc/config.xml. For more details, please see the configuration information in
 the ./doc directory.
 
 If you are creating your own script and don't want to use txlb.tac, you can
 import the application setup functions in txlb.application.
+
+If you want to "embed" a load-balancer in your Twisted application, see the
+example ./bin/txlbWeb.tac.
 
 ----------------------------------------------------------------------
 
@@ -49,6 +52,20 @@ Features:
 
 Performance:
 
+Duncan's notes from 2008, tested on a 2 CPU Sun Netra 240:
+
+  - a single apache instance on Solaris 10
+        . starting threads:
+        . max threads
+
+  - 2 load-balanced apache instances on Solaris 10
+
+  - twisted.web instances on Solaris 10 (same docroot)
+
+  - 2 load-balanced twisted.web instances
+
+Anthony's original notes on performance:
+
   - On my notebook, load balancing an apache on the same local ethernet
     (serving a static 18K text file) gets 155 connections per second and
     2850 kbytes/s throughput (apachebench -n 2000 -c 10). Connecting directly
@@ -66,6 +83,8 @@ Changes from txLoadBalancer 1.0.1 to 1.1.0
 
 - Massive API changes: competely reorganzied the code base.
 - Integrated patches from Apple's Calendar Server project.
+- A new API for creating load-balanced services within a Twisted application
+  (without the need to run a separate load-balancingn daemon).
 
 Changes from txLoadBalancer 0.9.1 to 1.0.1
 

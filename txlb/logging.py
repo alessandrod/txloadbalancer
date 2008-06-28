@@ -1,7 +1,5 @@
 Logger=None
 
-from asyncore import compact_traceback
-
 import sys, time
 
 

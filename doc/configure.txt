@@ -13,7 +13,7 @@ One of the simplest possible configs would be
     <pdconfig>
       <service name="web">
         <listen ip="0.0.0.0:80"/>
-        <group name="servers" scheduler="roundrobin">
+        <group name="servers" scheduler="roundr">
           <host name="server1" ip="192.168.10.1:80"/>
           <host name="server2" ip="192.168.10.2:80"/>
         </group>

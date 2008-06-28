@@ -1,3 +1,88 @@
+2008.06.28 oubiwann
+
+* Removed the less useful least connections scheduler, keeping the optimized
+one.
+* Removed old proxy manager methods.
+* Updated docstring.
+* Removed completed items from TODO.
+* With Glyph's suggestions implemented, his notes have been removed from TODO.
+* Removed unused imports.
+* Renamed txlb.application.services to txlb.application.director.
+* Updated the docstring in application.director.
+* Updated the README with more usage information and stubs for recent
+performance data.
+* Updated the TODO.
+* Removed an unused class for application.service.
+* Updated the API example .tac with information about running with
+load-balancing enabled.
+* Merged experimental Twisted service API branch to trunk.
+
+2008.06.27 oubiwann
+
+* Updated models to take list parameters for the model objects they contain.
+* Updated ProxyManager to do the same.
+* Cleaned up the config in txlbWeb.tac.
+* Updated configuredProxyManagerFactory to pass a list instead of a dict.
+* Added the getFirstService convenience method to ProxyManager.
+* Moved tracker and enabled group code from txlbWeb.tac into
+LoadBalancedService.proxiesFactory.
+* Updated the ProxyHost model with attributes that could be useful in the near
+future.
+* Corrected a comment in txlbWeb.tac.
+* Updated setupProxyServices to use the new API.
+* Fixed typo in a comment.
+* Updated TODO with notes from Glyph.
+* Added a host mapping class to make configuration easier for developers.
+* Added tests for HostMapper.
+* Updated txlbWeb.tac with a HostMapper version of configuration.
+* Added some explanatory docstrings to the example app, txlbWeb.tac.
+* Added a converted for a list of HostMapper to model.Proxy*.
+* Updated code and docs to reference the new lb type constants as objects (not
+strings).
+* Updated txlbWeb.tac to use the new signature of HostMapper that includes the
+lbType.
+* Added a type-checker in proxyManagerFactory to determine whether to treat the
+passed object as a collection of models or mappers.
+* Updated TODO.
+
+2008.06.26 oubiwann
+
+* Found the bug documented in ticket #242868
+(https://bugs.launchpad.net/txloadbalancer/+bug/242868).
+* Removed debugging print statements.
+* Removed the bug from the TODO.
+* Started fleshing out the txlbWeb.tac some more.
+* Updated the TODO with some next steps in this exploration.
+* Renamed some of the host tracking attributes to reflect their use better.
+* Fixed a bug in the task manager config.
+* Consolidated the code in HostTracking.getStats.
+* Added failure tracking.
+* Removed redundant datestamps from log calls.
+* Added ProxyHost, ProxyGroup, and ProxySerivce classes for use with
+ProxyManager (elminating the need for mixing application configuration with
+library code).
+* Added methods to ProxyManager for getting services, groups, and hosts.
+* Defined some exceptions.
+* Moved tracker and listener creation into a factory.
+* Moved the Proxy* classes into a new model module.
+* Filled in services.configuredProxyManagerFactory.
+* Cleaned up util.splitHostPort.
+* Fixed up the HostTracking class to not use configuration directly, but to use
+the model classes instead.
+* Fixed broken logic in services.setupProxyServices.
+* Updated the bad host checker to use the new API.
+* Added proxy.TrackerMixin for use by Proxy and ReceiverFactory.
+
+2008.06.25 oubiwann
+
+* Added tests for HostTracking class.
+* Added notes to the architecture doc about the relationship of the proxy
+classes to one another.
+* Added notes to the architecture doc about who talks to who in the proxy
+module.
+* Added a stub for a read-only admin UI page.
+* Added the logic to admin.pages and ProxyManager to enabled read-only pages.
+
 2008.06.24 oubiwann
 
 * Cleaned up TODO, reorganized by milestones.
@@ -17,6 +102,16 @@ service collections for the proxy TCP services.
 * Updated plans for fixing up schedulers.
 * Updated plans for examining a general Twisted service load-balancing API.
 * Removed print statements.
+* Set up commit script to work with the new branch.
+* Created an application subpackage and moved txlb.application to
+txlb.application.services.
+* Created a service module in txlb.application for exploring the viability of
+load balancing arbitrary services in a twisted application.
+* Removed print statements.
+* Added an example .tac file for a load balanced service.
+* Took more notes on what's going to be needed in order to support this work.
+* Moved the host-tracking code out of schedulers and into manager (temporary
+location, while it gets sorted out).
 
 2008.06.23 oubiwann
 

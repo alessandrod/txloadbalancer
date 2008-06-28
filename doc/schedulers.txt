@@ -9,24 +9,16 @@ schedulers.
 Current schedulers
 ==================
 
-random
+rand (random)
 
   For each hit, randomly choose from available servers
 
-roundrobin
+roundr (roundrobin)
 
   Distribute hits in a round-robin fashion; so for three servers A, B, C
   hits would go A B C A B C A B C ...
 
-leastconns
-
-  Send the hit to the backend server with the least number of current
-  open connections. Assuming that the server holds the TCP connections
-  open while processing, this will often lead to a quite effective load
-  balancing, as the faster servers will process and finish connections
-  faster than the slower servers.
-
-leastconnsrr
+leastc (leastconns)
 
   Send the hit to the backend server with the least number of current
   connections. If multiple machines have the same number of open

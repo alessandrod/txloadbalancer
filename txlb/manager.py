@@ -4,10 +4,31 @@ from twisted.protocols import amp
 from twisted.internet import protocol
 
 from txlb import util
-from txlb import config
+from txlb import model
 from txlb import proxy
 from txlb import logging
 from txlb import schedulers
+
+
+
+class Error(Exception):
+    pass
+
+
+
+class UnknownHostAndPortError(Exception):
+    """
+    An operation was attempted that needed both host and port values to be
+    defined.
+    """
+
+
+
+class UnknowndServiceError(Error):
+    """
+    An operation was invalid due to the fact that no service has been defined.
+    """
+
 
 
 def checkBadHosts(director):
@@ -15,22 +36,22 @@ def checkBadHosts(director):
     This function checks the director's hosts marked as "unavailable" and puts
     them back into use.
     """
-    for name, proxy in director.proxies.items():
-        # since all proxies for a service share a scheduler,
-        # we only need to check the first listener.
-        scheduler = proxy[0].scheduler
-        badHosts = scheduler.badhosts
-        for bh in badHosts.keys():
-            print "bad host: ", bh
-            when, what = badHosts[bh]
-            logging.log("re-adding %s automatically\n"%str(bh),
-                    datestamp=1)
-            hostname = scheduler.getHostNames()[bh]
-            del badHosts[bh]
-            scheduler.newHost(bh, hostname)
+    for name, service in director.getServices():
+        # since all proxies for a service share a tracker,
+        # we only need to check the first proxy.
+        group = service.getEnabledGroup()
+        tracker = director.getTracker(name, group.name)
+        badHosts = tracker.badhosts
+        for hostPort, timeAndError in badHosts.items():
+            when, what = badHosts[hostPort]
+            logging.log("re-adding %s automatically\n" % str(hostPort))
+            hostname = tracker.getHostNames()[hostPort]
+            del badHosts[hostPort]
+            tracker.newHost(hostPort, hostname)
 
 
-def checkConfigChanges():
+
+def checkConfigChanges(director):
     """
     This function replaces the current on-disk configuration with the
     adjustments that have been made in-memory (likely from the admin web UI). A
@@ -41,16 +62,13 @@ def checkConfigChanges():
     conditions, differences and the need to merge, conflict resolution, etc.
     """
     # disable the admin UI or at the very least, make it read-only
+    director.setReadOnly()
     # compare load-time config with on-disk config
     # compare load-time config with in-memory config
     # save configuration(s)
     # re-enable admin UI
+    director.setReadWrite()
 
-
-class UnknownPortError(Exception):
-    """
-
-    """
 
 
 class GetClientAddress(amp.Command):
@@ -62,10 +80,13 @@ class GetClientAddress(amp.Command):
     arguments = [('host', amp.String()),
                  ('port', amp.Integer())]
 
+
     response = [('host', amp.String()),
                 ('port', amp.Integer())]
 
-    errors = {UnknownPortError: 'UNKNOWN_PORT'}
+
+    errors = {UnknownHostAndPortError: 'UNKNOWN_PORT'}
+
 
 
 class ControlProtocol(amp.AMP):
@@ -76,13 +97,14 @@ class ControlProtocol(amp.AMP):
     def __init__(self, director):
         self.director = director
 
+
     def getClientAddress(self, host, port):
         host, port = self.director.getClientAddress(host, port)
         if (host, port) == (None, None):
-            raise UnknownPortError()
-
+            raise UnknownHostAndPortError()
         return {'host': host, 'port': port}
     GetClientAddress.responder(getClientAddress)
+
 
 
 class ControlFactory(protocol.ServerFactory):
@@ -93,8 +115,10 @@ class ControlFactory(protocol.ServerFactory):
     def __init__(self, director):
         self.director = director
 
+
     def buildProtocol(self, addr):
         return ControlProtocol(self.director)
+
 
 
 class ProxyManager(object):
@@ -105,66 +129,168 @@ class ProxyManager(object):
     Note that this was formerly known as the Director, thus all the 'director'
     variable names.
     """
-    def __init__(self, configFile):
-        self.proxies = {}
-        self.schedulers = {}
-        self._connections = {}
-        self.conf = config.Config(configFile)
-        self.createListeners()
-        self.proxyCollection = None
 
-    def setServices(self, serviceCollection):
+
+    def __init__(self, services=[]):
+        self.services = {}
+        if services:
+            for service in services:
+                self.addService(service)
+        self.proxies = {}
+        # XXX hopefully, the trackers attribute is temporary
+        self.trackers = {}
+        self._connections = {}
+        # XXX need to get rid of this call once the rewrite is finished
+        #self.createListeners()
+        self.isReadOnly = False
+
+
+    def setReadOnly(self):
         """
-        This method is for use when a collection of Twisted services has been
-        created, contining named services (actually TCP servers) that map to
-        the proxy.Proxy instances tracked in ProxyManager.proxies.
+
         """
-        self.proxyCollection = serviceCollection
+        self.isReadOnly = True
+
+
+    def setReadWrite(self):
+        """
+
+        """
+        self.isReadOnly = False
+
+
+    def setServices(self, services):
+        """
+        This method is for use when it is necssary to set a collection of
+        model.ProxyService objects at once.
+        """
+        self.services = services
+
 
     def getServices(self):
         """
-        Return the service collection of proxies.
+        Return the keys and values of the services attribute.
         """
-        return self.proxyCollection
+        return self.services.items()
+
+
+    def getFirstService(self):
+        """
+        This is useful when load balancing a service via the API, something
+        that one only does with a single service.
+        """
+        return self.getServices()[0]
+
+
+    def addService(self, service):
+        """
+
+        """
+        self.services[service.name] = service
+
+
+    def getService(self, serviceName):
+        """
+
+        """
+        return self.services[serviceName]
+
+
+    def getGroups(self, serviceName):
+        """
+        Get the keys and values for the groups in a given service.
+        """
+        return self.getService(serviceName).getGroups()
+
+
+    def getGroup(self, serviceName, groupName):
+        """
+
+        """
+        return self.getService(serviceName).getGroup(groupName)
+
+
+
+    def getHost(self, serviceName, groupName, hostName):
+        """
+
+        """
+        return self.getGroup().getHost(hostName)
+
+
+    def addTracker(self, serviceName, groupName, tracker):
+        """
+
+        """
+        self.trackers[(serviceName, groupName)] = tracker
+
+
+    def getTracker(self, serviceName, groupName):
+        """
+
+        """
+        return self.trackers[(serviceName,groupName)]
+
 
     def getScheduler(self, serviceName, groupName):
-        return self.schedulers[(serviceName,groupName)]
+        """
+        The sceduler is the object responsible for determining which host will
+        accpet the latest proxied request.
+        """
+        return self.getGroup(serviceName, groupName).scheduler
 
-    def createSchedulers(self, service):
-        for group in service.getGroups():
-            s = schedulers.schedulerFactory(group)
-            self.schedulers[(service.name,group.name)] = s
 
-    def createListeners(self):
-        for service in self.conf.getServices():
-            self.createSchedulers(service)
-            eg = service.getEnabledGroup()
-            scheduler = self.getScheduler(service.name, eg.name)
-            # if we ever need to support multiple proxies per service, this
-            # will need to be changed
-            self.proxies[service.name] = []
-            for lobj in service.listen:
-                host, port = util.splitHostPort(lobj)
-                l = proxy.Proxy(service.name, host, port, scheduler, self)
-                self.proxies[service.name].append(l)
+    def addProxy(self, serviceName, proxy):
+        """
+        Add an already-created instance of proxy.Proxy to the manager's proxy
+        list.
+        """
+        if not self.proxies.has_key(serviceName):
+            self.proxies[serviceName] = []
+        self.proxies[serviceName].append(proxy)
+
+
+    def createProxy(self, serviceName, host, port):
+        """
+        Create a new Proxy and add it to the internal data structure.
+        """
+        # proxies are associated with a specific tracker; trackers are
+        # associated with a specific service; proxies are also associated with
+        # a specific service, so there doesn't seem to be any need for an
+        # explicit association between proxies and trackers. The proxy can
+        # access the pm, which get get the tracker it needs.
+        p = proxy.Proxy(serviceName, host, port, self)
+        self.addProxy(serviceName, p)
+
+
+    def getProxies(self):
+        """
+        Return the keys and values for the proxies attribute.
+        """
+        return self.proxies.items()
+
 
     def enableGroup(self, serviceName, groupName):
+        # XXX probably going to rewrite this one completely...
         serviceConf = self.conf.getService(serviceName)
         group = serviceConf.getGroup(groupName)
         if group:
             serviceConf.enabledgroup = groupName
-        self.switchScheduler(serviceName)
+        self.switchTracker(serviceName)
 
-    def switchScheduler(self, serviceName):
+
+    def switchTracker(self, serviceName):
         """
-        switch the scheduler for a listener. this is needed, e.g. if
-        we change the active group
+        switch the tracker for a proxy. this is needed, e.g. if we change the
+        active group
         """
+        # XXX this needs to be completely reworked
         serviceConf = self.conf.getService(serviceName)
         eg = serviceConf.getEnabledGroup()
-        scheduler = self.getScheduler(serviceName, eg.name)
-        for listener in self.proxies[serviceName]:
-            listener.setScheduler(scheduler)
+        tracker = self.getTracker(serviceName, eg.name)
+        for proxy in self.proxies[serviceName]:
+            proxy.setTracker(tracker)
+
 
     def getClientAddress(self, host, port):
         """
@@ -172,9 +298,204 @@ class ProxyManager(object):
         """
         return self._connections.get((host, port), (None, None))
 
+
     def setClientAddress(self, host, peer):
         """
 
         """
         self._connections[host] = peer
+
+
+
+def proxyManagerFactory(services):
+    """
+    This factory is for simplifying the common task of creating a proxy manager
+    with presets for many attributes and/or much data.
+    """
+    # check to see what got passed, in case we need to convert it
+    if isinstance(services[0], model.HostMapper):
+        services = model.convertMapperToModel(services)
+    # create the manager
+    pm = ProxyManager(services)
+    for serviceName, service in pm.getServices():
+        # set up the trackers for each group
+        for groupName, group in pm.getGroups(serviceName):
+            tracker = HostTracking(group)
+            scheduler = schedulers.schedulerFactory(group.lbType, tracker)
+            pm.addTracker(serviceName, groupName, tracker)
+        # now let's setup actual proxies for the hosts in the enabled group
+        group = service.getEnabledGroup()
+        # XXX maybe won't need this next line
+        #enabledTracker = pm.getTracker(service.name, group.name)
+        for host, port in service.addresses:
+            pm.createProxy(serviceName, host, port)
+        # return proxy manager
+    return pm
+
+
+
+class HostTracking(object):
+    """
+    This class is responsible for tracking proxied host metadata (such as
+    connection information and failure counts).
+
+    Schedulers are responsible for selecting the next proxied host that will
+    recieve the client request. Schedulers dependent upon their related
+    trackers (instances of this class) for connection information.
+    """
+
+
+    def __init__(self, proxyGroup):
+        self.group = proxyGroup
+        self.hosts = []
+        self.hostnames = {}
+        self.badhosts = {}
+        self.openconns = {}
+        # the values in self.available indicate the number of connections that
+        # are currently being attempted
+        self.available = {}
+        self.failed = {}
+        self.totalconns = {}
+        self.lastclose = {}
+        # this next attribute gets set when a Scheduler is iniated; this class
+        # needs the scheduler attribute for nextHost calls
+        self.scheduler = None
+        self.initializeGroupHosts()
+
+
+    def initializeGroupHosts(self):
+        for hostName, host in self.group.getHosts():
+            self.newHost((host.hostname, host.port), hostName)
+
+
+    def getStats(self):
+        def sorter(attr):
+            sorts = {}
+            data = getattr(self, attr)
+            hostPortCounts = data.items()
+            hostPortCounts.sort()
+            for hostPort, count in hostPortCounts:
+                sorts['%s:%s' % hostPort] = count
+            return sorts
+        stats = {}
+        # we don't present open connections for hosts that aren't available
+        stats['openconns'] = sorter('available')
+        stats['totals'] = sorter('totalconns')
+        stats['failed'] = sorter('failed')
+        stats['bad'] = self.badhosts
+        return stats
+
+
+    def showStats(self, verbose=1):
+        stats = []
+        stats.append("%d open connections" % len(self.openconns.keys()))
+        hostPortCounts = self.available.items()
+        hostPortCounts.sort()
+        stats = stats + [str(x) for x in hostPortCounts]
+        if verbose:
+            openHosts = [x[1] for x in self.openconns.values()]
+            openHosts.sort()
+            stats = stats + [str(x) for x in openHosts]
+        return "\n".join(stats)
+
+
+    def getHost(self, senderFactory, client_addr=None):
+        host = self.scheduler.nextHost(client_addr)
+        if not host:
+            return None
+        cur = self.available.get(host)
+        self.openconns[senderFactory] = (time.time(), host)
+        self.available[host] += 1
+        return host
+
+
+    def getHostNames(self):
+        return self.hostnames
+
+
+    def doneHost(self, senderFactory):
+        try:
+            t, host = self.openconns[senderFactory]
+        except KeyError:
+            return
+        del self.openconns[senderFactory]
+        if self.available.get(host) is not None:
+            self.available[host] -= 1
+            self.totalconns[host] += 1
+        self.lastclose[host] = time.time()
+
+
+    def newHost(self, ip, name):
+        if type(ip) is not type(()):
+            ip = util.splitHostPort(ip)
+        self.hosts.append(ip)
+        self.hostnames[ip] = name
+        # XXX why is this needed too?
+        self.hostnames['%s:%d' % ip] = name
+        self.available[ip] = 0
+        self.totalconns[ip] = 0
+
+
+    def delHost(self, ip=None, name=None, activegroup=0):
+        """
+        remove a host
+        """
+        if ip is not None:
+            if type(ip) is not type(()):
+                ip = util.splitHostPort(ip)
+        elif name is not None:
+            for ip in self.hostnames.keys():
+                if self.hostnames[ip] == name:
+                    break
+            raise ValueError, "No host named %s"%(name)
+        else:
+            raise ValueError, "Neither ip nor name supplied"
+        if activegroup and len(self.hosts) == 1:
+            return 0
+        if ip in self.hosts:
+            self.hosts.remove(ip)
+            del self.hostnames[ip]
+            del self.available[ip]
+            del self.failed[ip]
+            del self.totalconns[ip]
+        elif self.badhosts.has_key(ip):
+            del self.badhosts[ip]
+        else:
+            raise ValueError, "Couldn't find host"
+        return 1
+
+
+    def deadHost(self, senderFactory, reason='', doLog=True):
+        """
+        This method gets called when a proxied host is unreachable.
+        """
+        # if this throws an exception here, I think it's because all the hosts
+        # have been removed from the pool
+        try:
+            epochTime, hostPort = self.openconns[senderFactory]
+        except KeyError:
+            if doLog:
+                msg = """Wow, Bender says "We're boned." No hosts available.\n"""
+                logging.log(msg)
+            return
+        if not self.failed.has_key(hostPort):
+            self.failed[hostPort] = 1
+        else:
+            self.failed[hostPort] += 1
+        if hostPort in self.hosts:
+            if doLog:
+                logging.log("marking host %s down (%s)\n" % (
+                    str(hostPort), reason.getErrorMessage()))
+            self.hosts.remove(hostPort)
+        if self.available.has_key(hostPort):
+            del self.available[hostPort]
+        # XXX I don't think we want to delete the previously gathered stats for
+        # the hosts that go bad... I'll keep this code here (but commented out)
+        # in case there's a good reason for it and I'm nost not thinking of it
+        # right now
+        #if self.totalconns.has_key(hostPort):
+        #    del self.totalconns[hostPort]
+        self.badhosts[hostPort] = (time.time(), reason)
+        # make sure we also mark this session as done.
+        self.doneHost(senderFactory)
 

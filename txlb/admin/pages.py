@@ -52,7 +52,7 @@ class BasePage(resource.Resource):
         refresh = ''
         if refreshURL:
             refresh = template.refresh % (
-                self.parent.director.conf.admin.refresh, refreshURL)
+                self.parent.conf.admin.refresh, refreshURL)
         return template.header % (
             txlb.name, refresh, txlb.name, self.parent.serverVersion,
             socket.gethostname())
@@ -106,17 +106,17 @@ class RunningPage(BasePage):
             stopStart = template.startRefresh % time.time()
         content += template.refreshButtons % (
             time.ctime(time.time()), time.time(), stopStart)
-        for service in self.parent.director.conf.getServices():
+        for service in self.parent.conf.getServices():
             content += template.serviceName % service.name
             for l in service.listen:
                 content += template.listeningService % l
             eg = service.getEnabledGroup()
             groups = service.getGroups()
             for group in groups:
-                sch = self.parent.director.getScheduler(
+                tracker = self.parent.director.getTracker(
                     service.name, group.name)
-                stats = sch.getStats(verbose=verbose)
-                hdict = sch.getHostNames()
+                stats = tracker.getStats()
+                hdict = tracker.getHostNames()
                 if group is eg:
                     klass = 'enabled'
                     desc = template.groupDescEnabled
@@ -128,11 +128,15 @@ class RunningPage(BasePage):
                 content += desc
                 content += template.groupHeaderForm % (
                     service.name, group.name, klass)
-                counts = stats['open']
+                counts = stats['openconns']
+                failed = stats['failed']
                 totals = stats['totals']
                 k = counts.keys()
                 k.sort()
                 for h in k:
+                    f = 0
+                    if failed.has_key(h):
+                        f = failed[h]
                     if counts.has_key(h):
                         oc = counts[h]
                     else:
@@ -142,8 +146,9 @@ class RunningPage(BasePage):
                     else:
                         tc = '--'
                     content += template.hostInfo % (
-                        klass, hdict[h], h, oc, tc, urllib.quote(service.name),
-                        urllib.quote(group.name), urllib.quote(h))
+                        klass, hdict[h], h, oc, tc, f,
+                        urllib.quote(service.name), urllib.quote(group.name),
+                        urllib.quote(h))
                 bad = stats['bad']
                 if bad:
                     content += template.badHostGroup % klass
@@ -157,6 +162,14 @@ class RunningPage(BasePage):
         return content
 
 
+class RunningReadOnlyPage(BasePage):
+    """
+    A version of the RunningPage that disables write functionality. This is
+    useful for non-atomic operations are taking place, decreasing the chances
+    for the user to create race conditions.
+    """
+
+
 class RunningConfig(BasePage):
     """
 
@@ -167,7 +180,7 @@ class RunningConfig(BasePage):
         """
         request.setHeader('Content-type', 'text/plain')
         verbose = False
-        conf = self.parent.director.conf
+        conf = self.parent.conf
         doc = minidom.Document()
         top = doc.createElement("pdconfig")
         doc.appendChild(top)
@@ -184,15 +197,15 @@ class RunningConfig(BasePage):
             groups = service.getGroups()
             for group in groups:
                 serv.appendChild(doc.createTextNode("\n        "))
-                sch = self.parent.director.getScheduler(service.name, group.name)
+                tracker = self.parent.director.getTracker(service.name, group.name)
                 xg = doc.createElement("group")
                 xg.setAttribute('name', group.name)
-                xg.setAttribute('scheduler', sch.schedulerName)
+                xg.setAttribute('scheduler', tracker.scheduler.schedulerName)
                 serv.appendChild(xg)
-                stats = sch.getStats(verbose=verbose)
+                stats = tracker.getStats()
                 hosts = group.getHosts()
-                hdict = sch.getHostNames()
-                counts = stats['open']
+                hdict = tracker.getHostNames()
+                counts = stats['openconns']
                 ahosts = counts.keys() # ahosts is now a list of active hosts
                 # now add disabled hosts.
                 for k in stats['bad'].keys():
@@ -213,7 +226,7 @@ class RunningConfig(BasePage):
             serv.appendChild(doc.createTextNode("\n    "))
         top.appendChild(doc.createTextNode("\n    "))
         # now the admin block
-        admin = self.parent.director.conf.admin
+        admin = self.parent.conf.admin
         if admin is not None:
             xa = doc.createElement("admin")
             xa.setAttribute("listen", "%s:%s"%admin.listen)
@@ -247,7 +260,7 @@ class StoredConfig(BasePage):
 
         """
         request.setHeader('Content-type', 'text/plain')
-        return self.parent.director.conf.dom.toxml()
+        return self.parent.conf.dom.toxml()
 
 
 class DeleteHost(BasePage):
@@ -261,17 +274,17 @@ class DeleteHost(BasePage):
         service = request.args['service'][0]
         group = request.args['group'][0]
         ip = request.args['ip'][0]
-        sched = self.parent.director.getScheduler(
+        tracker = self.parent.director.getTracker(
             serviceName=service, groupName=group)
-        service = self.parent.director.conf.getService(service)
+        service = self.parent.conf.getService(service)
         eg = service.getEnabledGroup()
         if group == eg.name:
-            if sched.delHost(ip=ip, activegroup=1):
+            if tracker.delHost(ip=ip, activegroup=1):
                 msg = 'host %s deleted (from active group!)' % ip
             else:
                 msg = 'host %s <b>not</b> deleted from active group' % ip
         else:
-            if sched.delHost(ip=ip):
+            if tracker.delHost(ip=ip):
                 msg = 'host %s deleted from inactive group' % ip
             else:
                 msg = 'host %s <b>not</b> deleted from inactive group' % ip
@@ -291,9 +304,9 @@ class AddHost(BasePage):
         group = request.args['group'][0]
         name = request.args['name'][0]
         ip = request.args['ip'][0]
-        sched = self.parent.director.getScheduler(
+        tracker = self.parent.director.getTracker(
             serviceName=service, groupName=group)
-        sched.newHost(name=name, ip=ip)
+        tracker.newHost(name=name, ip=ip)
         # also add to conf DOM object
         msg = 'Host %s(%s) added to %s / %s' % (name, ip, group, service)
         request.redirect('/running?resultMessage=%s' % urllib.quote(msg))
@@ -304,10 +317,10 @@ class AdminServer(resource.Resource):
     """
 
     """
-    def __init__(self, director):
+    def __init__(self, conf, director):
         resource.Resource.__init__(self)
+        self.conf = conf
         self.director = director
-        self.config = director.conf.admin
         self.starttime = time.time()
         self.serverVersion = "%s/%s" % (txlb.shortName, txlb.version)
 
@@ -323,10 +336,11 @@ class AdminServer(resource.Resource):
             return False
         auth = auth.decode('base64')
         user, pw = auth.split(':',1)
-        userObj = self.config.getUser(user)
+        userObj = self.conf.admin.getUser(user)
         if (userObj and userObj.checkPW(pw)):
             return True
         return False
+
 
     def getChild(self, name, request):
         """
@@ -335,7 +349,14 @@ class AdminServer(resource.Resource):
         if not self.authenticateUser(request):
             return self.unauthorized()
         if name == 'running' or name == '':
-            return RunningPage(self)
+            # XXX it's probably going to be better to do these checks from
+            # within the RunningPage itself, in order to avoide a large
+            # duplication of page code
+            if self.director.isReadOnly:
+                page = RunningReadOnlyPage(self)
+            else:
+                page = RunningPage(self)
+            return page
         elif name == 'txlb.css':
             return StyleSheet()
         elif name == 'running.xml':

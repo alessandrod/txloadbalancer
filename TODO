@@ -1,20 +1,23 @@
 Roadmap
 =======
 
+Bugs
+----
+
+
 Placeholders
 ------------
- * look at iterating over service collections from inside the host checker
- * look at stopping and starting services from inside checker functions
- * look at the reason for bad host data to be stored on the scheduler
- * consider having the proxy manager manage bad hosts
+ * can nextHost() get unburried? How "close" can we bring it to the receiver
+   factory?
  * consider creating proxy manager methods for starting and stopping services
    for bad hosts put back into and taken out of rotation
  * rename 'manager' attributes to 'taskManager'
  * rename 'director' attributes to 'proxyManager'
 
+
 Version 1.1.0
 -------------
- * Fill in all docstrings (at the very least, for classes and module-level
+ * fill in all docstrings (at the very least, for classes and module-level
    functions)
    . tx.proxy - DONE
    . tx.schedulers - DONE
@@ -44,7 +47,6 @@ Version 1.2.0
    without any checks; I want to add something there...
    . store away more info about the down hosts
    . when, how long til next test, etc.
-   . track the count of faults.
  * sort service groups in admin UI by name
  * cache DNS lookups
  * start adding unit tests
@@ -109,17 +111,23 @@ Version 2.0.0
  * connection count scheduler
   . could be used to track licensing of a service, or limit it
 
+
 Exploratory
 -----------
- * developer a twisted.application API that can be used by other applications
+ * develop a twisted.application API that can be used by other applications
    to load balancing
    . a service needs to indicate that it is load balancing
    . if it is, it needs to read its load balancing configuration object
    . it needs to start up one or more proxies
    . it needs shutdown its main service and replace it with a listening service
+ * configuration-oriented methods need to be moved onto new objects in a module
+   of the txlb.application sub package.
  * static load balancring service
    . number of proxies are determined by configuration
  * dynamic load balancing service
    . number of proxies are determined by load
    . need to define "load"
- * possible add proxy mixins/subclasses for different protocols
+ * possibly add proxy mixins/subclasses for different protocols (HTTP, DNS,
+   etc.)
+ * add the ability to do auto-naming (auto-incrementing a counter) so that if a
+   name is left out (or if a host is auto-detected) it has a default

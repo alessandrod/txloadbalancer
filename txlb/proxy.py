@@ -1,4 +1,3 @@
-from twisted.protocols import amp
 from twisted.internet import error
 from twisted.internet import reactor
 from twisted.internet import protocol
@@ -6,7 +5,23 @@ from twisted.internet import protocol
 from txlb import logging
 
 
-class Proxy(object):
+
+class TrackerMixin(object):
+    """
+    This is a simple class for setting the tracker attribute, something that is
+    necessary when switching the active group.
+    """
+    def setTracker(self, groupName=''):
+        if not groupName:
+            group = self.director.getService(self.name).getEnabledGroup()
+            groupName = group.name
+        self.tracker = self.director.getTracker(self.name, groupName)
+        if hasattr(self, 'factory'):
+            self.factory.setTracker(groupName)
+
+
+
+class Proxy(TrackerMixin):
     """
     Listener object. Listens at a given host/port for connections.
     Creates a receiver to collect data from client, and a sender to
@@ -14,23 +29,24 @@ class Proxy(object):
 
     Public API:
 
-    method __init__(self, name, host, port, scheduler, director)
-    attribute .scheduler: read/write - a PDScheduler
+    method __init__(self, name, host, port, tracker, director)
+
+    The 'name' attribute is actually the service name, and this is what
+    provies the proxy manager the ability to look up a proxy in a service.
+
+    attribute .tracker: read/write - a HostTracking object
     attribute .listening_address: read - a tuple of (host,port)
     """
-    def __init__(self, name, host, port, scheduler, director):
+    def __init__(self, name, host, port, director):
         self.name = name
-        self.port = port
         self.host = host
-        self.listening_address = (host, port)
+        self.port = int(port)
+        self.listening_address = (self.host, self.port)
         self.director = director
-        self.factory = ReceiverFactory(
-            self.listening_address, scheduler, self.director)
-        self.setScheduler(scheduler)
+        self.factory = ReceiverFactory(name, self.listening_address, director)
+        self.setTracker()
 
-    def setScheduler(self, scheduler):
-        self.scheduler = scheduler
-        self.factory.setScheduler(scheduler)
+
 
 
 class Sender(protocol.Protocol):
@@ -42,8 +58,10 @@ class Sender(protocol.Protocol):
     """
     receiver = None
 
+
     def setReceiver(self, receiver):
         self.receiver = receiver
+
 
     def connectionLost(self, reason):
         """
@@ -56,15 +74,16 @@ class Sender(protocol.Protocol):
             elif reason.type is error.ConnectionLost:
                 pass
             else:
-                #print id(self),"connection to server lost:",reason
                 pass
             self.receiver.transport.loseConnection()
 
+
     def dataReceived(self, data):
         if self.receiver is None:
-            logging.log("client got data, no receiver, tho\n", datestamp=1)
+            logging.log("client got data, no receiver, tho\n")
         else:
             self.receiver.transport.write(data)
+
 
     def connectionMade(self):
         """
@@ -92,6 +111,7 @@ class Sender(protocol.Protocol):
             self.setReceiver(None)
 
 
+
 class SenderFactory(protocol.ClientFactory):
     """
     Create a Sender when needed. The sender connects to the remote host.
@@ -99,33 +119,48 @@ class SenderFactory(protocol.ClientFactory):
     protocol = Sender
     noisy = 0
 
+
     def setReceiver(self, receiver):
+        """
+        This method is by the reveiver which instantiates this class to set
+        its receiver, just after instantiation of this class.
+        """
         self.receiver = receiver
 
+
     def buildProtocol(self, *args, **kw):
-        # over-ride the base class method, because we want to connect
-        # the objects together.
+        """
+        This method overrides the base class method, because we want to connect
+        the objects together. Note that the setReseiver method that is called
+        is from this factory's protocol, not from the factory itself.
+        """
         protObj = protocol.ClientFactory.buildProtocol(self, *args, **kw)
         protObj.setReceiver(self.receiver)
         return protObj
 
+
     def clientConnectionFailed(self, connector, reason):
-        # this would hang up the inbound. We don't want that.
-        self.receiver.factory.scheduler.deadHost(self, reason)
-        next =  self.receiver.factory.scheduler.getHost(
+        """
+
+        """
+        # without overriding, this would hang up the inbound. We don't want
+        # that
+        self.receiver.factory.tracker.deadHost(self, reason)
+        next = self.receiver.factory.tracker.getHost(
             self, self.receiver.client_addr)
         if next:
-            logging.log("retrying with %s\n"%repr(next), datestamp=1)
+            logging.log("retrying with %s\n" % repr(next))
             host, port = next
             reactor.connectTCP(host, port, self)
         else:
             # No working servers!?
-            logging.log("no working servers, manager -> aggressive\n",
-                          datestamp=1)
+            logging.log("no working servers, manager -> aggressive\n")
             self.receiver.transport.loseConnection()
 
+
     def stopFactory(self):
-        self.receiver.factory.scheduler.doneHost(self)
+        self.receiver.factory.tracker.doneHost(self)
+
 
 
 class Receiver(protocol.Protocol):
@@ -136,6 +171,7 @@ class Receiver(protocol.Protocol):
     buffer = ''
     receiverOk = 0
 
+
     def connectionMade(self):
         """
         This is invoked when a client connects to the director.
@@ -144,14 +180,14 @@ class Receiver(protocol.Protocol):
         self.client_addr = self.transport.client
         sender = SenderFactory()
         sender.setReceiver(self)
-        dest = self.factory.scheduler.getHost(sender, self.client_addr)
+        dest = self.factory.tracker.getHost(sender, self.client_addr)
         if dest:
             host, port = dest
-            reactor.connectTCP(host, port, sender)
             connection = reactor.connectTCP(host, port, sender)
             # XXX add optional support for logging these connections
         else:
             self.transport.loseConnection()
+
 
     def setSender(self, sender):
         """
@@ -162,9 +198,10 @@ class Receiver(protocol.Protocol):
             self.sender.transport.write(self.buffer)
             self.buffer = ''
 
+
     def connectionLost(self, reason):
         """
-        The client has hung up/disconnected. send the rest of the
+        The client has hung up/disconnected. Send the rest of the
         data through before disconnecting. Let the client know that
         it can just discard the data.
         """
@@ -179,16 +216,19 @@ class Receiver(protocol.Protocol):
             self.receiverOk = 0
         else:
             # there's a race condition here - we could be in the process of
-            # setting up the director->server connection. This then comes in
-            # after this, and you end up with a hosed receiver that's hanging
-            # around.
+            # setting up the proxy manager -> host connection. This then comes
+            # in after this, and you end up with a hosed receiver that's
+            # hanging around.
+            # XXX probably want a test for this
             self.receiverOk = 0
+
 
     def getBuffer(self):
         """
         Return any buffered data.
         """
         return self.buffer
+
 
     def dataReceived(self, data):
         """
@@ -200,20 +240,19 @@ class Receiver(protocol.Protocol):
             self.buffer += data
 
 
-class ReceiverFactory(protocol.ServerFactory):
+
+class ReceiverFactory(TrackerMixin, protocol.ServerFactory):
     """
     Factory for the listener bit of the load balancer.
     """
     protocol = Receiver
     noisy = 0
 
-    def __init__(self, (host, port), scheduler, director):
+
+    def __init__(self, name, (host, port), director):
+        self.name = name
         self.host = host
         self.port = port
-        self.scheduler = scheduler
+        # XXX self.tracker = tracker
         self.director = director
-
-    def setScheduler(self, scheduler):
-        self.scheduler = scheduler
-
 
