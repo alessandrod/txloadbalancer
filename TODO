@@ -132,11 +132,6 @@ Exploratory
    . the proxy should not access the scheduler directly, it should ask the
      proxy manager to do it on its behalf (by calling the appropriate pm
      method)
- * configuration-oriented libraries need to be rewritten to accept
-   non-configuration python parameters/objects
-   . this includes manager.ProxyManager
-   . and manager.HostTracking
-   . 
  * configuration-oriented methods need to be moved onto new objects in a module
    of the txlb.application sub package.
  * static load balancring service
@@ -146,5 +141,14 @@ Exploratory
    . need to define "load"
  * possibly add proxy mixins/subclasses for different protocols (HTTP, DNS,
    etc.)
-
-
+ * add the ability to do auto-naming (auto-incrementing a counter) so that if a
+   name is left out (or if a host is auto-detected) it has a default
+ * ideas from Glyph about "stage 1" prototype:
+   . make tbType an objhect
+   . if you want to change the propertiess of the host that you load balance
+     to something else, you need a way of doing this (I believe my model
+     classes do just this)
+   . the end user doesn't need to see the hierarchy of model relationships:
+     give them an application-level mapper that displays cleanly and deduce
+     structure from that
+  . let's say you have a prod cluster and a test cluster, etc.:

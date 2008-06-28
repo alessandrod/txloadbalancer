@@ -12,6 +12,7 @@ future.
 * Corrected a comment in txlbWeb.tac.
 * Updated setupProxyServices to use the new API.
 * Fixed typo in a comment.
+* Updated TODO with notes from Glyph.
 
 2008.06.26 oubiwann
 
