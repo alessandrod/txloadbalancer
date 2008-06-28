@@ -55,11 +55,11 @@ class LoadBalancedService(service.MultiService):
         self.setScheduler(group.lbType, tracker)
         for serviceName, proxies in pm.getProxies():
             # a service can listen on multiple hosts/ports
-            for proxy in proxies:
+            for index, proxy in enumerate(proxies):
                 name = self._stringifyHostPort(proxy.host, proxy.port)
                 proxyService = internet.TCPServer(
                     proxy.port, proxy.factory, interface=proxy.host)
-                proxyService.setName(name)
+                proxyService.setName(name + '-%s' % index)
                 proxyService.setServiceParent(self.proxyCollection)
         return self.proxyCollection
 

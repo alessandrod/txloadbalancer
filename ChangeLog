@@ -29,6 +29,8 @@ the future, the admin web ui + guard).
 * Added a setup function for an SSH admin server.
 * Added a pasword crypt utility.
 * Updated the configuration docs.
+* Added the docstrings in the admin.auth module.
+* Ensured that proxies services set a unique name.
 
 2008.06.27 oubiwann
 

@@ -13,7 +13,7 @@ from txlb import util
 
 class LBAdminAuthChecker(object):
     """
-
+    A class for checking the credentials of a load-balancer user.
     """
     implements(checkers.ICredentialsChecker)
     credentialInterfaces = (credentials.IUsernamePassword,)
@@ -25,20 +25,21 @@ class LBAdminAuthChecker(object):
 
     def getUser(self, username):
         """
-
+        An alias to the admin configuration object for getting user
+        information.
         """
         return self.adminConfig.getUser(username)
 
 
     def unauth(self, msg):
         """
-
+        A convenience method for returning a failure with message.
         """
         return defer.fail(error.UnauthorizedLogin(msg))
 
     def requestAvatarId(self, credentials):
         """
-
+        The main credentials-checking logic.
         """
         username = credentials.username
         crypted = util.generateCryptedPass(credentials.password)
