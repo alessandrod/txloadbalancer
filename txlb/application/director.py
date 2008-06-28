@@ -1,3 +1,9 @@
+"""
+In honor of its predecessor PythonDirector by Anthony Baxter, this module has
+been named 'director.' It contains all the code neccessary for seting up and
+running the stand-alone load-balancing application txlb.tac, which provides the
+same functionality as the original pydir.py and pydir++.py apps.
+"""
 from twisted.web import server
 from twisted.internet import ssl
 from twisted.application import service

@@ -9,11 +9,10 @@ this by mapping configuration information to model class instances.
 from txlb import util
 
 
-
 class HostMapper(object):
     """
     This is a peace-of-mind convenience class for developers that use the
-    load-balancing API and provides quick and intuitive means of configuring a
+    load-balancing API, providing a quick and intuitive means of configuring a
     load-balancing service without a config file or lots of structured data.
 
     @type proxy: string

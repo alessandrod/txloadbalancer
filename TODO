@@ -12,10 +12,6 @@ Placeholders
    that lb's to the proxied hosts
  * can nextHost() get unburried? How "close" can we bring it to the receiver
    factory?
- * look at iterating over service collections from inside the host checker
- * look at stopping and starting services from inside checker functions
- * look at the reason for bad host data to be stored on the scheduler
- * consider having the proxy manager manage bad hosts
  * consider creating proxy manager methods for starting and stopping services
    for bad hosts put back into and taken out of rotation
  * rename 'manager' attributes to 'taskManager'
@@ -138,11 +134,3 @@ Exploratory
    etc.)
  * add the ability to do auto-naming (auto-incrementing a counter) so that if a
    name is left out (or if a host is auto-detected) it has a default
- * ideas from Glyph about "stage 1" prototype:
-   . make tbType an objhect
-   . if you want to change the propertiess of the host that you load balance
-     to something else, you need a way of doing this (I believe my model
-     classes do just this)
-   . the end user doesn't need to see the hierarchy of model relationships:
-     give them an application-level mapper that displays cleanly and deduce
-     structure from that

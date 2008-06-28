@@ -8,6 +8,10 @@ one.
 * With Glyph's suggestions implemented, his notes have been removed from TODO.
 * Removed unused imports.
 * Renamed txlb.application.services to txlb.application.director.
+* Updated the docstring in application.director.
+* Updated the README with more usage information and stubs for recent
+performance data.
+* Updated the TODO.
 
 2008.06.27 oubiwann
 
