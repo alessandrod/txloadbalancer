@@ -75,3 +75,5 @@ server = internet.TCPServer(servicePort, site)
 # started up independently, as configured above in the ProxyHost model
 # instances
 lbs.setPrimaryService(server)
+
+# XXX need to add code for making the Proxy the primary service ...

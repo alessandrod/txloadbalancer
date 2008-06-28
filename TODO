@@ -38,7 +38,6 @@ Version 1.1.0
    . store initial configuration in memory as an unparsed string (for
      comparison)
  * add web admin UI support for enabling groups
- * remove leastconns scheduler and replace it permanently with leastconnsrr
 
 
 Version 1.2.0

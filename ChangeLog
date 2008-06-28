@@ -1,3 +1,8 @@
+2008.06.28 oubiwann
+
+* Removed the less useful least connections scheduler, keeping the optimized
+one.
+
 2008.06.27 oubiwann
 
 * Updated models to take list parameters for the model objects they contain.
