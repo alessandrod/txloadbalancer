@@ -20,7 +20,7 @@ class LoadBalancedService(service.MultiService):
 
     def __init__(self):
         """
-
+        Set up the service structure that the LoadBalancedService will need.
         """
         service.MultiService.__init__(self)
         self.primaryName = 'primary'
@@ -37,17 +37,27 @@ class LoadBalancedService(service.MultiService):
         """
         return "%s:%s" % (host, port)
 
+    def getProxyName(self, host, port, index):
+        """
+        A convenience function for getting the proxy name by host, port, and
+        index.
+        """
+        return self._stringifyHostPort(host, port) + '-%s' % index
+
 
     def setScheduler(self, lbType, tracker):
         """
-
+        A convenience method for creating the appropriate scheduler, given a
+        load-balancing type and its tracker.
         """
         self.scheduler = schedulers.schedulerFactory(lbType, tracker)
 
 
     def proxiesFactory(self, pm):
         """
-
+        Iterate through the models of proxy service, proxy service groups of
+        hosts, and individual proxied hosts, creating TCP services as
+        neccessary and naming them for future reference.
         """
         serviceName, service = pm.getFirstService()
         group = service.getEnabledGroup()
@@ -56,10 +66,9 @@ class LoadBalancedService(service.MultiService):
         for serviceName, proxies in pm.getProxies():
             # a service can listen on multiple hosts/ports
             for index, proxy in enumerate(proxies):
-                name = self._stringifyHostPort(proxy.host, proxy.port)
+                name = self.getProxyName(proxy.host, proxy.port, index)
                 proxyService = internet.TCPServer(
                     proxy.port, proxy.factory, interface=proxy.host)
-                proxyService.setName(name + '-%s' % index)
                 proxyService.setServiceParent(self.proxyCollection)
         return self.proxyCollection
 
@@ -72,10 +81,10 @@ class LoadBalancedService(service.MultiService):
         tcpService.setServiceParent(self)
 
 
-    def getProxyService(self, host, port):
+    def getProxyService(self, host, port, index):
         # XXX need to figure out naming in order to have accurate lookup...
         # this is just a temporary solution
-        name = self._stringifyHostPort(host, port)
+        name = self.getProxyName(host, port, index)
         return self.proxies.getNamedService(name)
 
 
