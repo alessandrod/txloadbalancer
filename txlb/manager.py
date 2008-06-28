@@ -240,19 +240,6 @@ class ProxyManager(object):
         return self.getGroup(serviceName, groupName).scheduler
 
 
-    def _createTrackers(self, service):
-        if not self.services:
-            raise UndefinedServiceError
-        # XXX groups are configuration level metadata and should be handled at
-        # the application level, not the library level; schedulers only need
-        # the lb algorithm type passed to them in order to be created
-        for groupConfig in service.getGroups():
-            tracker = HostTracking(groupConfig)
-            scheduler = schedulers.schedulerFactory(
-                groupConfig.scheduler, tracker)
-            self.trackers[(service.name, groupConfig.name)] = tracker
-
-
     def addProxy(self, serviceName, proxy):
         """
         Add an already-created instance of proxy.Proxy to the manager's proxy
@@ -281,18 +268,6 @@ class ProxyManager(object):
         Return the keys and values for the proxies attribute.
         """
         return self.proxies.items()
-
-
-    def _createListeners(self):
-        for service in self.conf.getServices():
-            self.createTrackers(service)
-            eg = service.getEnabledGroup()
-            tracker = self.getTracker(service.name, eg.name)
-            self.proxies[service.name] = []
-            for lobj in service.listen:
-                host, port = util.splitHostPort(lobj)
-                l = proxy.Proxy(service.name, host, port, tracker, self)
-                self.proxies[service.name].append(l)
 
 
     def enableGroup(self, serviceName, groupName):

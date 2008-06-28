@@ -2,6 +2,7 @@
 
 * Removed the less useful least connections scheduler, keeping the optimized
 one.
+* Removed old proxy manager methods.
 
 2008.06.27 oubiwann
 
