@@ -21,7 +21,7 @@ from txlb import model
 from txlb import manager
 from txlb.model import HostMapper as Host
 from txlb.schedulers import roundr, leastc
-from txlb.application import service as txervice
+from txlb.application.service import LoadBalancedService
 
 
 servicePort = 8080
@@ -64,7 +64,7 @@ application = service.Application('Demo Web Server')
 
 # here's what makes your application load-balacning
 pm = manager.proxyManagerFactory(proxyServices)
-lbs = txervice.LoadBalancedService()
+lbs = LoadBalancedService()
 lbs.proxiesFactory(pm)
 lbs.setServiceParent(application)
 
