@@ -17,6 +17,17 @@ performance data.
 load-balancing enabled.
 * Merged experimental Twisted service API branch to trunk.
 * Reenabled the trunk location in the admin script.
+* Added a manhole configuration option and updated the config docs.
+* Added a boolean utility function.
+* Updated the admin config class and the main config class to process the
+enable admin child node.
+* Added unit tests for the utility module.
+* Improved the admin logic for handling HTTPS configuration.
+* Updated README with feature addition.
+* Added a cred checker to the admin sub-package for use with manhole (and in
+the future, the admin web ui + guard).
+* Added a setup function for an SSH admin server.
+* Added a pasword crypt utility.
 
 2008.06.27 oubiwann
 

@@ -74,6 +74,9 @@ Here is an example admin section:
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
 
+Additionally, one can add the child node <enable> for turning on additional
+administrative features (like manhole access).
+
 
 Manager Section
 ---------------

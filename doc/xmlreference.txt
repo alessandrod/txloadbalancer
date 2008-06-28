@@ -77,6 +77,7 @@ A txLoadBalancer config consists of a number of XML directives.
     refresh - the rate at which the admin "running" page refreshes
   Children:
     Should contain one or more <user> nodes
+    Can contain an topional <enable> node
   Other notes:
     Should the 'listen' be a sub-node, like for service?
     Could you have multiple admin nodes, to listen on multiple ports with
@@ -92,6 +93,16 @@ A txLoadBalancer config consists of a number of XML directives.
     No children.
   Other notes:
     Source users from somewhere else?
+
+<enable> - for turnning on additioan administrative features
+  Child of: <admin>
+  Attributes:
+    manhole - provide SSH access to the running python instance (interactive
+              interpreter)
+  Children:
+    No children
+  Other notes:
+    None
 
 <logging> - logging for txLoadBalancer
   Child of: <pdconfig>

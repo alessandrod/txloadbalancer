@@ -64,6 +64,8 @@ Duncan's notes from 2008, tested on a 2 CPU Sun Netra 240:
 
   - 2 load-balanced twisted.web instances
 
+  - PythonDirector 1.0.0 proxies for 2 load-balanced twisted.web instances
+
 Anthony's original notes on performance:
 
   - On my notebook, load balancing an apache on the same local ethernet
@@ -85,6 +87,8 @@ Changes from txLoadBalancer 1.0.1 to 1.1.0
 - Integrated patches from Apple's Calendar Server project.
 - A new API for creating load-balanced services within a Twisted application
   (without the need to run a separate load-balancingn daemon).
+- Added support for live interaction with load-balancer via SSH connection to
+  running Python interpretter (Twisted manhole).
 
 Changes from txLoadBalancer 0.9.1 to 1.0.1
 

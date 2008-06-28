@@ -31,7 +31,9 @@
     </group>
     <enable group="servers"/>
   </service>
-  <admin listen="localhost:7000" secure="secure" refresh="10">
+  <admin>
+    <web listen="localhost:7000" enable="true" secure="false" refresh="10" />
+    <ssh listen="localhost:2222" enable="true" />
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
   <manager hostCheckInterval="500" />

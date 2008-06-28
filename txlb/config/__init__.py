@@ -226,9 +226,12 @@ class AdminConfig(object):
 
 
     def __init__(self):
-        self.listen = None
-        self.secure = False
-        self.refresh = 30
+        self.webListen = None
+        self.webEnable = False
+        self.webSecure = False
+        self.webRefresh = 30
+        self.sshListen = 2222
+        self.sshEnable = False
         self.userdb = {}
 
 
@@ -248,10 +251,28 @@ class AdminConfig(object):
             return 0
 
 
-    def loadUser(self, userobj):
-        name = userobj.getAttribute('name')
-        password = userobj.getAttribute('password')
-        access = userobj.getAttribute('access')
+    def loadWeb(self, webNode):
+        if webNode.hasAttribute('listen'):
+            self.webListen = util.splitHostPort(webNode.getAttribute('listen'))
+        if webNode.hasAttribute('enable'):
+            self.webEnable = util.boolify(webNode.getAttribute('enable'))
+        if webNode.hasAttribute('secure'):
+            self.webSecure = util.boolify(webNode.getAttribute('secure'))
+        if webNode.hasAttribute('refresh'):
+            self.webRefresh = util.boolify(webNode.getAttribute('refresh'))
+
+
+    def loadSSH(self, sshNode):
+        if sshNode.hasAttribute('listen'):
+            self.sshListen = util.splitHostPort(sshNode.getAttribute('listen'))
+        if sshNode.hasAttribute('enable'):
+            self.sshEnable = util.boolify(sshNode.getAttribute('enable'))
+
+
+    def loadUser(self, userNode):
+        name = userNode.getAttribute('name')
+        password = userNode.getAttribute('password')
+        access = userNode.getAttribute('access')
         self.addUser(name, password, access)
 
 
@@ -317,18 +338,18 @@ class Config(object):
 
     def loadAdmin(self, admin):
         adminCfg = AdminConfig()
-        adminCfg.listen = util.splitHostPort(admin.getAttribute('listen'))
-        if admin.hasAttribute('secure'):
-            adminCfg.secure = True
-        if admin.hasAttribute('refresh'):
-            adminCfg.refresh = int(admin.getAttribute('refresh'))
-        for user in admin.childNodes:
-            if user.nodeName in legalCommentSections:
+        for child in admin.childNodes:
+            if child.nodeName in legalCommentSections:
                 continue
-            if user.nodeName == u'user':
-                adminCfg.loadUser(user)
+            elif child.nodeName == u'user':
+                adminCfg.loadUser(child)
+            elif child.nodeName == u'web':
+                adminCfg.loadWeb(child)
+            elif child.nodeName == u'ssh':
+                adminCfg.loadSSH(child)
             else:
-                raise ConfigError, "only expect to see users in admin block"
+                msg = "Only 'web', 'ssh', or 'user' should be in admin block"
+                raise ConfigError, msg
         self.admin = adminCfg
 
 

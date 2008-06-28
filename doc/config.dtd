@@ -25,7 +25,7 @@ $Id: pythondirector.dtd,v 1.4 2003/10/09 08:20:59 anthonybaxter Exp $
 <!ELEMENT enable EMPTY>
 <!ATTLIST enable group CDATA #REQUIRED>
 
-<!ELEMENT admin (user*)>
+<!ELEMENT admin (user*, enable)>
 <!ATTLIST admin listen CDATA #REQUIRED
                 secure CDATA>
                 refresh CDATA>
@@ -34,6 +34,9 @@ $Id: pythondirector.dtd,v 1.4 2003/10/09 08:20:59 anthonybaxter Exp $
 <!ATTLIST user name CDATA #REQUIRED
                password CDATA #REQUIRED
                access CDATA #REQUIRED>
+
+<!ELEMENT enable EMPTY>
+<!ATTLIST enable manhole CDATA #REQUIRED>
 
 <!ELEMENT manager EMPTY>
 <!ATTLIST manager hostCheckInterval CDATA>

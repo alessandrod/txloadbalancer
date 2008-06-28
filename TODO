@@ -7,6 +7,7 @@ Bugs
 
 Placeholders
 ------------
+ * add a tool for generating a password (bin script that calls util functions)
  * can nextHost() get unburried? How "close" can we bring it to the receiver
    factory?
  * consider creating proxy manager methods for starting and stopping services

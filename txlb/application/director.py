@@ -5,6 +5,9 @@ running the stand-alone load-balancing application txlb.tac, which provides the
 same functionality as the original pydir.py and pydir++.py apps.
 """
 from twisted.web import server
+from twisted.cred import portal
+from twisted.conch import manhole
+from twisted.conch import manhole_ssh
 from twisted.internet import ssl
 from twisted.application import service
 from twisted.application import internet
@@ -14,6 +17,7 @@ from txlb import util
 from txlb import model
 from txlb import config
 from txlb import manager
+from txlb.admin import auth
 from txlb.admin import pages
 from txlb.manager import checkBadHosts
 from txlb.application import service as txervice
@@ -55,22 +59,50 @@ def configuredProxyManagerFactory(configuration):
 
 
 
-def setupAdminServer(configuration, director):
+def setupAdminWebUIServer(configuration, director):
     """
     Given the director, set up a potentially SSL-enabled admin web UI on the
     configured port.
     """
+    if not configuration.admin.webEnable:
+        return
     root = pages.AdminServer(configuration, director)
     site = server.Site(root)
-    adminPort = int(configuration.admin.listen[1])
-    if configuration.admin.secure:
+    adminPort = int(configuration.admin.webListen[1])
+    if configuration.admin.webSecure:
         util.setupServerCert()
         context = ssl.DefaultOpenSSLContextFactory(
             util.privKeyFile, util.certFile)
         admin = internet.SSLServer(adminPort, site, context)
     else:
         admin = internet.TCPServer(adminPort, site)
-    admin.setName('admin')
+    admin.setName('adminWeb')
+    return admin
+
+
+def setupAdminSSHServer(configuration, director, services):
+    """
+    Set up a server that will enable an admin user to SSH into the
+    load-balancers's running Python Interpreter.
+    """
+    if not configuration.admin.sshEnable:
+        return
+    adminPort = int(configuration.admin.sshListen[1])
+    # set up a manhole
+    def getManhole(serverProtocol):
+        print ign
+        startingNamespace = {
+            'config': configuration,
+            'services': services,
+            }
+        return manhole.Manhole(util.getNamespace(startingNamespace))
+    realm = manhole_ssh.TerminalRealm()
+    realm.chainedProtocolFactory.protocolFactory = getManhole
+    p = portal.Portal(realm)
+    p.registerChecker(auth.LBAdminAuthChecker(configuration.admin))
+    factory = manhole_ssh.ConchFactory(p)
+    admin = internet.TCPServer(adminPort, factory)
+    admin.setName('adminSSH')
     return admin
 
 
@@ -132,9 +164,14 @@ def setup(configFile):
     control = setupControlSocket(conf, director)
     control.setServiceParent(services)
 
-    # set up the web server
-    admin = setupAdminServer(conf, director)
-    admin.setServiceParent(services)
+    # set up the admin web server
+    # XXX need to test this for when no admin web UI is configured
+    adminWeb = setupAdminWebUIServer(conf, director)
+    adminWeb.setServiceParent(services)
+
+    # set up the admin SSH server
+    adminSSH = setupAdminSSHServer(conf, director, services)
+    adminSSH.setServiceParent(services)
 
     # set up the host checker service
     checker = setupHostChecker(conf, director)
