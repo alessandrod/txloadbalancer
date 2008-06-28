@@ -16,6 +16,7 @@ performance data.
 * Updated the API example .tac with information about running with
 load-balancing enabled.
 * Merged experimental Twisted service API branch to trunk.
+* Reenabled the trunk location in the admin script.
 
 2008.06.27 oubiwann
 

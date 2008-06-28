@@ -1,6 +1,6 @@
 LIB=txlb
-#BZR=lp:txloadbalancer
-BZR='lp:~oubiwann/txloadbalancer/twisted-lb-service'
+BZR=lp:txloadbalancer
+#BZR='lp:~oubiwann/txloadbalancer/twisted-lb-service'
 echo $BZR_DEST
 FLAG='skip_tests'
 MSG=commit-msg
