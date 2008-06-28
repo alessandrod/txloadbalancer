@@ -18,9 +18,10 @@ Placeholders
  * rename 'manager' attributes to 'taskManager'
  * rename 'director' attributes to 'proxyManager'
 
+
 Version 1.1.0
 -------------
- * Fill in all docstrings (at the very least, for classes and module-level
+ * fill in all docstrings (at the very least, for classes and module-level
    functions)
    . tx.proxy - DONE
    . tx.schedulers - DONE
@@ -34,6 +35,7 @@ Version 1.1.0
    . store initial configuration in memory as an unparsed string (for
      comparison)
  * add web admin UI support for enabling groups
+ * remove leastconns scheduler and replace it permanently with leastconnsrr
 
 
 Version 1.2.0

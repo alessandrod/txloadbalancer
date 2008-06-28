@@ -6,7 +6,71 @@ There are potentially many uses for such classes, but they are currently used
 in order to separate configuration/application logic and the libraries. They do
 this by mapping configuration information to model class instances.
 """
+from txlb import util
 
+
+
+class HostMapper(object):
+    """
+    This is a peace-of-mind convenience class for developers that use the
+    load-balancing API and provides quick and intuitive means of configuring a
+    load-balancing service without a config file or lots of structured data.
+
+    @type proxy: string
+    @param proxy: the name that the proxy service will be known by
+
+    @type addresses: string or list
+    @param addresses: a string or list of strings of the form 'host:port'
+
+    @type group: string
+    @param group: the group that the host will be put into
+
+    @type address: string
+    @param address: a string of the form 'host:port' that is being
+                    load-balanced by the proxy service
+
+    @type enabled: boolean or None
+    @param enabled: a boolean that indicates whether the group for the host is
+                    to be enabled, disabled, or ignored (None)
+    """
+    def __init__(self, proxy='', addresses=[], group='', lbType='', host='', address='',
+                 enabled=None, weight=1):
+        if isinstance(addresses, str):
+            addresses = [addresses]
+        self.proxyName = proxy
+        self.proxyAddresses = [util.splitHostPort(x) for x in addresses]
+        self.groupName = group
+        self.lbType = lbType
+        self.hostName = host
+        self.hostAddress = util.splitHostPort(address)
+        self.groupEnabled = enabled
+        self.hostWeight = weight
+
+
+
+def convertMapperToModel(listOfMappers):
+    """
+    This is the method that does the actual conversion from simple mapper
+    data structure to an appropriate collection of models.
+    """
+    # create some dictionaries that will be used to ensure non-duplication of
+    # services and service groups
+    proxyHolder = {}
+    groupHolder = {}
+    for mapper in listOfMappers:
+        service = ProxyService(mapper.proxyName, mapper.proxyAddresses)
+        service = proxyHolder.setdefault(mapper.proxyName, service)
+        group = ProxyGroup(
+            mapper.groupName, mapper.lbType, mapper.groupEnabled)
+        group = groupHolder.setdefault(mapper.groupName, group)
+        host = ProxyHost(
+            mapper.hostName, mapper.hostAddress[0], mapper.hostAddress[1],
+            mapper.hostWeight)
+        group.addHost(host)
+        service.addGroup(group)
+    # we only need the list of proxies, so we just return the values of the
+    # dict
+    return proxyHolder.values()
 
 class ProxyService(object):
     """

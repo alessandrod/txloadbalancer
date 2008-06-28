@@ -4,6 +4,10 @@ import random
 from txlb import util
 from txlb import logging
 
+roundr= 0
+rand = 1
+leastc = 2
+weighted = 3
 
 def schedulerFactory(lbType, tracker):
     """

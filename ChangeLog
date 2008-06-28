@@ -13,6 +13,11 @@ future.
 * Updated setupProxyServices to use the new API.
 * Fixed typo in a comment.
 * Updated TODO with notes from Glyph.
+* Added a host mapping class to make configuration easier for developers.
+* Added tests for HostMapper.
+* Updated txlbWeb.tac with a HostMapper version of configuration.
+* Added some explanatory docstrings to the example app, txlbWeb.tac.
+* Added a converted for a list of HostMapper to model.Proxy*.
 
 2008.06.26 oubiwann
 
