@@ -51,12 +51,12 @@ proxyServices = [
 # another configuration option: use the host mapper and make things very easy
 # to read
 proxyServices = [
-    Host('web', '127.0.0.1:8080', 'prod', 'host1', '127.0.0.1:7001', True),
-    Host('web', '127.0.0.1:8080', 'prod', 'host2', '127.0.0.1:7002'),
-    Host('web', '127.0.0.1:8080', 'prod', 'host3', '127.0.0.1:7003'),
-    Host('web', '127.0.0.1:8080', 'test', 'host4', '127.0.0.1:7004', False),
-    Host('web', '127.0.0.1:8080', 'test', 'host5', '127.0.0.1:7005'),
-    Host('web', '127.0.0.1:8080', 'test', 'host6', '127.0.0.1:7006'),
+    Host('web', '127.0.0.1:8080', 'prod', leastc, 'host1', '127.0.0.1:7001', True),
+    Host('web', '127.0.0.1:8080', 'prod', leastc, 'host2', '127.0.0.1:7002'),
+    Host('web', '127.0.0.1:8080', 'prod', leastc, 'host3', '127.0.0.1:7003'),
+    Host('web', '127.0.0.1:8080', 'test', roundr, 'host4', '127.0.0.1:7004', False),
+    Host('web', '127.0.0.1:8080', 'test', roundr, 'host5', '127.0.0.1:7005'),
+    Host('web', '127.0.0.1:8080', 'test', roundr, 'host6', '127.0.0.1:7006'),
 ]
 
 
@@ -68,7 +68,7 @@ lbs = txervice.LoadBalancedService()
 lbs.proxiesFactory(pm)
 lbs.setServiceParent(application)
 
-site = server.Site(static.File('./data'))
+site = server.Site(static.File('/Users/oubiwann/Sites'))
 server = internet.TCPServer(servicePort, site)
 
 # for load-balancing on this server, with different processes that have been

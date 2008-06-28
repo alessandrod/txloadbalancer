@@ -20,6 +20,11 @@ future.
 * Added a converted for a list of HostMapper to model.Proxy*.
 * Updated code and docs to reference the new lb type constants as objects (not
 strings).
+* Updated txlbWeb.tac to use the new signature of HostMapper that includes the
+lbType.
+* Added a type-checker in proxyManagerFactory to determine whether to treat the
+passed object as a collection of models or mappers.
+* Updated TODO.
 
 2008.06.26 oubiwann
 

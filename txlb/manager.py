@@ -4,7 +4,7 @@ from twisted.protocols import amp
 from twisted.internet import protocol
 
 from txlb import util
-from txlb import proxy
+from txlb import model
 from txlb import proxy
 from txlb import logging
 from txlb import schedulers
@@ -337,6 +337,9 @@ def proxyManagerFactory(services):
     This factory is for simplifying the common task of creating a proxy manager
     with presets for many attributes and/or much data.
     """
+    # check to see what got passed, in case we need to convert it
+    if isinstance(services[0], model.HostMapper):
+        services = model.convertMapperToModel(services)
     # create the manager
     pm = ProxyManager(services)
     for serviceName, service in pm.getServices():
