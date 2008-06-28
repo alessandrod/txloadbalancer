@@ -341,7 +341,7 @@ class HostTracking(object):
 
     Schedulers are responsible for selecting the next proxied host that will
     recieve the client request. Schedulers dependent upon their related
-    trackers for connection information.
+    trackers (instances of this class) for connection information.
     """
 
 

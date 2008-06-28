@@ -3,6 +3,8 @@
 * Removed the less useful least connections scheduler, keeping the optimized
 one.
 * Removed old proxy manager methods.
+* Updated docstring.
+* Removed completed items from TODO.
 
 2008.06.27 oubiwann
 
