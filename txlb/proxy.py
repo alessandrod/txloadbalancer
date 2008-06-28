@@ -1,4 +1,3 @@
-from twisted.protocols import amp
 from twisted.internet import error
 from twisted.internet import reactor
 from twisted.internet import protocol

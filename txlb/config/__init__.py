@@ -1,4 +1,3 @@
-import sys
 import inspect
 from crypt import crypt
 from xml.dom import minidom
@@ -300,7 +299,7 @@ class Config(object):
             elif item.nodeName == u'manager':
                 self.loadManager(item)
             elif item.nodeName == u'logging':
-                pdlogging.initlog(item.getAttribute('file'))
+                logging.initlog(item.getAttribute('file'))
             elif item.nodeName == u'control':
                 self.socket = item.getAttribute('socket')
         if self.manager == None:

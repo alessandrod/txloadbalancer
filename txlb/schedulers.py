@@ -1,8 +1,4 @@
-import time
 import random
-
-from txlb import util
-from txlb import logging
 
 
 roundr= 0

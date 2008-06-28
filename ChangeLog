@@ -6,6 +6,7 @@ one.
 * Updated docstring.
 * Removed completed items from TODO.
 * With Glyph's suggestions implemented, his notes have been removed from TODO.
+* Removed unused imports.
 
 2008.06.27 oubiwann
 
