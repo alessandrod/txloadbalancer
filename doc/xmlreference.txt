@@ -70,18 +70,33 @@ A txLoadBalancer config consists of a number of XML directives.
 
 <admin> - administrative web interface
   Child of: <pdconfig>
-  Attributes:
-    listen - IP address to run admin web interface on, in host:port format
-    secure - if present, this attribute will cause the admin UI to be served
-             over SSL
-    refresh - the rate at which the admin "running" page refreshes
+  Attributes: None
   Children:
+    Can contain one <web> node
+    Can contain one <ssh> node
     Should contain one or more <user> nodes
-    Can contain an topional <enable> node
   Other notes:
-    Should the 'listen' be a sub-node, like for service?
     Could you have multiple admin nodes, to listen on multiple ports with
     different user DBs? No reason why not...
+
+<web> - For configuring the admin web UI
+    listen - IP address to run admin web interface on, in host:port format
+    enable - a boolean for starting the load-balancer with or without this
+             service
+    secure - a boolean for determining whether to run the admin web UI over SSL
+    refresh - the rate at which the admin "running" page refreshes
+
+<ssh> - For configuring admin SSH access to the load-balancer's Python
+        interpreter
+  Child of: <admin>
+  Attributes:
+    listen - IP address to run admin SSH interface on, in host:port format
+    enable - a boolean for starting the load-balancer with or without this
+             service
+  Children:
+    No children
+  Other notes:
+    None
 
 <user> - user of administrative web interface
   Child of: <admin>
@@ -93,16 +108,6 @@ A txLoadBalancer config consists of a number of XML directives.
     No children.
   Other notes:
     Source users from somewhere else?
-
-<enable> - for turnning on additioan administrative features
-  Child of: <admin>
-  Attributes:
-    manhole - provide SSH access to the running python instance (interactive
-              interpreter)
-  Children:
-    No children
-  Other notes:
-    None
 
 <logging> - logging for txLoadBalancer
   Child of: <pdconfig>

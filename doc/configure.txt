@@ -70,12 +70,13 @@ but cannot make changes to the system.
 
 Here is an example admin section:
 
-  <admin listen="localhost:7001">
+  <admin>
+    <web listen="localhost:7001" enable="true">
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
 
-Additionally, one can add the child node <enable> for turning on additional
-administrative features (like manhole access).
+Additionally, one can add the child node <ssh> for turning on support for
+conntecting to the load-balancer's Python interpreter via SSH.
 
 
 Manager Section

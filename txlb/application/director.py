@@ -80,6 +80,7 @@ def setupAdminWebUIServer(configuration, director):
     return admin
 
 
+
 def setupAdminSSHServer(configuration, director, services):
     """
     Set up a server that will enable an admin user to SSH into the
@@ -90,7 +91,6 @@ def setupAdminSSHServer(configuration, director, services):
     adminPort = int(configuration.admin.sshListen[1])
     # set up a manhole
     def getManhole(serverProtocol):
-        print ign
         startingNamespace = {
             'config': configuration,
             'services': services,
@@ -164,6 +164,10 @@ def setup(configFile):
     control = setupControlSocket(conf, director)
     control.setServiceParent(services)
 
+    # set up the host checker service
+    checker = setupHostChecker(conf, director)
+    checker.setServiceParent(services)
+
     # set up the admin web server
     # XXX need to test this for when no admin web UI is configured
     adminWeb = setupAdminWebUIServer(conf, director)
@@ -172,10 +176,6 @@ def setup(configFile):
     # set up the admin SSH server
     adminSSH = setupAdminSSHServer(conf, director, services)
     adminSSH.setServiceParent(services)
-
-    # set up the host checker service
-    checker = setupHostChecker(conf, director)
-    checker.setServiceParent(services)
 
     # return the application object so that the .tac file can use it
     return application
