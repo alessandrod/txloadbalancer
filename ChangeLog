@@ -12,6 +12,9 @@ one.
 * Updated the README with more usage information and stubs for recent
 performance data.
 * Updated the TODO.
+* Removed an unused class for application.service.
+* Updated the API example .tac with information about running with
+load-balancing enabled.
 
 2008.06.27 oubiwann
 

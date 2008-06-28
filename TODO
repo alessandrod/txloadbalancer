@@ -7,9 +7,6 @@ Bugs
 
 Placeholders
 ------------
- * still missing a crucial piece in txlbWeb.tac: it's currently only showing
-   how to start up a native web server; we need it to start up a proxy server
-   that lb's to the proxied hosts
  * can nextHost() get unburried? How "close" can we bring it to the receiver
    factory?
  * consider creating proxy manager methods for starting and stopping services

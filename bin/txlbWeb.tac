@@ -69,11 +69,14 @@ lbs.proxiesFactory(pm)
 lbs.setServiceParent(application)
 
 site = server.Site(static.File('/Users/oubiwann/Sites'))
-server = internet.TCPServer(servicePort, site)
 
 # for load-balancing on this server, with different processes that have been
 # started up independently, as configured above in the ProxyHost model
-# instances
-lbs.setPrimaryService(server)
+# instances, nothing else need be done; this script can be run as-is with the
+# following:
+# twistd -noy <scriptname>.tac
 
-# XXX need to add code for making the Proxy the primary service ...
+# if one wants to override the load-balancing and serve from a local, single
+# source, # one only need uncomment the following two lines:
+#server = internet.TCPServer(servicePort, site)
+#lbs.setPrimaryService(server)

@@ -6,14 +6,6 @@ from twisted.application import internet
 from txlb import schedulers
 
 
-
-class ProxiedService(service.Service):
-    """
-
-    """
-
-
-
 class LoadBalancedService(service.MultiService):
     """
     A load balanced service, when load balancing is turned off, should simply
@@ -90,5 +82,5 @@ class LoadBalancedService(service.MultiService):
 
 class DynamicLoadBalancedService(LoadBalancedService):
     """
-
+    XXX TBD
     """
