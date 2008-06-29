@@ -49,6 +49,10 @@ source other than the configuration.
 * Updated the docstrings in manager.ProxyManager.
 * Added a proxy manager proxy update method and updated service.LBService to
 call it after a successful port switch.
+* Added a missing import to adpplication.service.
+* Updated admin.pages to use the director to get the proxy host:port info.
+* Updated TODO and admin.pages with more code than needs to be fixed due to the
+recent changes in configuration as well as the new port-switching feature.
 
 2008.06.27 oubiwann
 

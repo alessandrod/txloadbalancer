@@ -4,6 +4,7 @@ from twisted.internet import defer
 from twisted.application import service
 from twisted.application import internet
 
+from txlb import proxy
 from txlb import schedulers
 
 

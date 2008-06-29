@@ -107,13 +107,15 @@ class RunningPage(BasePage):
         content += template.refreshButtons % (
             time.ctime(time.time()), time.time(), stopStart)
         for service in self.parent.conf.getServices():
-            # XXX
             # we don't want the configured listener here, we want the one that
             # is actually running. The best place to get that is from the
-            # directory
+            # director
+            # XXX we probably want to put this into a class method
             content += template.serviceName % service.name
-            for l in service.listen:
-                content += template.listeningService % l
+            for index, l in enumerate(service.listen):
+                proxy = self.parent.director.getProxy(service.name, index)
+                hostPort = "%s:%s" % (proxy.host, proxy.port)
+                content += template.listeningService % hostPort
             eg = service.getEnabledGroup()
             groups = service.getGroups()
             for group in groups:
@@ -193,6 +195,9 @@ class RunningConfig(BasePage):
             serv = doc.createElement("service")
             serv.setAttribute('name', service.name)
             top.appendChild(serv)
+            # XXX
+            # listening ports need to come from the running proxies in the
+            # proxy manager, not from the configuration
             for l in service.listen:
                 serv.appendChild(doc.createTextNode("\n        "))
                 lobj = doc.createElement("listen")
@@ -230,9 +235,12 @@ class RunningConfig(BasePage):
             serv.appendChild(doc.createTextNode("\n    "))
         top.appendChild(doc.createTextNode("\n    "))
         # now the admin block
+        # XXX the configuration for the admin section has changed quite a bit,
+        # and the following code needs to be updated to bring them into sync
         admin = self.parent.conf.admin
         if admin is not None:
             xa = doc.createElement("admin")
+            # add the web
             xa.setAttribute("listen", "%s:%s"%admin.listen)
             top.appendChild(xa)
             for user in admin.getUsers():
