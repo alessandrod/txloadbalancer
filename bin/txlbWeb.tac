@@ -80,3 +80,11 @@ site = server.Site(static.File('/Users/oubiwann/Sites'))
 # source, # one only need uncomment the following two lines:
 #server = internet.TCPServer(servicePort, site)
 #lbs.setPrimaryService(server)
+
+# LoadBalancedService also has a method for changing the port that the current
+# service is running on. For now, in order to work with it, you need to have
+# the SSH admin server enabled:
+# XXX TBD - can't start ssh server without config file right now
+# You can now change ports with the following:
+#$ ssh localhost 2222
+#>>> services.switchPort('web', 10080)

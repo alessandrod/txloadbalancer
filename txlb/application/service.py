@@ -55,6 +55,8 @@ class LoadBalancedService(service.MultiService):
         name.
         """
         parts = proxyName.split('-')
+        if len(parts) <= 1:
+            return (proxyName, None)
         index = int(parts[-1])
         return ('-'.join(parts[:-1]), index)
 
@@ -90,8 +92,12 @@ class LoadBalancedService(service.MultiService):
         for serviceName, proxies in self.director.getProxies():
             # a service can listen on multiple hosts/ports
             for index, proxy in enumerate(proxies):
-                index += 1
-                name = self.getProxyName(serviceName, index)
+                # if there's only one port that this proxy service will be
+                # listening on, there's not need to give it an indexed name
+                name = serviceName
+                if len(proxies) > 1:
+                    index += 1
+                    name = self.getProxyName(serviceName, index)
                 self.proxyFactory(name, proxy.port, proxy.factory, proxy.host)
         return self.proxyCollection
 
@@ -128,7 +134,11 @@ class LoadBalancedService(service.MultiService):
         oldService = self.getProxyService(proxyName)
         oldService.disownServiceParent()
         serviceName, index = self.getServiceName(proxyName)
-        proxy = self.director.getProxy(serviceName, index - 1)
+        if index == None:
+            index = 0
+        else:
+            index -= 1
+        proxy = self.director.getProxy(serviceName, index)
         newService = self.proxyFactory(
             proxyName, newPort, proxy.factory, proxy.host)
         newService.startService()
