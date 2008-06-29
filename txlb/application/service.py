@@ -1,9 +1,11 @@
 from zope.interface import implements
 
+from twisted.internet import defer
 from twisted.application import service
 from twisted.application import internet
 
 from txlb import schedulers
+
 
 
 class LoadBalancedService(service.MultiService):
@@ -18,11 +20,12 @@ class LoadBalancedService(service.MultiService):
     implements(service.IService)
 
 
-    def __init__(self):
+    def __init__(self, pm):
         """
         Set up the service structure that the LoadBalancedService will need.
         """
         service.MultiService.__init__(self)
+        self.director = pm
         self.primaryName = 'primary'
         self.proxyCollection = service.MultiService()
         self.proxyCollection.setName('proxies')
@@ -46,6 +49,16 @@ class LoadBalancedService(service.MultiService):
         return '%s-%s' % (name, index)
 
 
+    def getServiceName(self, proxyName):
+        """
+        A convenience function for getting the service name back from a proxy
+        name.
+        """
+        parts = proxyName.split('-')
+        index = int(parts[-1])
+        return ('-'.join(parts[:-1]), index)
+
+
     def setScheduler(self, lbType, tracker):
         """
         A convenience method for creating the appropriate scheduler, given a
@@ -54,25 +67,32 @@ class LoadBalancedService(service.MultiService):
         self.scheduler = schedulers.schedulerFactory(lbType, tracker)
 
 
-    def proxiesFactory(self, pm):
+    def proxyFactory(self, name, port, factory, interface):
+        """
+        A factory for creating proxy servers.
+        """
+        proxyService = internet.TCPServer(port, factory, interface=interface)
+        proxyService.setName(name)
+        proxyService.setServiceParent(self.proxyCollection)
+        return proxyService
+
+
+    def proxiesFactory(self):
         """
         Iterate through the models of proxy service, proxy service groups of
         hosts, and individual proxied hosts, creating TCP services as
         neccessary and naming them for future reference.
         """
-        serviceName, service = pm.getFirstService()
+        serviceName, service = self.director.getFirstService()
         group = service.getEnabledGroup()
-        tracker = pm.getTracker(serviceName, group.name)
+        tracker = self.director.getTracker(serviceName, group.name)
         self.setScheduler(group.lbType, tracker)
-        for serviceName, proxies in pm.getProxies():
+        for serviceName, proxies in self.director.getProxies():
             # a service can listen on multiple hosts/ports
             for index, proxy in enumerate(proxies):
                 index += 1
                 name = self.getProxyName(serviceName, index)
-                proxyService = internet.TCPServer(
-                    proxy.port, proxy.factory, interface=proxy.host)
-                proxyService.setName(name)
-                proxyService.setServiceParent(self.proxyCollection)
+                self.proxyFactory(name, proxy.port, proxy.factory, proxy.host)
         return self.proxyCollection
 
 
@@ -98,6 +118,20 @@ class LoadBalancedService(service.MultiService):
         collection of named services.
         """
         return self.proxyCollection.namedServices.keys()
+
+
+    def switchPort(self, proxyName, newPort):
+        """
+        The best way to print up a proxy on a new port is to down the old one
+        and create a new one on the desired port.
+        """
+        oldService = self.getProxyService(proxyName)
+        oldService.disownServiceParent()
+        serviceName, index = self.getServiceName(proxyName)
+        proxy = self.director.getProxy(serviceName, index - 1)
+        newService = self.proxyFactory(
+            proxyName, newPort, proxy.factory, proxy.host)
+        newService.startService()
 
 
 

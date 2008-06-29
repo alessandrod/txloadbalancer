@@ -133,16 +133,6 @@ def setupControlSocket(configuration, director):
 
 
 
-def setupProxyServices(director):
-    """
-    Set up proxies for each service the proxy manager balances. Additionally,
-    the director gets a reference to the proxies.
-    """
-    lbs = txervice.LoadBalancedService()
-    return lbs.proxiesFactory(director)
-
-
-
 def setup(configFile):
     """
     Given the configuration file, instantiate the proxy manager and setup the
@@ -151,18 +141,16 @@ def setup(configFile):
     # get config object
     conf = config.Config(configFile)
 
-    application = service.Application(name)
-    services = LoadBalancedService()
-    services.setServiceParent(application)
-    #services = service.IServiceCollection(application)
-
     # instantiate the proxy manager (that which will direct the proxies)
     director = configuredProxyManagerFactory(conf)
 
+    # set up the lb application
+    application = service.Application(name)
+    services = LoadBalancedService(director)
+    services.setServiceParent(application)
+
     # set up the proxies
-    services.proxiesFactory(director)
-    #proxies = setupProxyServices(director)
-    #proxies.setServiceParent(services)
+    services.proxiesFactory()
 
     # set up the control socket
     control = setupControlSocket(conf, director)

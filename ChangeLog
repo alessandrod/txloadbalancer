@@ -31,9 +31,19 @@ the future, the admin web ui + guard).
 * Updated the configuration docs.
 * Added the docstrings in the admin.auth module.
 * Ensured that proxies services set a unique name.
-* Updated the convenience functions in application.service to use index-based
-names.
+* Updated and added some convenience functions in application.service to use
+index-based names.
 * Fixed some bugs in the application subpackage.
+* Added a method on the LBService that allows for port switching (thanks to
+Jean-Paul Calderone for pointers on the best way to do that).
+* Added some notes in the TODO about a potential path of exploration for live
+upgrades.
+* Added a note in the admin page code about needed to pull the listeners from a
+source other than the configuration.
+* Removed unneeded proxy setup in application.director.
+* Updated application.director.setup to take better advantage of the LBService.
+* Added the proxyFactory method to application.service.LoadBalancedService.
+* Added a getProxy method to the ProxyManager.
 
 2008.06.27 oubiwann
 

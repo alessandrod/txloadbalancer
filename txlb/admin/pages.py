@@ -107,6 +107,10 @@ class RunningPage(BasePage):
         content += template.refreshButtons % (
             time.ctime(time.time()), time.time(), stopStart)
         for service in self.parent.conf.getServices():
+            # XXX
+            # we don't want the configured listener here, we want the one that
+            # is actually running. The best place to get that is from the
+            # directory
             content += template.serviceName % service.name
             for l in service.listen:
                 content += template.listeningService % l

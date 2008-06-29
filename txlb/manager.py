@@ -270,6 +270,13 @@ class ProxyManager(object):
         return self.proxies.items()
 
 
+    def getProxy(self, serviceName, index=0):
+        """
+
+        """
+        return self.proxies[serviceName][index]
+
+
     def enableGroup(self, serviceName, groupName):
         # XXX probably going to rewrite this one completely...
         serviceConf = self.conf.getService(serviceName)

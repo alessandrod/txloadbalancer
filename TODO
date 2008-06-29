@@ -132,3 +132,13 @@ Exploratory
    etc.)
  * add the ability to do auto-naming (auto-incrementing a counter) so that if a
    name is left out (or if a host is auto-detected) it has a default
+ * add a live upgrader:
+   . developer builds an upgrader package (not necessarily a Python package)
+   . package gets placed in a directory that txLoadBalancer regularly scans
+   . the new package is placed into a time-based supdirectory that is made into
+     a Python package (by giving it an __init__.py); as such, there will never
+     be two overlapping upgrader Python packages
+   . the upgrader gets imported and the resident memory objects are monkey
+     patched, while the code on the filesystem is replaced
+
+
