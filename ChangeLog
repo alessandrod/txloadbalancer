@@ -47,6 +47,8 @@ source other than the configuration.
 * Updated txlbWeb.tac to pass the ProxyManager in the new, improved way.
 * Added conditional index-based naming.
 * Updated the docstrings in manager.ProxyManager.
+* Added a proxy manager proxy update method and updated service.LBService to
+call it after a successful port switch.
 
 2008.06.27 oubiwann
 

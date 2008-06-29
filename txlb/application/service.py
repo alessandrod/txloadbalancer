@@ -139,10 +139,13 @@ class LoadBalancedService(service.MultiService):
             index = 0
         else:
             index -= 1
-        proxy = self.director.getProxy(serviceName, index)
+        oldProxy = self.director.getProxy(serviceName, index)
+        newProxy = proxy.Proxy(
+            serviceName, oldProxy.host, newPort, self.director)
         newService = self.proxyFactory(
-            proxyName, newPort, proxy.factory, proxy.host)
+            proxyName, newPort, newProxy.factory, newProxy.host)
         newService.startService()
+        self.director.updateProxy(serviceName, index, newProxy)
 
 
 

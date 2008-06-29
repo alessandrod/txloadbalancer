@@ -276,6 +276,15 @@ class ProxyManager(object):
         self.addProxy(serviceName, p)
 
 
+    def updateProxy(self, serviceName, index, newProxy):
+        """
+        Sometimes (as in the case of changing the port on which the proxy is
+        listening) we need to update the proxy. This method allows one to do
+        this by specficically indentifying the proxy.
+        """
+        self.proxies[serviceName][index] = newProxy
+
+
     def getProxies(self):
         """
         Return the keys and values for the proxies attribute. The proxies
