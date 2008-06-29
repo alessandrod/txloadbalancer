@@ -1,3 +1,10 @@
+2008.06.29 oubiwann
+
+* Updated comments in application.service.
+* Updated the TODO with another exploratory feature (live addition of proxied
+hosts).
+* Updated the TODO with another note.
+
 2008.06.28 oubiwann
 
 * Removed the less useful least connections scheduler, keeping the optimized

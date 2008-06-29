@@ -141,5 +141,10 @@ Exploratory
      be two overlapping upgrader Python packages
    . the upgrader gets imported and the resident memory objects are monkey
      patched, while the code on the filesystem is replaced
-
+ * add the ability to dynamically add hosts into a proxy's rotation (the
+   scheduler needs to be able to see them)
+ * for applications that needed a crazy level of assured uptime, we could
+   create load-balanced services on the fly that would allow them to migrate
+   a service from one host to another simply by having both proxied, and when
+   the old one goes down, it's taken out of the rotation
 
