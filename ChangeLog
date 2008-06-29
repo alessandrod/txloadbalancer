@@ -46,6 +46,7 @@ source other than the configuration.
 * Added a getProxy method to the ProxyManager.
 * Updated txlbWeb.tac to pass the ProxyManager in the new, improved way.
 * Added conditional index-based naming.
+* Updated the docstrings in manager.ProxyManager.
 
 2008.06.27 oubiwann
 

@@ -147,14 +147,17 @@ class ProxyManager(object):
 
     def setReadOnly(self):
         """
-
+        Set the proxy manager to read-only; this is intedned to be read by
+        other parts of the application (such as the admin interface) whenever
+        whenever mutable state items are being manipulated. It doesn't lock
+        anything, it simply provides something that can be read.
         """
         self.isReadOnly = True
 
 
     def setReadWrite(self):
         """
-
+        Set the proxy to read-write.
         """
         self.isReadOnly = False
 
@@ -184,14 +187,15 @@ class ProxyManager(object):
 
     def addService(self, service):
         """
-
+        This method adds a model.ProxyService instance to the proxy manager.
         """
         self.services[service.name] = service
 
 
     def getService(self, serviceName):
         """
-
+        model.ProxyService instances can be retrieved from the proxy manager by
+        a key look-up
         """
         return self.services[serviceName]
 
@@ -205,7 +209,8 @@ class ProxyManager(object):
 
     def getGroup(self, serviceName, groupName):
         """
-
+        For a proxy service that has been addded to the proxy manager,
+        model.ProxyGroup instances can be added to it.
         """
         return self.getService(serviceName).getGroup(groupName)
 
@@ -213,21 +218,26 @@ class ProxyManager(object):
 
     def getHost(self, serviceName, groupName, hostName):
         """
-
+        mode.ProxyHost instances can be added to the proxy manager, but they
+        need to be associated with a proxy service and a proxy group.
         """
         return self.getGroup().getHost(hostName)
 
 
     def addTracker(self, serviceName, groupName, tracker):
         """
-
+        The tracker is the object that is responsible for recording the status
+        of connections, number of failuers, number of open connections, etc. A
+        tracker that is added to the proxy manager needs to be associated with
+        a proxy service and a proxy group.
         """
         self.trackers[(serviceName, groupName)] = tracker
 
 
     def getTracker(self, serviceName, groupName):
         """
-
+        Trackers can be looked up by the keys that were used to add them: proxy
+        service and proxy group names.
         """
         return self.trackers[(serviceName,groupName)]
 
@@ -252,7 +262,10 @@ class ProxyManager(object):
 
     def createProxy(self, serviceName, host, port):
         """
-        Create a new Proxy and add it to the internal data structure.
+        Create a new Proxy and add it to the internal data structure. Note that
+        this is not a proxy model, but rather the proxy.Proxy object itself.
+        The parameters passed to Proxy will tell the load balancer on what
+        interface and port to listen for in-coming traffic.
         """
         # proxies are associated with a specific tracker; trackers are
         # associated with a specific service; proxies are also associated with
@@ -265,14 +278,17 @@ class ProxyManager(object):
 
     def getProxies(self):
         """
-        Return the keys and values for the proxies attribute.
+        Return the keys and values for the proxies attribute. The proxies
+        attribute on the proxy manager stores a dictionay of proxy.Proxy
+        instances.
         """
         return self.proxies.items()
 
 
     def getProxy(self, serviceName, index=0):
         """
-
+        A Proxy instance can be retrieve by the service name and (since there
+        can be more than one port listening per service) index.
         """
         return self.proxies[serviceName][index]
 

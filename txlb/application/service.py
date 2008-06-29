@@ -73,6 +73,7 @@ class LoadBalancedService(service.MultiService):
         """
         A factory for creating proxy servers.
         """
+        # XXX update the proxy manager's proxy instance
         proxyService = internet.TCPServer(port, factory, interface=interface)
         proxyService.setName(name)
         proxyService.setServiceParent(self.proxyCollection)
