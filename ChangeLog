@@ -10,6 +10,7 @@ hosts).
 * Updated the cred checker to use this utility.
 * Updated the admin config password checker to use this utility.
 * Added tests for crypt util functions.
+* Stubbed out a class for a weighted scheduler.
 
 2008.06.28 oubiwann
 

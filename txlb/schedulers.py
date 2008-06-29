@@ -1,11 +1,12 @@
 import random
 
 
-roundr= 0
-rand = 1
-leastc = 2
-weighted = 3
-sticky = 4
+rand = 10
+roundr= 20
+leastc = 30
+weightr = 40
+weightlc = 41
+sticky = 50
 
 
 def schedulerFactory(lbType, tracker):
@@ -93,3 +94,14 @@ class LeastConnsScheduler(BaseScheduler):
         hosts.sort()
         return hosts[0][2]
 
+
+class RandomWeightedScheduler(BaseScheduler):
+    """
+    This scheduler passes the connection by random, with the highest likelihood
+    of selection going to the host with the largest weight value.
+    """
+    schedulerName = weightr
+
+
+    def nextHost(self, client_addr):
+        pass
