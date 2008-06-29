@@ -64,8 +64,8 @@ application = service.Application('Demo Web Server')
 
 # here's what makes your application load-balacning
 pm = manager.proxyManagerFactory(proxyServices)
-lbs = LoadBalancedService()
-lbs.proxiesFactory(pm)
+lbs = LoadBalancedService(pm)
+lbs.proxiesFactory()
 lbs.setServiceParent(application)
 
 site = server.Site(static.File('/Users/oubiwann/Sites'))

@@ -44,6 +44,7 @@ source other than the configuration.
 * Updated application.director.setup to take better advantage of the LBService.
 * Added the proxyFactory method to application.service.LoadBalancedService.
 * Added a getProxy method to the ProxyManager.
+* Updated txlbWeb.tac to pass the ProxyManager in the new, improved way.
 
 2008.06.27 oubiwann
 
