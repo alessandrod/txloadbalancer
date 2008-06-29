@@ -80,12 +80,24 @@ def setupServerCert():
         print "Cert file '%s' exists; not creating." % certFile
 
 
+
 def generateCryptedPass(clearText, seed=''):
     """
     This is a utilty so that there's a single place to go in the code to change
     the password crypt checking, when we need to do that.
     """
     return crypt.crypt(clearText, seed)
+
+
+def checkCryptPassword(clearText, check):
+    """
+    A utility function for checking the authenticity of a password.
+    """
+    seed = check[:2]
+    crypted = generateCryptedPass(clearText, seed)
+    if crypted == check:
+        return True
+    return False
 
 
 def getNamespace(namespace):

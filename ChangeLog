@@ -4,6 +4,12 @@
 * Updated the TODO with another exploratory feature (live addition of proxied
 hosts).
 * Updated the TODO with another note.
+* Updated the docstrings in admin.pages.
+* Updated TODO.
+* Added a utility for checking crupt passwords.
+* Updated the cred checker to use this utility.
+* Updated the admin config password checker to use this utility.
+* Added tests for crypt util functions.
 
 2008.06.28 oubiwann
 

@@ -26,21 +26,6 @@ legalCommentSections = [
 
 
 
-def getDefaultArgs(methodObj):
-    """
-
-    """
-    arglist, vaarg, kwarg, defargs = inspect.getargspec(methodObj.im_func)
-    arglist.reverse()
-    defargs = list(defargs)
-    defargs.reverse()
-    ad = {}
-    for a,v in zip(arglist, defargs):
-        ad[a] = v
-    return ad
-
-
-
 class ConfigError(Exception):
     """
 
@@ -192,19 +177,7 @@ class AdminUserConfig(object):
 
 
     def checkPW(self, password):
-        if crypt(password, self.password[:2]) == self.password:
-            return True
-        return False
-
-
-    def checkAccess(self, methodObj, argdict):
-        a = getDefaultArgs(methodObj)
-        required = a.get('Access', 'NoAccess')
-        if required == "Read" and self.access in ('full', 'readonly'):
-            return True
-        elif required == "Write" and self.access == 'full':
-            return True
-        return False
+        return util.checkCryptPassword(password, self.password)
 
 
 

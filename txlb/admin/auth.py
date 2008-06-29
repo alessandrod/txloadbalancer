@@ -42,11 +42,10 @@ class LBAdminAuthChecker(object):
         The main credentials-checking logic.
         """
         username = credentials.username
-        crypted = util.generateCryptedPass(credentials.password)
         userConfig = self.getUser(username)
         if not userConfig:
             return self.unauth('Unknown user')
-        if crypted == userConfig.password:
+        if util.checkCryptPassword(credentials.password, userConfig.password):
             return defer.succeed(credentials.username)
         else:
             return self.unauth('User/password not correct')

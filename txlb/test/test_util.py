@@ -35,3 +35,13 @@ class UtilityTests(unittest.TestCase):
             ('', 53)]
         for host, expected in zip(hosts, answers):
             self.assertEquals(util.splitHostPort(host), expected)
+
+
+    def test_crypting(self):
+        """
+        Make sure that the password checker is using crypt properly.
+        """
+        passwd = 's3cr3t5'
+        crypted = '..1kBafUApE8U'
+        self.assertEquals(util.generateCryptedPass(passwd), crypted)
+        self.assertEquals(util.checkCryptPassword(passwd, crypted), True)

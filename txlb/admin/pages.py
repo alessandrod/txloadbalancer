@@ -14,7 +14,8 @@ from txlb.admin import template
 
 class UnauthorizedResource(resource.Resource):
     """
-
+    The page resource to present when a restricted resource is requested, thus
+    prompting the user with a basic auth dialog.
     """
     isLeaf = 1
     unauthorizedPage = static.Data(template.unauth, 'text/html')
@@ -28,7 +29,7 @@ class UnauthorizedResource(resource.Resource):
 
 class StyleSheet(resource.Resource):
     """
-
+    The resource that serves the CSS.
     """
     def render_GET(self, request):
         """
@@ -39,7 +40,8 @@ class StyleSheet(resource.Resource):
 
 class BasePage(resource.Resource):
     """
-
+    All resources that render the basic look and feel of the admin UI subclass
+    this page class.
     """
     def __init__(self, parent):
         resource.Resource.__init__(self)
@@ -87,7 +89,8 @@ class BasePage(resource.Resource):
 
 class RunningPage(BasePage):
     """
-
+    This class is responsible for presenting the admin UI, in all of it's data
+    and button-pushing glory.
     """
     def getPage(self, request):
         """
@@ -178,7 +181,7 @@ class RunningReadOnlyPage(BasePage):
 
 class RunningConfig(BasePage):
     """
-
+    This class renders the in-memory configuration as XML.
     """
     def getPage(self, request):
         """
@@ -265,7 +268,7 @@ class RunningConfig(BasePage):
 
 class StoredConfig(BasePage):
     """
-
+    This page renders the on-disk XML configuration file.
     """
     def getPage(self, request):
         """
@@ -277,7 +280,9 @@ class StoredConfig(BasePage):
 
 class DeleteHost(BasePage):
     """
-
+    This page is responsible for removing a host from rotation in the admin UI.
+    It also updates the tracker and pulls the host out of rotation there as
+    well.
     """
     def getPage(self, request):
         """
@@ -306,7 +311,9 @@ class DeleteHost(BasePage):
 
 class AddHost(BasePage):
     """
-
+    This page class is responsible for handling the "add page" action that puts
+    new hosts into rotation, both in the admin UI as well as in the host
+    tracking object.
     """
     def getPage(self, request):
         """
@@ -327,7 +334,8 @@ class AddHost(BasePage):
 
 class AdminServer(resource.Resource):
     """
-
+    The admin server page is the root web object that publishes all the other
+    resources.
     """
     def __init__(self, conf, director):
         resource.Resource.__init__(self)
@@ -340,6 +348,7 @@ class AdminServer(resource.Resource):
         return UnauthorizedResource()
 
     def authenticateUser(self, request):
+        # XXX this needs to be replaced with a guard/cred
         authstr = request.getHeader('Authorization')
         if not authstr:
             return False
@@ -356,7 +365,7 @@ class AdminServer(resource.Resource):
 
     def getChild(self, name, request):
         """
-
+        A simple object publisher that mapes part of a URL path to an object.
         """
         if not self.authenticateUser(request):
             return self.unauthorized()
