@@ -18,6 +18,7 @@ application.director.configuredProxyManagerFactory.
 * Running config is now displayed via the recursive object repr utility.
 * Updated TODO.
 * Added toXML() method to the host config object.
+* Added toXML() method to the group config object.
 
 2008.06.29 oubiwann
 

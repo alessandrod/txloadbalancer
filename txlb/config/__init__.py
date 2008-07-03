@@ -54,18 +54,30 @@ class BaseConfig(object):
     tag = u''
 
 
-    def getObjects(self):
+    def getProps(self):
         """
 
         """
-        return self.__dict__.items()
+        check = [int, float, list, tuple, str, unicode]
+        for key, val in  self.__dict__.items():
+            if True in [isinstance(val, x) for x in check]:
+                yield (key, val)
+
+    def getXMLAttrs(self):
+        """
+
+        """
+        attrs = u''
+        for attrName, attrVal in self.getProps():
+            attrs += ' %s="%s"' % (attrName, attrVal)
+        return attrs
 
 
 class HostConfig(BaseConfig):
     """
 
     """
-    tag = u'host'
+    type = u'host'
 
 
     def __init__(self, name, ip, weight=1):
@@ -81,11 +93,8 @@ class HostConfig(BaseConfig):
         """
 
         """
-        attrs = u''
-        for attrName, attrVal in self.getObjects():
-            attrs += '%s="%s" ' % (attrName, attrVal)
-        data = {'name': self.tag, 'attrs': attrs}
-        return "<%(name)s %(attrs)s/>" % data
+        data = {'tag': self.type, 'attrs': self.getXMLAttrs()}
+        return "<%(tag)s%(attrs)s />" % data
 
 
 
@@ -93,6 +102,7 @@ class GroupConfig(BaseConfig):
     """
 
     """
+    type = u'group'
 
 
     def __init__(self, name):
@@ -120,6 +130,16 @@ class GroupConfig(BaseConfig):
     def delHost(self, name):
         del self.hosts[name]
 
+
+    def toXML(self):
+        """
+
+        """
+        inner = u''
+        for host in self.hosts.values():
+            inner += '  %s\n' % host.toXML()
+        data = {'tag': self.type, 'attrs': self.getXMLAttrs(), 'inner': inner}
+        return "<%(tag)s%(attrs)s>\n%(inner)s</%(tag)s>\n" % data
 
 
 class ServiceConfig(BaseConfig):
