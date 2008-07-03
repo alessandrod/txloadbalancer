@@ -19,6 +19,9 @@ application.director.configuredProxyManagerFactory.
 * Updated TODO.
 * Added toXML() method to the host config object.
 * Added toXML() method to the group config object.
+* Changed the scheduler type objects to be strings instead of integers so that
+a lookup wasn't needed for converting to XML.
+* Added toXML() method to the service config object.
 
 2008.06.29 oubiwann
 

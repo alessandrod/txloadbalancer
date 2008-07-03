@@ -2,12 +2,12 @@ import random
 import itertools
 
 
-rand = 10
-roundr= 20
-leastc = 30
-weightr = 40
-weightlc = 41
-sticky = 50
+rand = 'rand'
+roundr= 'roundr'
+leastc = 'leastc'
+weightr = 'weightr'
+weightlc = 'weightlc'
+sticky = 'sticky'
 
 
 def schedulerFactory(lbType, tracker):

@@ -54,21 +54,21 @@ class BaseConfig(object):
     tag = u''
 
 
-    def getProps(self):
+    def getProps(self, skip=[]):
         """
 
         """
         check = [int, float, list, tuple, str, unicode]
         for key, val in  self.__dict__.items():
-            if True in [isinstance(val, x) for x in check]:
+            if True in [isinstance(val, x) for x in check] and key not in skip:
                 yield (key, val)
 
-    def getXMLAttrs(self):
+    def getXMLAttrs(self, skip=[]):
         """
 
         """
         attrs = u''
-        for attrName, attrVal in self.getProps():
+        for attrName, attrVal in self.getProps(skip=skip):
             attrs += ' %s="%s"' % (attrName, attrVal)
         return attrs
 
@@ -131,21 +131,30 @@ class GroupConfig(BaseConfig):
         del self.hosts[name]
 
 
-    def toXML(self):
+    def toXML(self, padding=''):
         """
 
         """
         inner = u''
-        for host in self.hosts.values():
-            inner += '  %s\n' % host.toXML()
-        data = {'tag': self.type, 'attrs': self.getXMLAttrs(), 'inner': inner}
-        return "<%(tag)s%(attrs)s>\n%(inner)s</%(tag)s>\n" % data
+        indent = padding + '  '
+        for host in self.getHosts():
+            inner += indent + '%s\n' % host.toXML()
+        data = {
+            'tag': self.type,
+            'attrs': self.getXMLAttrs(),
+            'inner': inner,
+            'prepend': padding}
+        output = "%(prepend)s<%(tag)s%(attrs)s>\n" % data
+        output += "%(inner)s%(prepend)s</%(tag)s>\n" % data
+        return output
 
 
 class ServiceConfig(BaseConfig):
     """
 
     """
+    type = u'service'
+
 
     def __init__(self, name):
         self.name = name
@@ -192,6 +201,10 @@ class ServiceConfig(BaseConfig):
         return self.groups.get(self.enabledgroup)
 
 
+    def getListeners(self):
+        return self.listen
+
+
     def checkSanity(self):
         if not self.name:
             raise ServiceError, "no name set"
@@ -211,6 +224,27 @@ class ServiceConfig(BaseConfig):
                 raise GroupError, "no scheduler set for %s" % group.name
             if not group.hosts:
                 raise GroupError, "no hosts set for %s" % group.name
+
+
+    def toXML(self, padding=''):
+        """
+
+        """
+        inner = u''
+        indent = padding + '  '
+        for listen in self.getListeners():
+            inner += '%s<listen ip="%s" />\n' % (indent, listen)
+        for group in self.getGroups():
+            inner += group.toXML(indent)
+        data = {
+            'tag': self.type,
+            'attrs': self.getXMLAttrs(skip=['listen']),
+            'inner': inner,
+            'prepend': padding}
+        output = "%(prepend)s<%(tag)s%(attrs)s>\n" % data
+        output += "%(inner)s%(prepend)s</%(tag)s>\n" % data
+        return output
+
 
 
 
