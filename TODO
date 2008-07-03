@@ -51,6 +51,9 @@ Version 1.3.0
 -------------
  * add heartbeat/HA features for lb'ed services to communicate back up to the
    lb manager
+   . use a TCP pinger to hit all hosts on a regular basis
+   . take them out of ratation if unreachable
+   . only put them back into rotation if they are pingable again
  * add an XML-RPC service instead of the custom web API
    . including adding methods for bouncing the admin UI
  * replace old PyDirector logging with Twisted logging

@@ -23,6 +23,7 @@ application.director.configuredProxyManagerFactory.
 a lookup wasn't needed for converting to XML.
 * Added toXML() method to the service config object.
 * Fixed the brokenness with enabling groups in XML.
+* Updated TODO with a strategy for the badly implemented "bad host" code.
 
 2008.06.29 oubiwann
 
