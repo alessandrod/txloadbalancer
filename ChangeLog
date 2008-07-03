@@ -11,6 +11,8 @@ some convenience methods that didn't end up going into the algorithm).
 application.director.configuredProxyManagerFactory.
 * Forced weight values to be integers in the config class.
 * Updated docs.
+* Removed a line of testing code that got committed accidentally.
+* Added a caveat to the schedulers.txt file.
 
 2008.06.29 oubiwann
 

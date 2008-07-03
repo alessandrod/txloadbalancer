@@ -30,6 +30,10 @@ weightr (weighted random)
   greater weight value associated with it. No additional logic is performed
   (such as checking for current connections, etc.).
 
+  Note that teh weighted scheduler has to do a lot more work (more method
+  calls) than the other algorithms, so it will be significantly less
+  performant.
+
 
 Future work
 ===========

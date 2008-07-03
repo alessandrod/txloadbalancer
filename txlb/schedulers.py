@@ -135,7 +135,6 @@ class RandomWeightedScheduler(BaseScheduler):
         populationSize = sum([weight for hostPort, weight
             in group.getWeights().items() if hostPort in hosts])
         index = random.randint(0, populationSize - 1)
-        host = itertools.islice(population, index, None).next()
         return itertools.islice(population, index, None).next()
         
 
