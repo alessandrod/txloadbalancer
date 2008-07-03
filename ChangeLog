@@ -17,6 +17,7 @@ application.director.configuredProxyManagerFactory.
 * Removed the code the re-built the running config for display in the browser.
 * Running config is now displayed via the recursive object repr utility.
 * Updated TODO.
+* Added toXML() method to the host config object.
 
 2008.06.29 oubiwann
 

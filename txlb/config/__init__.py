@@ -51,13 +51,21 @@ class BaseConfig(object):
     """
 
     """
+    tag = u''
 
+
+    def getObjects(self):
+        """
+
+        """
+        return self.__dict__.items()
 
 
 class HostConfig(BaseConfig):
     """
 
     """
+    tag = u'host'
 
 
     def __init__(self, name, ip, weight=1):
@@ -67,6 +75,17 @@ class HostConfig(BaseConfig):
             self.ip = ip.encode('ascii')
         else:
             self.ip = ip
+
+
+    def toXML(self):
+        """
+
+        """
+        attrs = u''
+        for attrName, attrVal in self.getObjects():
+            attrs += '%s="%s" ' % (attrName, attrVal)
+        data = {'name': self.tag, 'attrs': attrs}
+        return "<%(name)s %(attrs)s/>" % data
 
 
 
