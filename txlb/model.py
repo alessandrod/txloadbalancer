@@ -120,6 +120,7 @@ class ProxyGroup(object):
         self.name = name
         self.isEnabled = enabled
         self.lbType = scheduler
+        self.weights = {}
         if hosts:
             for host in hosts:
                 self.addHost(host)
@@ -147,6 +148,8 @@ class ProxyGroup(object):
         Update the group's hosts data structure with a new ProxyHost instance.
         """
         self.hosts[proxyHost.name] = proxyHost
+        self.weights[proxyHost.name] = proxyHost.weight
+        self.weights[proxyHost.hostname] = proxyHost.weight
 
 
     def getHosts(self):
@@ -154,6 +157,48 @@ class ProxyGroup(object):
         Return the keys and values of the hosts attribute.
         """
         return self.hosts.items()
+
+
+    def getHostByHostame(self, hostname):
+        """
+        A convenience method for getting a host proxy from the group proxy,
+        given its hostname.
+        """
+        for host in self.hosts:
+            if host.hostname == hostname:
+                return host
+
+
+    def getHostWeight(self, hostnameOrName):
+        """
+        Get the weighted value for a given host proxy, given either the host
+        proxy's name or hostname.
+        """
+        return self.weights[hostnameOrName]
+
+
+    def getWeights(self):
+        """
+        Get all the weights associated with this host proxies for this group.
+        """
+        return self.weights
+
+
+    def getWeightDistribution(self, hostnames=[]):
+        """
+        Build a sample population of host, one per weight value (e.g., a host
+        with a weight of 1 will have one entry in the distribution; one with a
+        weight of 5 will have 5 entries in the distribution). Optionally,
+        filter by hostname, including only those hosts that are that are passed
+        in hostnames filter keyword argument.
+        """
+        weights = self.getWeights().items()
+        if hostnames:
+            weights = [(x, y) for x, y in weights if x in hostnames]
+        for host, weight in weights:
+            for x in xrange(weight):
+                yield host
+
 
 
 class ProxyHost(object):

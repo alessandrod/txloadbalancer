@@ -147,7 +147,7 @@ class ProxyManager(object):
 
     def setReadOnly(self):
         """
-        Set the proxy manager to read-only; this is intedned to be read by
+        Set the proxy manager to read-only; this is intended to be read by
         other parts of the application (such as the admin interface) whenever
         whenever mutable state items are being manipulated. It doesn't lock
         anything, it simply provides something that can be read.
@@ -384,7 +384,7 @@ class HostTracking(object):
         self.badhosts = {}
         self.openconns = {}
         # the values in self.available indicate the number of connections that
-        # are currently being attempted
+        # are currently being attempted; a down host is not in available
         self.available = {}
         self.failed = {}
         self.totalconns = {}

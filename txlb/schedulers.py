@@ -1,4 +1,5 @@
 import random
+import itertools
 
 
 rand = 10
@@ -19,6 +20,8 @@ def schedulerFactory(lbType, tracker):
         return RoundRobinScheduler(tracker)
     elif lbType == leastc:
         return LeastConnsScheduler(tracker)
+    elif lbType == weightr:
+        return RandomWeightedScheduler(tracker)
     else:
         raise ValueError, "Unknown scheduler type `%s'" % lbType
 
@@ -38,6 +41,15 @@ class BaseScheduler(object):
         self.tracker.scheduler = self
 
 
+    def hasHost(self, clientAddr):
+        """
+
+        """
+        if self.tracker.available.keys():
+            return True
+        return False
+
+
 
 class RandomScheduler(BaseScheduler):
     """
@@ -46,12 +58,11 @@ class RandomScheduler(BaseScheduler):
     schedulerName = rand
 
 
-    def nextHost(self, client_addr):
-        if self.hosts:
-            pick = random.choice(self.hosts)
-            return pick
-        else:
-            return None
+    def nextHost(self, clientAddr):
+        if not self.hasHost():
+            return
+        pick = random.choice(self.hosts)
+        return pick
 
 
 
@@ -64,9 +75,9 @@ class RoundRobinScheduler(BaseScheduler):
     counter = 0
 
 
-    def nextHost(self, client_addr):
-        if not self.tracker.hosts:
-            return None
+    def nextHost(self, clientAddr):
+        if not self.hasHost():
+            return
         if self.counter >= len(self.tracker.hosts):
             self.counter = 0
         if self.tracker.hosts:
@@ -86,22 +97,38 @@ class LeastConnsScheduler(BaseScheduler):
     counter = 0
 
 
-    def nextHost(self, client_addr):
-        if not self.tracker.available.keys():
-            return None
+    def nextHost(self, clientAddr):
+        if not self.hasHost():
+            return
         hosts = [(x[1], self.tracker.lastclose.get(x[0],0), x[0])
-                            for x in self.tracker.available.items()]
+                 for x in self.tracker.available.items()]
         hosts.sort()
         return hosts[0][2]
 
 
 class RandomWeightedScheduler(BaseScheduler):
     """
-    This scheduler passes the connection by random, with the highest likelihood
-    of selection going to the host with the largest weight value.
+    This scheduler passes the connection in a semi-random fashion, with the
+    highest likelihood of selection going to the host with the largest weight
+    value.
+
+    In particular, it uses hosts and their associated weights to build a
+    "simulated population" of hosts. These to not get place into memory
+    en-masse, thanks to the existence of iterators. A single host in the
+    "population" is chosen, with hosts of greater weights being selected more
+    often (over time).
     """
     schedulerName = weightr
 
 
-    def nextHost(self, client_addr):
-        pass
+    def nextHost(self, clientAddr):
+        if not self.hasHost():
+            return
+        group = self.tracker.group
+        hosts = self.tracker.available.keys()
+        population = group.getWeightDistribution(hostnames=hosts)
+        populationSize = sum(group.getWeights().values())
+        index = random.randint(0, populationSize - 1)
+        return itertools.islice(population, index).next()
+        
+

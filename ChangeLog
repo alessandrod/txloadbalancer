@@ -1,3 +1,9 @@
+2008.07.03 oubiwann
+
+* Added additional group methods for use by the weighted algorithm (including
+some convenience methods that didn't end up going into the algorithm).
+* Added an algorithm for weighted loadbalancing.
+
 2008.06.29 oubiwann
 
 * Updated comments in application.service.
