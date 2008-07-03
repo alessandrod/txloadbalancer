@@ -1,8 +1,10 @@
 import os
+import re
 import crypt
 
 from twisted.internet import ssl
 
+import txlb
 
 privKeyFile = 'etc/server.pem'
 certFile = 'etc/server.pem'
@@ -113,3 +115,34 @@ def getNamespace(namespace):
         if key in thisNamespace:
             limitedNamespace[key] = thisNamespace[key]
     return limitedNamespace
+
+
+def reprNestedObjects(obj, padding=u'', skip=[]):
+    """
+    A utility function for iterating an object's attributes and providing a
+    unicode representation of that object and it's "contents."
+    """
+    nl = u'\n'
+    output = ''
+    if obj == None:
+       output += repr(obj)
+    elif True in [isinstance(obj, x) for x in [str, int, float]]:
+        output += unicode(obj)
+    elif isinstance(obj, unicode):
+        output += obj
+    elif isinstance(obj, list) or isinstance(obj, tuple):
+        output += repr(obj)
+    elif isinstance(obj, dict):
+        output += nl
+        padding += u'  '
+        for key, val in obj.items():
+            output += padding + unicode(key) + ':'
+            output += reprNestedObjects(val, padding)
+        output += nl
+    elif hasattr(obj, '__dict__'):
+        #output += nl
+        output += reprNestedObjects(obj.__dict__, padding)
+    else:
+        output += nl
+        output += repr(obj)
+    return re.sub('\n\n', '\n', output)

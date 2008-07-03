@@ -13,6 +13,7 @@ application.director.configuredProxyManagerFactory.
 * Updated docs.
 * Removed a line of testing code that got committed accidentally.
 * Added a caveat to the schedulers.txt file.
+* Added a utility for recursivly representing an an object.
 
 2008.06.29 oubiwann
 

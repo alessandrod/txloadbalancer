@@ -47,7 +47,14 @@ class GroupError(ServiceError):
 
 
 
-class HostConfig(object):
+class BaseConfig(object):
+    """
+
+    """
+
+
+
+class HostConfig(BaseConfig):
     """
 
     """
@@ -63,7 +70,7 @@ class HostConfig(object):
 
 
 
-class GroupConfig(object):
+class GroupConfig(BaseConfig):
     """
 
     """
@@ -96,7 +103,7 @@ class GroupConfig(object):
 
 
 
-class ServiceConfig(object):
+class ServiceConfig(BaseConfig):
     """
 
     """
@@ -168,7 +175,7 @@ class ServiceConfig(object):
 
 
 
-class AdminUserConfig(object):
+class AdminUserConfig(BaseConfig):
     """
 
     """
@@ -185,7 +192,7 @@ class AdminUserConfig(object):
 
 
 
-class ManagerConfig(object):
+class ManagerConfig(BaseConfig):
     """
 
     """
@@ -196,7 +203,7 @@ class ManagerConfig(object):
 
 
 
-class AdminConfig(object):
+class AdminConfig(BaseConfig):
     """
 
     """
