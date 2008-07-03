@@ -39,13 +39,8 @@ def configuredProxyManagerFactory(configuration):
         # build groups
         for groupName, groupConf in serviceConf.groups.items():
             # build hosts
-            # XXX ugh; some of the configuration XML is braindead; at some
-            # point I want to collapse the enabled tag into an attribute on the
-            # group
-            enabled = False
-            if groupConf == serviceConf.getEnabledGroup():
-                enabled = True
-            pgroup = model.ProxyGroup(groupName, groupConf.scheduler, enabled)
+            pgroup = model.ProxyGroup(
+                groupName, groupConf.scheduler, groupConf.isEnabled)
             for hostName, hostConf in groupConf.hosts.items():
                 host, port = util.splitHostPort(hostConf.ip)
                 phost = model.ProxyHost(hostName, host, port, hostConf.weight)

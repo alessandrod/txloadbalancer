@@ -22,6 +22,7 @@ application.director.configuredProxyManagerFactory.
 * Changed the scheduler type objects to be strings instead of integers so that
 a lookup wasn't needed for converting to XML.
 * Added toXML() method to the service config object.
+* Fixed the brokenness with enabling groups in XML.
 
 2008.06.29 oubiwann
 

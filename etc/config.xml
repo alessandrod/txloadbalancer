@@ -2,7 +2,7 @@
   <service name="twisted-lorien">
     <listen ip="0.0.0.0:8080" />
     <listen ip="0.0.0.0:8081" />
-    <group name="servers1" scheduler="weightr">
+    <group name="servers1" scheduler="weightr" enable="true">
       <host name="test1" ip="lorien:1901" weight="1"/>
       <host name="server1" ip="lorien:7001" weight="5" />
       <host name="server2" ip="lorien:7002" weight="1"/>
@@ -15,23 +15,20 @@
       <host name="server5" ip="lorien:7005" />
       <host name="server21" ip="lorien:7021" />
     </group>
-    <enable group="servers1"/>
   </service>
   <service name="twisted-fangorn">
     <listen ip="0.0.0.0:6080"/>
-    <group name="servers" scheduler="roundr">
+    <group name="servers" scheduler="roundr" enable="true">
       <host name="server1" ip="fangorn:7001" />
       <host name="server2" ip="fangorn:7002" />
     </group>
-    <enable group="servers"/>
   </service>
   <service name="apache">
     <listen ip="0.0.0.0:9080"/>
-    <group name="servers" scheduler="roundr">
+    <group name="servers" scheduler="roundr" enable="true">
       <host name="server1" ip="rivendel:80" />
       <host name="server2" ip="lorien:80" />
     </group>
-    <enable group="servers"/>
   </service>
   <admin>
     <web listen="localhost:7000" enable="true" secure="false" refresh="10" />

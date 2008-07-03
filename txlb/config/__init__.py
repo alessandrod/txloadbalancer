@@ -109,6 +109,7 @@ class GroupConfig(BaseConfig):
         self.name = name
         self.scheduler = None
         self.hosts = {}
+        self.enable = False
 
 
     def getHost(self,name):
@@ -129,6 +130,14 @@ class GroupConfig(BaseConfig):
 
     def delHost(self, name):
         del self.hosts[name]
+
+
+    def setEnabled(self):
+        self.enable = True
+
+
+    def isEnabled(self):
+        return self.enable
 
 
     def toXML(self, padding=''):
@@ -166,6 +175,10 @@ class ServiceConfig(BaseConfig):
     def loadGroup(self, groupobj):
         groupName = groupobj.getAttribute('name')
         newgroup = GroupConfig(groupName)
+        if (groupobj.hasAttribute('enable') and
+            util.boolify(groupobj.getAttribute('enable'))):
+            self.enabledgroup = groupName
+            newgroup.setEnabled()
         schedulerStr = groupobj.getAttribute('scheduler')
         newgroup.scheduler = getattr(schedulers, schedulerStr)
         cc = 0
@@ -238,7 +251,7 @@ class ServiceConfig(BaseConfig):
             inner += group.toXML(indent)
         data = {
             'tag': self.type,
-            'attrs': self.getXMLAttrs(skip=['listen']),
+            'attrs': self.getXMLAttrs(skip=['listen', 'enabledgroup']),
             'inner': inner,
             'prepend': padding}
         output = "%(prepend)s<%(tag)s%(attrs)s>\n" % data
@@ -440,9 +453,7 @@ class Config(object):
                 serviceCfg.listen.append(c.getAttribute('ip'))
             elif c.nodeName == u'group':
                 serviceCfg.loadGroup(c)
-            elif c.nodeName == u'enable':
-                serviceCfg.enabledgroup = c.getAttribute('group')
-            elif c.nodeName == "#comment":
+            elif c.nodeName in legalCommentSections:
                 continue
             else:
                 raise ConfigError, "unknown node '%s'"%c.nodeName
