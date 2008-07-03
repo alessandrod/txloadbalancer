@@ -53,8 +53,9 @@ class HostConfig(object):
     """
 
 
-    def __init__(self, name, ip):
+    def __init__(self, name, ip, weight=1):
         self.name = name
+        self.weight = int(weight)
         if type(ip) is type(u''):
             self.ip = ip.encode('ascii')
         else:
@@ -86,8 +87,8 @@ class GroupConfig(object):
         return self.hosts.values()
 
 
-    def addHost(self, name, ip):
-        self.hosts[name] = HostConfig(name, ip)
+    def addHost(self, name, ip, weight=1):
+        self.hosts[name] = HostConfig(name, ip, weight)
 
 
     def delHost(self, name):
@@ -121,7 +122,10 @@ class ServiceConfig(object):
                     "expected 'host', got '%s'"%host.nodeName
             name = host.getAttribute('name')
             if not name: name = 'host.%s'%cc
-            newgroup.addHost(name, host.getAttribute('ip'))
+            weight = 1
+            if host.hasAttribute('weight'):
+                weight = host.getAttribute('weight')
+            newgroup.addHost(name, host.getAttribute('ip'), weight)
             cc += 1
         self.groups[groupName] = newgroup
 

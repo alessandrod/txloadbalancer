@@ -148,8 +148,7 @@ class ProxyGroup(object):
         Update the group's hosts data structure with a new ProxyHost instance.
         """
         self.hosts[proxyHost.name] = proxyHost
-        self.weights[proxyHost.name] = proxyHost.weight
-        self.weights[proxyHost.hostname] = proxyHost.weight
+        self.weights[(proxyHost.hostname, proxyHost.port)] = proxyHost.weight
 
 
     def getHosts(self):
@@ -169,12 +168,12 @@ class ProxyGroup(object):
                 return host
 
 
-    def getHostWeight(self, hostnameOrName):
+    def getHostWeight(self, hostPort):
         """
         Get the weighted value for a given host proxy, given either the host
         proxy's name or hostname.
         """
-        return self.weights[hostnameOrName]
+        return self.weights[hostPort]
 
 
     def getWeights(self):
@@ -184,20 +183,20 @@ class ProxyGroup(object):
         return self.weights
 
 
-    def getWeightDistribution(self, hostnames=[]):
+    def getWeightDistribution(self, hostPorts=[]):
         """
         Build a sample population of host, one per weight value (e.g., a host
         with a weight of 1 will have one entry in the distribution; one with a
         weight of 5 will have 5 entries in the distribution). Optionally,
-        filter by hostname, including only those hosts that are that are passed
-        in hostnames filter keyword argument.
+        filter by (host, port) tuples, including only those hosts that are that
+        are passed in hostnames filter keyword argument.
         """
         weights = self.getWeights().items()
-        if hostnames:
-            weights = [(x, y) for x, y in weights if x in hostnames]
-        for host, weight in weights:
+        if hostPorts:
+            weights = [(x, y) for x, y in weights if x in hostPorts]
+        for hostPort, weight in weights:
             for x in xrange(weight):
-                yield host
+                yield hostPort
 
 
 

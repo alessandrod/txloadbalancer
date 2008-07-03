@@ -2,10 +2,12 @@
   <service name="twisted-lorien">
     <listen ip="0.0.0.0:8080" />
     <listen ip="0.0.0.0:8081" />
-    <group name="servers1" scheduler="roundr">
-      <host name="test1" ip="lorien:1901" />
-      <host name="server1" ip="lorien:7001" />
-      <host name="server2" ip="lorien:7002" />
+    <group name="servers1" scheduler="weightr">
+      <host name="test1" ip="lorien:1901" weight="1"/>
+      <host name="server1" ip="lorien:7001" weight="5" />
+      <host name="server2" ip="lorien:7002" weight="1"/>
+      <host name="server3" ip="rivendel:7001" weight="20"/>
+      <host name="server4" ip="rivendel:7002" weight="10"/>
     </group>
     <group name="servers2" scheduler="leastc">
       <host name="server3" ip="lorien:7003" />

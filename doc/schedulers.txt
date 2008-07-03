@@ -24,6 +24,12 @@ leastc (leastconns)
   connections. If multiple machines have the same number of open
   connections, send to the least recently used.
 
+weightr (weighted random)
+
+  The hit hos a higher likelihood of being sent to a backend server with a
+  greater weight value associated with it. No additional logic is performed
+  (such as checking for current connections, etc.).
+
 
 Future work
 ===========

@@ -41,7 +41,7 @@ class BaseScheduler(object):
         self.tracker.scheduler = self
 
 
-    def hasHost(self, clientAddr):
+    def hasHost(self):
         """
 
         """
@@ -125,10 +125,17 @@ class RandomWeightedScheduler(BaseScheduler):
         if not self.hasHost():
             return
         group = self.tracker.group
+        # hosts is a list of (host, port) tuples
+        # XXX
+        # this is pretty slow... perhaps the weight data should also be stored
+        # on the tracker object and we should put the getWeightDistribution and
+        # getWeights methods on this scheduler...
         hosts = self.tracker.available.keys()
-        population = group.getWeightDistribution(hostnames=hosts)
-        populationSize = sum(group.getWeights().values())
+        population = group.getWeightDistribution(hostPorts=hosts)
+        populationSize = sum([weight for hostPort, weight
+            in group.getWeights().items() if hostPort in hosts])
         index = random.randint(0, populationSize - 1)
-        return itertools.islice(population, index).next()
+        host = itertools.islice(population, index, None).next()
+        return itertools.islice(population, index, None).next()
         
 

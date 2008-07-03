@@ -3,6 +3,14 @@
 * Added additional group methods for use by the weighted algorithm (including
 some convenience methods that didn't end up going into the algorithm).
 * Added an algorithm for weighted loadbalancing.
+* Added support for host weights in the config.
+* Fixed the call to islice to include the None parameter.
+* Changed the weight keys in model.ProxyGroup to use (host, port).
+* Fixed nextHost to only setup populations with enabled hosts.
+* Added support for weights in
+application.director.configuredProxyManagerFactory.
+* Forced weight values to be integers in the config class.
+* Updated docs.
 
 2008.06.29 oubiwann
 

@@ -48,7 +48,7 @@ def configuredProxyManagerFactory(configuration):
             pgroup = model.ProxyGroup(groupName, groupConf.scheduler, enabled)
             for hostName, hostConf in groupConf.hosts.items():
                 host, port = util.splitHostPort(hostConf.ip)
-                phost = model.ProxyHost(hostName, host, port)
+                phost = model.ProxyHost(hostName, host, port, hostConf.weight)
                 # add the host to the group
                 pgroup.addHost(phost)
             # add the group to the service

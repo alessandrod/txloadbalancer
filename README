@@ -91,6 +91,7 @@ Changes from txLoadBalancer 1.0.1 to 1.1.0
   running Python interpretter (Twisted manhole).
 - The ability to start listening on a new port without restaring the
   application.
+- Added a weighted load balance scheduler.
 
 Changes from txLoadBalancer 0.9.1 to 1.0.1
 

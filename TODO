@@ -19,7 +19,6 @@ Placeholders
 
 Version 1.1.0
 -------------
- * add weighted host scheduler (use code from when I was at PBS)
  * add web admin UI support for enabling groups
  * add a configuration checker and write out the new ones to disk
    . back up the old ones

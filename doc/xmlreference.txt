@@ -52,6 +52,8 @@ A txLoadBalancer config consists of a number of XML directives.
   Attributes:
     name - name of this host
     ip - IP address to listen on, in format host:port
+    weight - an optional integer attribute; higher relative values will
+             increase the likelihood of host selection by the scheduler
   Children:
     No children.
   Other notes:
