@@ -7,12 +7,9 @@ Bugs
 
 Placeholders
 ------------
- * running config page needs an overhaul (currently broken)
  * add a tool for generating a password (bin script that calls util functions)
  * can nextHost() get unburried? How "close" can we bring it to the receiver
    factory?
- * consider creating proxy manager methods for starting and stopping services
-   for bad hosts put back into and taken out of rotation
  * rename 'manager' attributes to 'taskManager'
  * rename 'director' attributes to 'proxyManager'
 
@@ -21,6 +18,7 @@ Version 1.1.0
 -------------
  * add web admin UI support for enabling groups
  * add a configuration checker and write out the new ones to disk
+   . config objects need to support representing themselves as XML
    . back up the old ones
    . disable by default; add configuration option in manager
    . store initial configuration in memory as an unparsed string (for

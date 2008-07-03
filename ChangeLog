@@ -16,6 +16,7 @@ application.director.configuredProxyManagerFactory.
 * Added a utility for recursivly representing an an object.
 * Removed the code the re-built the running config for display in the browser.
 * Running config is now displayed via the recursive object repr utility.
+* Updated TODO.
 
 2008.06.29 oubiwann
 
