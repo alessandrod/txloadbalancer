@@ -8,6 +8,7 @@ from twisted.web import static
 from twisted.web import resource
 
 import txlb
+from txlb import util
 from txlb.admin import css
 from txlb.admin import template
 
@@ -188,82 +189,7 @@ class RunningConfig(BasePage):
 
         """
         request.setHeader('Content-type', 'text/plain')
-        verbose = False
-        conf = self.parent.conf
-        doc = minidom.Document()
-        top = doc.createElement("pdconfig")
-        doc.appendChild(top)
-        for service in conf.getServices():
-            top.appendChild(doc.createTextNode("\n    "))
-            serv = doc.createElement("service")
-            serv.setAttribute('name', service.name)
-            top.appendChild(serv)
-            # XXX
-            # listening ports need to come from the running proxies in the
-            # proxy manager, not from the configuration
-            for l in service.listen:
-                serv.appendChild(doc.createTextNode("\n        "))
-                lobj = doc.createElement("listen")
-                lobj.setAttribute('ip', l)
-                serv.appendChild(lobj)
-            groups = service.getGroups()
-            for group in groups:
-                serv.appendChild(doc.createTextNode("\n        "))
-                tracker = self.parent.director.getTracker(service.name, group.name)
-                xg = doc.createElement("group")
-                xg.setAttribute('name', group.name)
-                xg.setAttribute('scheduler', tracker.scheduler.schedulerName)
-                serv.appendChild(xg)
-                stats = tracker.getStats()
-                hosts = group.getHosts()
-                hdict = tracker.getHostNames()
-                counts = stats['openconns']
-                ahosts = counts.keys() # ahosts is now a list of active hosts
-                # now add disabled hosts.
-                for k in stats['bad'].keys():
-                    ahosts.append('%s:%s'%k)
-                ahosts.sort()
-                for h in ahosts:
-                    xg.appendChild(doc.createTextNode("\n            "))
-                    xh = doc.createElement("host")
-                    xh.setAttribute('name', hdict[h])
-                    xh.setAttribute('ip', h)
-                    xg.appendChild(xh)
-                xg.appendChild(doc.createTextNode("\n        "))
-            serv.appendChild(doc.createTextNode("\n        "))
-            eg = service.getEnabledGroup()
-            xeg = doc.createElement("enable")
-            xeg.setAttribute("group", eg.name)
-            serv.appendChild(xeg)
-            serv.appendChild(doc.createTextNode("\n    "))
-        top.appendChild(doc.createTextNode("\n    "))
-        # now the admin block
-        # XXX the configuration for the admin section has changed quite a bit,
-        # and the following code needs to be updated to bring them into sync
-        admin = self.parent.conf.admin
-        if admin is not None:
-            xa = doc.createElement("admin")
-            # add the web
-            xa.setAttribute("listen", "%s:%s"%admin.listen)
-            top.appendChild(xa)
-            for user in admin.getUsers():
-                xa.appendChild(doc.createTextNode("\n        "))
-                xu = doc.createElement("user")
-                xu.setAttribute("name", user.name)
-                xu.setAttribute("password", user.password)
-                xu.setAttribute("access", user.access)
-                xa.appendChild(xu)
-            xa.appendChild(doc.createTextNode("\n    "))
-            top.appendChild(doc.createTextNode("\n    "))
-        # finally, the logging section (if set)
-        #if logger.logfile is not None:
-        #    xl = doc.createElement("logging")
-        #    xl.setAttribute("file", logger.logfile)
-        #    top.appendChild(xl)
-        # final newline
-        top.appendChild(doc.createTextNode("\n"))
-        # and spit out the XML
-        return doc.toxml()
+        return util.reprNestedObjects(self.parent.conf)
 
 
 class StoredConfig(BasePage):
@@ -369,7 +295,7 @@ class AdminServer(resource.Resource):
         """
         if not self.authenticateUser(request):
             return self.unauthorized()
-        if name == 'running' or name == '':
+        if name == 'all' or name == '':
             # XXX it's probably going to be better to do these checks from
             # within the RunningPage itself, in order to avoide a large
             # duplication of page code
@@ -380,7 +306,7 @@ class AdminServer(resource.Resource):
             return page
         elif name == 'txlb.css':
             return StyleSheet()
-        elif name == 'running.xml':
+        elif name == 'config.obj':
             return RunningConfig(self)
         elif name == 'config.xml':
             return StoredConfig(self)

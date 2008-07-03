@@ -31,9 +31,9 @@ message = '<p class="message">%s</p>'
 footer = """
     <div class="footer">
     <a href="/">top</a>
-    <a href="running">running</a>
-    <a href="running.xml">running.xml</a>
-    <a href="config.xml">config.xml</a>
+    <a href="all">all</a>
+    <a href="config.obj">running config</a>
+    <a href="config.xml">disk config</a>
     <a href="%s">%s</a>
     </div>
     %s

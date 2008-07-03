@@ -14,6 +14,8 @@ application.director.configuredProxyManagerFactory.
 * Removed a line of testing code that got committed accidentally.
 * Added a caveat to the schedulers.txt file.
 * Added a utility for recursivly representing an an object.
+* Removed the code the re-built the running config for display in the browser.
+* Running config is now displayed via the recursive object repr utility.
 
 2008.06.29 oubiwann
 
