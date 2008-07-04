@@ -14,6 +14,7 @@ section.
 * Added capability of templates to display messages at the top of the page.
 * Updated the admin pages so that messages actually get displayed in the
 header.
+* Fixed error when deleting a host in the web UI.
 
 2008.07.03 oubiwann
 

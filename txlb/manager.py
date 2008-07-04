@@ -488,7 +488,8 @@ class HostTracking(object):
             self.hosts.remove(ip)
             del self.hostnames[ip]
             del self.available[ip]
-            del self.failed[ip]
+            if self.failed.has_key(ip):
+                del self.failed[ip]
             del self.totalconns[ip]
         elif self.badhosts.has_key(ip):
             del self.badhosts[ip]
