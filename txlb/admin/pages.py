@@ -48,7 +48,7 @@ class BasePage(resource.Resource):
         resource.Resource.__init__(self)
         self.parent = parent
 
-    def getHeader(self, refreshURL=''):
+    def getHeader(self, refreshURL='', msg=''):
         """
 
         """
@@ -56,9 +56,11 @@ class BasePage(resource.Resource):
         if refreshURL:
             refresh = template.refresh % (
                 self.parent.conf.admin.refresh, refreshURL)
+        if msg:
+            msg = template.message % msg
         return template.header % (
             txlb.name, refresh, txlb.name, self.parent.serverVersion,
-            socket.gethostname())
+            socket.gethostname()) + msg
 
     def getBody(self):
         """
@@ -100,13 +102,16 @@ class RunningPage(BasePage):
         verbose = False
         resultMessage = ''
         content = ''
+        msg = ''
+        if request.args.has_key('resultMessage'):
+            msg = request.args['resultMessage'][0]
         if request.args.has_key('refresh'):
             refresh = bool(request.args['refresh'][0])
             url = '/all?refresh=1&ignore=%s' % time.time()
-            content += self.getHeader(refreshURL=url)
+            content += self.getHeader(refreshURL=url, msg=msg)
             stopStart = template.stopRefresh % time.time()
         else:
-            content += self.getHeader()
+            content += self.getHeader(msg=msg)
             stopStart = template.startRefresh % time.time()
         content += template.refreshButtons % (
             time.ctime(time.time()), time.time(), stopStart)

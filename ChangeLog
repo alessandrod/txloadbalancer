@@ -12,6 +12,8 @@ section.
 * Removed old read only page code.
 * Added checks for read-only status.
 * Added capability of templates to display messages at the top of the page.
+* Updated the admin pages so that messages actually get displayed in the
+header.
 
 2008.07.03 oubiwann
 

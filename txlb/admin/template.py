@@ -25,7 +25,7 @@ message = '<p class="message">%s</p>'
 header = head + """
     <body>
     <div class="title">%s version %s, running on host %s.</div>
-    """ + message
+    """
 
 
 # takes the project URL and an optional message
@@ -44,13 +44,13 @@ footer = """
 
 
 startRefresh = """
-    <a class="button" href="/running?refresh=1&ignore=%s">Start
+    <a class="button" href="/all?refresh=1&ignore=%s">Start
     auto-refresh</a></p>
     """
 
 
 stopRefresh = """
-    <a class="button" href="/running?ignore=%s">Stop auto-refresh</a></p>
+    <a class="button" href="/all?ignore=%s">Stop auto-refresh</a></p>
     """
 
 
@@ -58,7 +58,7 @@ stopRefresh = """
 refreshButtons = """
     <p><b>current config</b></p>
     <p>last update at %s</p>
-    <p><a class="button" href="/running?ignore=%s">Refresh</a>
+    <p><a class="button" href="/all?ignore=%s">Refresh</a>
     %s
     """
 
