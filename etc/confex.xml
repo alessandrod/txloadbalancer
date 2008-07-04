@@ -1,4 +1,4 @@
-<pdconfig>
+<config>
     <!-- This is a sample configuration file! see doc/configure.txt for
          more information -->
     <service name="prod-http">
@@ -34,4 +34,4 @@
     <user name="fulluser" password="iy9l0V1MkG1DE" access="full"/>
     </admin>
     <logging file="pydir.log"/>
-</pdconfig>
+</config>

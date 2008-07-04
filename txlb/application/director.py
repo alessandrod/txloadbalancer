@@ -120,7 +120,7 @@ def setupControlSocket(configuration, director):
     Calendar Server project.
     """
     control = service.Service()
-    socket = configuration.socket
+    socket = configuration.control.socket
     if socket != None:
         control = internet.UNIXServer(socket, manager.ControlFactory(director))
     control.setName('control')

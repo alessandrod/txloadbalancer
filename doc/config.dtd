@@ -6,7 +6,7 @@
 $Id: pythondirector.dtd,v 1.4 2003/10/09 08:20:59 anthonybaxter Exp $
 -->
 
-<!ELEMENT pdconfig (service+, admin, logging)>
+<!ELEMENT config (service+, admin, logging)>
 
 <!ELEMENT service (listen+, group+, enable)>
 <!ATTLIST service name CDATA #REQUIRED>
@@ -16,15 +16,13 @@ $Id: pythondirector.dtd,v 1.4 2003/10/09 08:20:59 anthonybaxter Exp $
 
 <!ELEMENT group (host*)>
 <!ATTLIST group name      CDATA #REQUIRED
+                enable CDATA
                 scheduler (rand|roundr|leastc|lweighted) #REQUIRED>
 
 <!ELEMENT host>
 <!ATTLIST host name CDATA #REQUIRED
                  ip CDATA #REQUIRED
                  weight CDATA>
-
-<!ELEMENT enable EMPTY>
-<!ATTLIST enable group CDATA #REQUIRED>
 
 <!ELEMENT admin (user*, web, ssh)>
 <!ATTLIST admin>
@@ -44,8 +42,13 @@ $Id: pythondirector.dtd,v 1.4 2003/10/09 08:20:59 anthonybaxter Exp $
 <!ATTLIST ssh listen CDATA #REQUIRED
               enable CDATA>
 
-<!ELEMENT manager EMPTY>
-<!ATTLIST manager hostCheckInterval CDATA>
+<!ELEMENT manager (hostCheck, configCheck, heartbeat)>
+
+<!ATTLIST hostCheck interval CDATA>
+
+<!ATTLIST configCheck interval CDATA>
+
+<!ATTLIST heartbeat interval CDATA>
 
 <!ELEMENT control EMPTY>
 <!ATTLIST control socket CDATA>

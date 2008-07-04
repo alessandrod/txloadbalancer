@@ -1,6 +1,13 @@
 2008.07.04 oubiwann
 
 * Added toXML() method to the admin config object.
+* Broke the manager section down into several parts.
+* Updated docs to account for changes to the group/enable stuff and the manager
+section.
+* Added toXML() method to the admin config object.
+* Added a control section.
+* Added toXML() method to the top-level config object.
+* Removed all references to pdconfig (changed to just 'config').
 
 2008.07.03 oubiwann
 

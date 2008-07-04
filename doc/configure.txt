@@ -10,16 +10,15 @@ A txLoadBalancer config consists of a number of XML directives.
 
 One of the simplest possible configs would be
 
-    <pdconfig>
+    <config>
       <service name="web">
         <listen ip="0.0.0.0:80"/>
-        <group name="servers" scheduler="roundr">
+        <group name="servers" scheduler="roundr" enable="true">
           <host name="server1" ip="192.168.10.1:80"/>
           <host name="server2" ip="192.168.10.2:80"/>
         </group>
-        <enable group="servers"/>
       </service>
-    </pdconfig>
+    </config>
 
 This configuration would produce a server listening on all addresses
 (0.0.0.0), port 80, and would alternate hits to the backend servers
@@ -47,10 +46,8 @@ distribute hits between them. Only one group can be active at a time.
 You'd use multiple groups, for instance, to specify a set of main
 hosts, and a set of backup hosts to use when the main hosts are
 undergoing maintenance. You don't need to specify more than one
-group, but it is useful.
-
-Finally, there should be an 'enable' directive that specifies which
-group starts off enabled.
+group, but it is useful. One of the groups need an "enable" attribute
+set to a true/on/yes/1 value.
 
 
 Admin Section

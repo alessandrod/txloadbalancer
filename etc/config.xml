@@ -1,4 +1,4 @@
-<pdconfig>
+<config>
   <service name="twisted-lorien">
     <listen ip="0.0.0.0:8080" />
     <listen ip="0.0.0.0:8081" />
@@ -31,10 +31,14 @@
     </group>
   </service>
   <admin>
-    <web listen="localhost:7000" enable="true" secure="false" refresh="10" />
+    <web listen="*:7000" enable="true" secure="false" refresh="10" />
     <ssh listen="localhost:2222" enable="true" />
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
-  <manager hostCheckInterval="500" />
-</pdconfig>
+  <manager>
+    <hostCheck interval="500" />
+    <configCheck interval="10" />
+    <heartbeat  interval="20" />
+  </manager>
+</config>
 

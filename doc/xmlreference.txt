@@ -6,7 +6,7 @@ XML Reference
 
 A txLoadBalancer config consists of a number of XML directives.
 
-<pdconfig> - the top level XML node.
+<config> - the top level XML node.
   Attributes:
     No attributes.
   Children:
@@ -17,13 +17,12 @@ A txLoadBalancer config consists of a number of XML directives.
     None
 
 <service> - a load balancer service.
-  Child of: <pdconfig>
+  Child of: <config>
   Attributes:
     name - the name of this service. A text label.
   Children:
     Must contain one or more <listen> nodes.
     Must contain one or more <group> nodes.
-    Must contain one <enable> node (after the <group> nodes)
   Other notes:
     None
 
@@ -42,6 +41,8 @@ A txLoadBalancer config consists of a number of XML directives.
     name - name of this group. Text label, should be unique in the service.
     scheduler - name of the scheduler to use for this group. Full list in
                 doc/schedulers.txt
+    enable - the group that should be enabled when the load balancer starts
+             needs to have its value set to "true"
   Children:
     Should contain one or more <host> nodes.
   Other notes:
@@ -60,18 +61,8 @@ A txLoadBalancer config consists of a number of XML directives.
     This used to be called <client>. Should be no references to the old
     name left anywhere.
 
-<enable> - specifies the enabled group
-  Child of: <service>
-  Attributes:
-    group - the group name that should start up enabled
-  Children:
-    No children.
-  Other notes:
-    No reason this couldn't be optional - the first/only group would be
-    chosen in that case.
-
 <admin> - administrative web interface
-  Child of: <pdconfig>
+  Child of: <config>
   Attributes: None
   Children:
     Can contain one <web> node
@@ -112,7 +103,7 @@ A txLoadBalancer config consists of a number of XML directives.
     Source users from somewhere else?
 
 <logging> - logging for txLoadBalancer
-  Child of: <pdconfig>
+  Child of: <config>
   Attributes:
     file - log file path
   Children:
@@ -122,17 +113,52 @@ A txLoadBalancer config consists of a number of XML directives.
 
 <manager> - configuration options for various tasks that txLoadBalanver
             manages, such as bad host checks
-  Child of: <pdconfig>
+  Child of: <config>
   Attributes:
     hostCheckInterval - the time in seconds between re-checkign bad hosts
   Children:
+    Can contain one <hostCheck> node
+    Can contain one <configCheck> node
+    Can contain one <heartbeat> node
+  Other notes:
     None
+
+<hostCheck> - configuration options for the manager that checks if a bad host
+              can come back into rotation
+  Child of: <manager>
+  Attributes:
+    interval - time interval in seconds (and fractions thereof) a check should
+               be performed
+  Children:
+    No children.
+  Other notes:
+    None
+
+<configCheck> - configuration options for the manager that checks if a
+                configuration should be written to disk
+  Child of: <manager>
+  Attributes:
+    interval - time interval in seconds (and fractions thereof) a check should
+               be performed
+  Children:
+    No children.
+  Other notes:
+    None
+
+<heartbeat> - configuration options for the manager that checks if proxied
+              hosts are available for receiving load-balanced requests
+  Child of: <manager>
+  Attributes:
+    interval - time interval in seconds (and fractions thereof) a check should
+               be performed
+  Children:
+    No children.
   Other notes:
     None
 
 <control> - configuration options for accurate tracking of connected IP
             addresses
-  Child of: <pdconfig>
+  Child of: <config>
   Attributes:
     socket - the path and filename of the socket to connect to
   Children:

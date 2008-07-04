@@ -288,10 +288,62 @@ class ManagerConfig(BaseConfig):
     """
 
     """
+    type = u'manager'
 
 
     def __init__(self):
         self.hostCheckInterval = 120
+        self.configCheckInterval = 30
+        self.heartbeatInterval = 60
+
+
+    def loadHostCheck(self, checkNode):
+        if checkNode.hasAttribute('interval'):
+            self.hostCheckInterval = float(checkNode.getAttribute('interval'))
+
+
+    def loadConfigCheck(self, checkNode):
+        if checkNode.hasAttribute('interval'):
+            self.configCheckInterval = float(checkNode.getAttribute('interval'))
+
+
+    def loadHeartbeat(self, checkNode):
+        if checkNode.hasAttribute('interval'):
+            self.heartbeatInterval = float(checkNode.getAttribute('interval'))
+
+
+    def toXML(self, padding=''):
+        """
+
+        """
+        indent = padding + '  '
+        output = u'%s<%s>\n' % (padding, self.type)
+        output += '%s<hostCheck interval="%s" />\n' % (
+            indent, self.hostCheckInterval)
+        output += '%s<configCheck interval="%s" />\n' % (
+            indent, self.configCheckInterval)
+        output += '%s<heartbeat interval="%s" />\n' % (
+            indent, self.heartbeatInterval)
+        return output + '%s</%s>\n' % (padding, self.type)
+
+
+
+class ControlConfig(BaseConfig):
+    """
+
+    """
+    type = u'control'
+
+
+    def __init__(self, socket=None):
+        self.socket = socket
+
+
+    def toXML(self, padding=''):
+        """
+
+        """
+        return '%s<control socket="%s" />\n' % (padding, self.socket)
 
 
 
@@ -405,6 +457,7 @@ class Config(object):
     """
 
     """
+    type = u'config'
 
 
     def __init__(self, filename=None, xml=None):
@@ -412,10 +465,10 @@ class Config(object):
         self.admin = None
         self.manager = None
         self.dom = None
-        self.socket = None
+        self.control = None
         dom = self._loadDOM(filename, xml)
-        if dom.nodeName != 'pdconfig':
-            msg = "expected top level 'pdconfig', got '%s'" % (dom.nodeName)
+        if dom.nodeName != 'config':
+            msg = "expected top level 'config', got '%s'" % (dom.nodeName)
             raise ConfigError, msg
         for item in dom.childNodes:
             if item.nodeName in legalCommentSections:
@@ -435,9 +488,11 @@ class Config(object):
             elif item.nodeName == u'logging':
                 logging.initlog(item.getAttribute('file'))
             elif item.nodeName == u'control':
-                self.socket = item.getAttribute('socket')
+                self.loadControl(item)
         if self.manager == None:
             self.manager = ManagerConfig()
+        if self.control == None:
+            self.control = ControlConfig()
 
 
     def _loadDOM(self, filename, xml):
@@ -467,11 +522,22 @@ class Config(object):
 
 
     def loadManager(self, manager):
-        manageCfg = ManagerConfig()
-        if manager.hasAttribute('hostCheckInterval'):
-            manageCfg.hostCheckInterval = float(manager.getAttribute(
-                'hostCheckInterval'))
-        self.manager = manageCfg
+        managerCfg = ManagerConfig()
+        for child in manager.childNodes:
+            if child.nodeName in legalCommentSections:
+                continue
+            elif child.nodeName == u'hostCheck':
+                managerCfg.loadHostCheck(child)
+            elif child.nodeName == u'configCheck':
+                managerCfg.loadConfigCheck(child)
+            elif child.nodeName == u'heartbeat':
+                managerCfg.loadHeartbeat(child)
+        self.manager = managerCfg
+
+
+    def loadControl(self, control):
+        if control.hasAttribute('socket'):
+            self.control = ControlConfig(control.getAttribute('socket'))
 
 
     def getService(self, serviceName):
@@ -502,4 +568,19 @@ class Config(object):
                 raise ConfigError, "unknown node '%s'"%c.nodeName
         serviceCfg.checkSanity()
         self.services[serviceName] = serviceCfg
+
+
+    def toXML(self, padding=''):
+        """
+
+        """
+        inner = u''
+        indent=padding + '  '
+        for service in self.getServices():
+            inner += service.toXML(padding=indent)
+        for cfgName in legalConfigSections:
+            if hasattr(self, cfgName):
+                inner += getattr(self, cfgName).toXML(padding=indent)
+        data = {'tag': self.type, 'inner': inner}
+        return '<%(tag)s>\n%(inner)s</%(tag)s>' % data
 
