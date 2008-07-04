@@ -1,9 +1,6 @@
 . ./admin/defs.sh
 
-bzr diff ChangeLog | \
-    egrep '^\+' | \
-    sed -e 's/^\+//g'| \
-    egrep -v '^\+\+ ChangeLog' > $MSG
+getDiff ChangeLog > $MSG
 echo "Committing with this message:"
 cat $MSG
 echo

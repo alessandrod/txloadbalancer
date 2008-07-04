@@ -6,6 +6,13 @@ FLAG='skip_tests'
 MSG=commit-msg
 export PYTHONPATH=.:./test
 
+function getDiff {
+    bzr diff $1 | \
+        egrep '^\+' | \
+        sed -e 's/^\+//g'| \
+        egrep -v "^\+\+ ChangeLog"
+}
+
 function abort {
     echo "*** Aborting rest of process! ***"
     exit

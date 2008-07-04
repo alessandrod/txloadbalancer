@@ -23,6 +23,11 @@ admin.pages.AddHost class to use it.
 * Added missing getGroup method to ProxyService.
 * Fixed some missing imports in the manager.
 * Fixed the open call in the config checker.
+* Moved the diff'ing admin code into defs.sh.
+* Added an admin script for doing a stat that includes what the commit message
+will be.
+* Updated commit script to use the new diff function.
+* Added an admin script for committing and pushing.
 
 2008.07.03 oubiwann
 
