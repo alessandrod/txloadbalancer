@@ -108,8 +108,22 @@ def setupHostChecker(configuration, director):
     This is the setup for the "bad host check" management task.
     """
     checkInterval = configuration.manager.hostCheckInterval
-    checker = internet.TimerService(checkInterval, checkBadHosts, director)
+    checker = internet.TimerService(
+        checkInterval, manager.checkBadHosts, director)
     checker.setName('hostChecker')
+    return checker
+
+
+
+def setupConfigChecker(configFile, configuration, director):
+    """
+    This is the setup for the "config check" management task.
+    """
+    checkInterval = configuration.manager.configCheckInterval
+    checker = internet.TimerService(
+        checkInterval, manager.checkConfigChanges, configFile, configuration,
+        director)
+    checker.setName('configChecker')
     return checker
 
 
@@ -154,6 +168,10 @@ def setup(configFile):
     # set up the host checker service
     checker = setupHostChecker(conf, director)
     checker.setServiceParent(services)
+
+    # set up the config checker service
+    configer = setupConfigChecker(configFile, conf, director)
+    configer.setServiceParent(services)
 
     # set up the admin web server
     # XXX need to test this for when no admin web UI is configured

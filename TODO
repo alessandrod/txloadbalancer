@@ -18,11 +18,11 @@ Version 1.1.0
 -------------
  * add web admin UI support for enabling groups
  * add a configuration checker and write out the new ones to disk
-   . config objects need to support representing themselves as XML
-   . back up the old ones
    . disable by default; add configuration option in manager
    . store initial configuration in memory as an unparsed string (for
      comparison)
+   . in order for configs to have a difference, when hosts are deleted, added,
+     etc., from memory, the in-memory configs need to be updated
 
 
 Version 1.2.0

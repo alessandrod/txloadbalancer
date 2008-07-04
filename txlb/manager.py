@@ -6,6 +6,7 @@ from twisted.internet import protocol
 from txlb import util
 from txlb import model
 from txlb import proxy
+from txlb import config
 from txlb import logging
 from txlb import schedulers
 
@@ -51,7 +52,7 @@ def checkBadHosts(director):
 
 
 
-def checkConfigChanges(director):
+def checkConfigChanges(configFile, configuration, director):
     """
     This function replaces the current on-disk configuration with the
     adjustments that have been made in-memory (likely from the admin web UI). A
@@ -61,11 +62,25 @@ def checkConfigChanges(director):
     memory. Obviously there are all sorts of issues at play, here: race
     conditions, differences and the need to merge, conflict resolution, etc.
     """
+    print "Checking config files ..."
     # disable the admin UI or at the very least, make it read-only
     director.setReadOnly()
+    # compare in-memory config with on-disk config
+    current = configuration.toXML()
+    disk = config.Config(configFile).toXML()
+    # XXX not sure if we need these two...
     # compare load-time config with on-disk config
     # compare load-time config with in-memory config
-    # save configuration(s)
+    if current != disk:
+        print "Configurations are different; backing up and saving to disk ..."
+        # backup old file
+        backupFile = "%s-%s" % (
+            configFile, datetime.now().strftime('%Y%m%d%M%H%S'))
+        os.rename(configFile, backupFile)
+        # save configuration(s)
+        fh = open(configFile, '+w')
+        fh.write(current)
+        fh.close()
     # re-enable admin UI
     director.setReadWrite()
 
