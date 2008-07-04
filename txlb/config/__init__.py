@@ -1,3 +1,4 @@
+import re
 import inspect
 from crypt import crypt
 from xml.dom import minidom
@@ -54,21 +55,26 @@ class BaseConfig(object):
     tag = u''
 
 
-    def getProps(self, skip=[]):
+    def getProps(self, only=[], skip=[]):
         """
 
         """
         check = [int, float, list, tuple, str, unicode]
         for key, val in  self.__dict__.items():
-            if True in [isinstance(val, x) for x in check] and key not in skip:
-                yield (key, val)
+            if True in [isinstance(val, x) for x in check]:
+                if only and key in only:
+                    yield (key, val)
+                elif key not in skip:
+                    yield (key, val)
 
-    def getXMLAttrs(self, skip=[]):
+    def getXMLAttrs(self, only=[], skip=[], pairs=[]):
         """
 
         """
         attrs = u''
-        for attrName, attrVal in self.getProps(skip=skip):
+        if not pairs:
+            pairs = self.getProps(only=only, skip=skip)
+        for attrName, attrVal in pairs:
             attrs += ' %s="%s"' % (attrName, attrVal)
         return attrs
 
@@ -323,7 +329,8 @@ class AdminConfig(BaseConfig):
 
     def loadWeb(self, webNode):
         if webNode.hasAttribute('listen'):
-            self.webListen = util.splitHostPort(webNode.getAttribute('listen'))
+            #self.webListen = util.splitHostPort(webNode.getAttribute('listen'))
+            self.webListen = webNode.getAttribute('listen')
         if webNode.hasAttribute('enable'):
             self.webEnable = util.boolify(webNode.getAttribute('enable'))
         if webNode.hasAttribute('secure'):
@@ -334,7 +341,8 @@ class AdminConfig(BaseConfig):
 
     def loadSSH(self, sshNode):
         if sshNode.hasAttribute('listen'):
-            self.sshListen = util.splitHostPort(sshNode.getAttribute('listen'))
+            #self.sshListen = util.splitHostPort(sshNode.getAttribute('listen'))
+            self.sshListen = sshNode.getAttribute('listen')
         if sshNode.hasAttribute('enable'):
             self.sshEnable = util.boolify(sshNode.getAttribute('enable'))
 
@@ -356,6 +364,41 @@ class AdminConfig(BaseConfig):
 
     def getUserNames(self):
         return self.userdb.keys()
+
+
+    def toXML(self, padding=''):
+        """
+
+        """
+        inner = u''
+        indent = padding + '  '
+        webAttrs = [(re.sub('web', '', x).lower(), y)
+            for x, y in self.__dict__.items() if x.startswith('web')]
+        web = {
+            'tag': 'web',
+            'attrs': self.getXMLAttrs(pairs=webAttrs),
+            'prepend': indent}
+        sshAttrs = [(re.sub('ssh', '', x).lower(), y)
+            for x, y in self.__dict__.items() if x.startswith('ssh')]
+        ssh = {
+            'tag': 'ssh',
+            'attrs': self.getXMLAttrs(pairs=sshAttrs),
+            'prepend': indent}
+        users = []
+        for user in self.getUsers():
+            userData = {
+                'tag': 'user',
+                'attrs': user.getXMLAttrs(),
+                'prepend': indent}
+            users.append(userData)
+        for data in [web, ssh] + users:
+            inner += '%(prepend)s<%(tag)s%(attrs)s />\n' % data
+        data = {
+            'tag': 'admin',
+            'inner': inner,
+            'prepend': padding}
+        return '%(prepend)s<%(tag)s>\n%(inner)s%(prepend)s</%(tag)s>\n' % data
+
 
 
 class Config(object):

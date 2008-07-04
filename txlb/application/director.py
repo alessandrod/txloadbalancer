@@ -64,14 +64,14 @@ def setupAdminWebUIServer(configuration, director):
         return
     root = pages.AdminServer(configuration, director)
     site = server.Site(root)
-    adminPort = int(configuration.admin.webListen[1])
+    host, port = util.splitHostPort(configuration.admin.webListen)
     if configuration.admin.webSecure:
         util.setupServerCert()
         context = ssl.DefaultOpenSSLContextFactory(
             util.privKeyFile, util.certFile)
-        admin = internet.SSLServer(adminPort, site, context)
+        admin = internet.SSLServer(port, site, context, interface=host)
     else:
-        admin = internet.TCPServer(adminPort, site)
+        admin = internet.TCPServer(port, site, interface=host)
     admin.setName('adminWeb')
     return admin
 
@@ -84,7 +84,7 @@ def setupAdminSSHServer(configuration, director, services):
     """
     if not configuration.admin.sshEnable:
         return
-    adminPort = int(configuration.admin.sshListen[1])
+    host, port = util.splitHostPort(configuration.admin.sshListen)
     # set up a manhole
     def getManhole(serverProtocol):
         startingNamespace = {
@@ -97,7 +97,7 @@ def setupAdminSSHServer(configuration, director, services):
     p = portal.Portal(realm)
     p.registerChecker(auth.LBAdminAuthChecker(configuration.admin))
     factory = manhole_ssh.ConchFactory(p)
-    admin = internet.TCPServer(adminPort, factory)
+    admin = internet.TCPServer(port, factory, interface=host)
     admin.setName('adminSSH')
     return admin
 
