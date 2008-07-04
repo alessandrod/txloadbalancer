@@ -39,9 +39,11 @@ Version 1.2.0
    without any checks; I want to add something there...
    . store away more info about the down hosts
    . when, how long til next test, etc.
+   . use heartbeats (TCP pinger) and only put hosts back into rotation if
+     they're up
  * sort service groups in admin UI by name
  * cache DNS lookups
- * start adding unit tests
+ * continue adding unit tests
  * continue adding any missing docstring
  * support a configurable option to log connections that are made to the
    proxied hosts
@@ -61,7 +63,6 @@ Version 1.3.0
    new code immediately
    . let old connections on old pydir finish (run to completion) before exiting
    . look at (again) JP's live process migration work from several years ago
- * add diffs for examining running/stored configurations
  * drop as much of config.__init__ as possible and map XML directly to model
    objects instead
  * move CSS into a static file
@@ -126,6 +127,12 @@ Exploratory
  * dynamic load balancing service
    . number of proxies are determined by load
    . need to define "load"
+ * cross-host-messaging
+   . copies of a user's appication get deployed
+   . each instance checks to see if it's the manaing host (hostname check)
+   . those that aren't in the list of proxied hosts quit
+   . those that are, actve as the simple service
+   . the host (just one, for now) that is the manager starts up the lb service
  * possibly add proxy mixins/subclasses for different protocols (HTTP, DNS,
    etc.)
  * add the ability to do auto-naming (auto-incrementing a counter) so that if a
