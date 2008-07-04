@@ -16,15 +16,16 @@ refresh = """
     """
 
 
-# takes a title, optional refresh, project name, version, and hostname
+# takes a message
+message = '<p class="message">%s</p>'
+
+
+# takes a title, optional refresh, project name, version, hostname and an
+# optional message
 header = head + """
     <body>
     <div class="title">%s version %s, running on host %s.</div>
-    """
-
-
-# takes a message
-message = '<p class="message">%s</p>'
+    """ + message
 
 
 # takes the project URL and an optional message

@@ -8,6 +8,10 @@ section.
 * Added a control section.
 * Added toXML() method to the top-level config object.
 * Removed all references to pdconfig (changed to just 'config').
+* Added a stub for an "enable group" page.
+* Removed old read only page code.
+* Added checks for read-only status.
+* Added capability of templates to display messages at the top of the page.
 
 2008.07.03 oubiwann
 

@@ -75,7 +75,7 @@ class BasePage(resource.Resource):
         return template.footer % (txlb.projectURL, txlb.name, message)
 
 
-    def getPage(self):
+    def getPage(self, request):
         """
         Subclasses must override this.
         """
@@ -102,7 +102,7 @@ class RunningPage(BasePage):
         content = ''
         if request.args.has_key('refresh'):
             refresh = bool(request.args['refresh'][0])
-            url = '/running?refresh=1&ignore=%s' % time.time()
+            url = '/all?refresh=1&ignore=%s' % time.time()
             content += self.getHeader(refreshURL=url)
             stopStart = template.stopRefresh % time.time()
         else:
@@ -111,10 +111,6 @@ class RunningPage(BasePage):
         content += template.refreshButtons % (
             time.ctime(time.time()), time.time(), stopStart)
         for service in self.parent.conf.getServices():
-            # we don't want the configured listener here, we want the one that
-            # is actually running. The best place to get that is from the
-            # director
-            # XXX we probably want to put this into a class method
             content += template.serviceName % service.name
             for index, l in enumerate(service.listen):
                 proxy = self.parent.director.getProxy(service.name, index)
@@ -172,14 +168,6 @@ class RunningPage(BasePage):
         return content
 
 
-class RunningReadOnlyPage(BasePage):
-    """
-    A version of the RunningPage that disables write functionality. This is
-    useful for non-atomic operations are taking place, decreasing the chances
-    for the user to create race conditions.
-    """
-
-
 class RunningConfig(BasePage):
     """
     This class renders the in-memory configuration as XML.
@@ -214,6 +202,10 @@ class DeleteHost(BasePage):
         """
 
         """
+        if self.parent.director.isReadOnly:
+            msg = "Director is currently in read-only mode."
+            request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+            return "OK"
         service = request.args['service'][0]
         group = request.args['group'][0]
         ip = request.args['ip'][0]
@@ -231,7 +223,7 @@ class DeleteHost(BasePage):
                 msg = 'host %s deleted from inactive group' % ip
             else:
                 msg = 'host %s <b>not</b> deleted from inactive group' % ip
-        request.redirect('/running?resultMessage=%s' % urllib.quote(msg))
+        request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
         return "OK"
 
 
@@ -245,6 +237,10 @@ class AddHost(BasePage):
         """
 
         """
+        if self.parent.director.isReadOnly:
+            msg = "Director is currently in read-only mode."
+            request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+            return "OK"
         service = request.args['service'][0]
         group = request.args['group'][0]
         name = request.args['name'][0]
@@ -254,8 +250,22 @@ class AddHost(BasePage):
         tracker.newHost(name=name, ip=ip)
         # also add to conf DOM object
         msg = 'Host %s(%s) added to %s / %s' % (name, ip, group, service)
-        request.redirect('/running?resultMessage=%s' % urllib.quote(msg))
+        request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
         return "OK"
+
+
+class EnableGroup(BasePage):
+    """
+    This page is responsible for enabling a different host group in the web UI.
+    """
+    def getPage(self, request):
+        """
+
+        """
+        if self.parent.director.isReadOnly:
+            msg = "Director is currently in read-only mode."
+            request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+            return "OK"
 
 
 class AdminServer(resource.Resource):
@@ -296,13 +306,7 @@ class AdminServer(resource.Resource):
         if not self.authenticateUser(request):
             return self.unauthorized()
         if name == 'all' or name == '':
-            # XXX it's probably going to be better to do these checks from
-            # within the RunningPage itself, in order to avoide a large
-            # duplication of page code
-            if self.director.isReadOnly:
-                page = RunningReadOnlyPage(self)
-            else:
-                page = RunningPage(self)
+            page = RunningPage(self)
             return page
         elif name == 'txlb.css':
             return StyleSheet()
@@ -314,6 +318,8 @@ class AdminServer(resource.Resource):
             return DeleteHost(self)
         elif name == 'addHost':
             return AddHost(self)
+        elif name == 'enableGroup':
+            return EnableGroup(self)
         return resource.Resource.getChild(self, name, request)
 
 
