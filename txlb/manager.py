@@ -1,4 +1,6 @@
+import os
 import time
+from datetime import datetime
 
 from twisted.protocols import amp
 from twisted.internet import protocol
@@ -62,6 +64,9 @@ def checkConfigChanges(configFile, configuration, director):
     memory. Obviously there are all sorts of issues at play, here: race
     conditions, differences and the need to merge, conflict resolution, etc.
     """
+    return
+    # XXX in order for this to work properly, the order in which elements are
+    # rendered to XML need to be deterministic...
     print "Checking config files ..."
     # disable the admin UI or at the very least, make it read-only
     director.setReadOnly()
@@ -75,10 +80,10 @@ def checkConfigChanges(configFile, configuration, director):
         print "Configurations are different; backing up and saving to disk ..."
         # backup old file
         backupFile = "%s-%s" % (
-            configFile, datetime.now().strftime('%Y%m%d%M%H%S'))
+            configFile, datetime.now().strftime('%Y%m%d%H%M%S'))
         os.rename(configFile, backupFile)
         # save configuration(s)
-        fh = open(configFile, '+w')
+        fh = open(configFile, 'w+')
         fh.write(current)
         fh.close()
     # re-enable admin UI
@@ -155,8 +160,6 @@ class ProxyManager(object):
         # XXX hopefully, the trackers attribute is temporary
         self.trackers = {}
         self._connections = {}
-        # XXX need to get rid of this call once the rewrite is finished
-        #self.createListeners()
         self.isReadOnly = False
 
 
@@ -315,6 +318,19 @@ class ProxyManager(object):
         can be more than one port listening per service) index.
         """
         return self.proxies[serviceName][index]
+
+
+    def addHost(self, serviceName, groupName, proxiedName, ip, weight=1):
+        """
+        This method updates not only the tracker data, but the models as well.
+        """
+        tracker = self.getTracker(serviceName=serviceName, groupName=groupName)
+        # XXX does the tracker need to know about weights?
+        tracker.newHost(name=proxiedName, ip=ip)
+        # add modeling information
+        host, port = util.splitHostPort(ip)
+        proxiedHost = model.ProxyHost(proxiedName, host, port, weight)
+        self.getGroup(serviceName, groupName).addHost(proxiedHost)
 
 
     def enableGroup(self, serviceName, groupName):

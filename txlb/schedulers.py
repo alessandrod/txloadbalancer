@@ -130,6 +130,8 @@ class RandomWeightedScheduler(BaseScheduler):
         # this is pretty slow... perhaps the weight data should also be stored
         # on the tracker object and we should put the getWeightDistribution and
         # getWeights methods on this scheduler...
+        # XXX
+        # or we can cache the computed values and refresh them in a tracker
         hosts = self.tracker.available.keys()
         population = group.getWeightDistribution(hostPorts=hosts)
         populationSize = sum([weight for hostPort, weight

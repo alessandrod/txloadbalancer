@@ -23,6 +23,9 @@ Version 1.1.0
      comparison)
    . in order for configs to have a difference, when hosts are deleted, added,
      etc., from memory, the in-memory configs need to be updated
+ * create an Editor class in admin.pages where all data-changing code can go
+   . all operations need to set/unset the read-only attribute
+   . this will be the one place where data-changing methods get managed
 
 
 Version 1.2.0

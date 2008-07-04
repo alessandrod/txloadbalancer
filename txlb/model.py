@@ -111,6 +111,13 @@ class ProxyService(object):
         return self.groups.items()
 
 
+    def getGroup(self, groupName):
+        """
+        Return the group with the given name.
+        """
+        return self.groups[groupName]
+
+
 class ProxyGroup(object):
     """
     A class that represnts a group of hosts that need to be proxied.
@@ -157,14 +164,22 @@ class ProxyGroup(object):
         """
         return self.hosts.items()
 
+    def getHost(self, name):
+        """
+        A convenience method for getting a host proxy from the group proxy,
+        given the ProxyHost name.
+        """
+        return self.hosts[name]
+
 
     def getHostByHostame(self, hostname):
         """
         A convenience method for getting a host proxy from the group proxy,
         given its hostname.
         """
-        for host in self.hosts:
-            if host.hostname == hostname:
+        host, port = util.splitHostPort(hostname)
+        for host in self.hosts.values():
+            if host.hostname == host and host.port == port:
                 return host
 
 

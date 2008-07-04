@@ -18,6 +18,11 @@ header.
 * Added a setup for the config checker in application.director.
 * Filled in the code for the config checker.
 * Updated TODO.
+* Added an addHost method to the proxy manager and update the
+admin.pages.AddHost class to use it.
+* Added missing getGroup method to ProxyService.
+* Fixed some missing imports in the manager.
+* Fixed the open call in the config checker.
 
 2008.07.03 oubiwann
 

@@ -246,14 +246,14 @@ class AddHost(BasePage):
             msg = "Director is currently in read-only mode."
             request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
             return "OK"
-        service = request.args['service'][0]
-        group = request.args['group'][0]
+        serviceName = request.args['service'][0]
+        groupName = request.args['group'][0]
         name = request.args['name'][0]
         ip = request.args['ip'][0]
-        tracker = self.parent.director.getTracker(
-            serviceName=service, groupName=group)
-        tracker.newHost(name=name, ip=ip)
-        # also add to conf DOM object
+        self.parent.director.addHost(serviceName, groupName, name, ip)
+        # also add to the cofiguration
+        group = self.parent.conf.getService(serviceName).getGroup(groupName)
+        group.addHost(name, ip)
         msg = 'Host %s(%s) added to %s / %s' % (name, ip, group, service)
         request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
         return "OK"
