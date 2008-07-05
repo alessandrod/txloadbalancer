@@ -5,6 +5,7 @@
 * Updated setup.py with utility functions from Zope Corp.
 * Updated README some more.
 * Added a manifest template so that doc files get included in the sdists.
+* Updated TODO.
 
 2008.07.04 oubiwann
 
