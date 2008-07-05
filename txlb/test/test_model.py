@@ -42,7 +42,7 @@ class HostMapperTests(unittest.TestCase):
         self.assertEquals(h.groupEnabled, False)
         h = self.proxyServices[-1]
         self.assertEquals(h.proxyName, 'dns')
-        self.assertEquals(h.groupEnabled, None)
+        self.assertEquals(h.groupEnabled, True)
 
 
     def test_convertMapperToModel(self):
@@ -69,4 +69,35 @@ class HostMapperTests(unittest.TestCase):
                 self.assertEquals(len(groups), 2)
             elif proxy.name == 'dns':
                 self.assertEquals(len(groups), 1)
+
+    def test_conciseFormat(self):
+        """
+        The concise format assumes a single default proxy and group as well as
+        the least connections scheduler. Make sure that these assumptions are
+        true.
+        """
+        proxyServices = [
+           Host(proxy='127.0.0.1:8080', host='host1', address='127.0.0.1:7001'),
+           Host(proxy='127.0.0.1:8080', host='host2', address='127.0.0.1:7002'),
+           Host(proxy='127.0.0.1:8080', host='host3', address='127.0.0.1:7003'),
+        ]
+        h = proxyServices[0]
+        self.assertEquals(h.proxyAddresses, [('127.0.0.1', 8080)])
+        self.assertEquals(h.proxyName, 'proxy1')
+        self.assertEquals(h.groupName, 'group1')
+        self.assertEquals(h.hostName, 'host1')
+        self.assertEquals(h.hostAddress, ('127.0.0.1', 7001))
+        self.assertEquals(h.groupEnabled, True)
+        h = proxyServices[1]
+        self.assertEquals(h.proxyName, 'proxy1')
+        self.assertEquals(h.groupName, 'group1')
+        self.assertEquals(h.hostName, 'host2')
+        self.assertEquals(h.hostAddress, ('127.0.0.1', 7002))
+        self.assertEquals(h.groupEnabled, True)
+        h = proxyServices[2]
+        self.assertEquals(h.proxyName, 'proxy1')
+        self.assertEquals(h.groupName, 'group1')
+        self.assertEquals(h.hostName, 'host3')
+        self.assertEquals(h.hostAddress, ('127.0.0.1', 7003))
+        self.assertEquals(h.groupEnabled, True)
 

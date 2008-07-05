@@ -7,6 +7,7 @@ in order to separate configuration/application logic and the libraries. They do
 this by mapping configuration information to model class instances.
 """
 from txlb import util
+from txlb.schedulers import leastc
 
 
 class HostMapper(object):
@@ -15,14 +16,16 @@ class HostMapper(object):
     load-balancing API, providing a quick and intuitive means of configuring a
     load-balancing service without a config file or lots of structured data.
 
-    @type proxy: string
-    @param proxy: the name that the proxy service will be known by
+    @type proxyName: string
+    @param proxyName: the name that the proxy service will be known by
 
-    @type addresses: string or list
-    @param addresses: a string or list of strings of the form 'host:port'
+    @type proxy: string or list
+    @param proxy: a string or list of strings of the form 'host:port' that
+                  represent the host:port where the proxy will respond to
+                  requests
 
-    @type group: string
-    @param group: the group that the host will be put into
+    @type groupName: string
+    @param groupName: the group that the host will be put into
 
     @type address: string
     @param address: a string of the form 'host:port' that is being
@@ -32,13 +35,13 @@ class HostMapper(object):
     @param enabled: a boolean that indicates whether the group for the host is
                     to be enabled, disabled, or ignored (None)
     """
-    def __init__(self, proxy='', addresses=[], group='', lbType='', host='', address='',
-                 enabled=None, weight=1):
-        if isinstance(addresses, str):
-            addresses = [addresses]
-        self.proxyName = proxy
-        self.proxyAddresses = [util.splitHostPort(x) for x in addresses]
-        self.groupName = group
+    def __init__(self, proxyName='proxy1', proxy=[], groupName='group1',
+                 lbType=leastc, host='', address='', enabled=True, weight=1):
+        if isinstance(proxy, str):
+            proxy = [proxy]
+        self.proxyName = proxyName
+        self.proxyAddresses = [util.splitHostPort(x) for x in proxy]
+        self.groupName = groupName
         self.lbType = lbType
         self.hostName = host
         self.hostAddress = util.splitHostPort(address)

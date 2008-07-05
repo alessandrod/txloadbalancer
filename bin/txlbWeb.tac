@@ -38,7 +38,7 @@ proxyServices = [
                     model.ProxyHost('host2', '127.0.0.1', port=7002),
                     model.ProxyHost('host3', '127.0.0.1', port=7003),
             ]),
-            model.ProxyGroup('test', roundr, enabled=True,
+            model.ProxyGroup('test', roundr, enabled=False,
                 hosts=[
                     model.ProxyHost('host4', '127.0.0.1', port=7004),
                     model.ProxyHost('host5', '127.0.0.1', port=7005),
@@ -57,6 +57,15 @@ proxyServices = [
     Host('web', '127.0.0.1:8080', 'test', roundr, 'host4', '127.0.0.1:7004', False),
     Host('web', '127.0.0.1:8080', 'test', roundr, 'host5', '127.0.0.1:7005'),
     Host('web', '127.0.0.1:8080', 'test', roundr, 'host6', '127.0.0.1:7006'),
+]
+
+# another approach that is convenient, if you only have one proxy and one group
+# and the least connections schedulers works for you (most users will likely
+# fall into this category):
+proxyServices = [
+   Host(proxy='127.0.0.1:8080', host='host1', address='127.0.0.1:7001'),
+   Host(proxy='127.0.0.1:8080', host='host2', address='127.0.0.1:7002'),
+   Host(proxy='127.0.0.1:8080', host='host3', address='127.0.0.1:7003'),
 ]
 
 
