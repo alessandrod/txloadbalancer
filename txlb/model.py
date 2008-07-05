@@ -172,6 +172,13 @@ class ProxyGroup(object):
         return self.hosts[name]
 
 
+    def delHost(self, name):
+        """
+        Remove the host from the group model.
+        """
+        del self.hosts[name]
+
+
     def getHostByHostame(self, hostname):
         """
         A convenience method for getting a host proxy from the group proxy,

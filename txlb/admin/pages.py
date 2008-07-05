@@ -223,9 +223,7 @@ class DeleteHost(BasePage):
         """
 
         """
-        if self.parent.director.isReadOnly:
-            msg = "Director is currently in read-only mode."
-            request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+        if self.isReadOnly():
             return "OK"
         service = request.args['service'][0]
         group = request.args['group'][0]
@@ -285,7 +283,7 @@ class EnableGroup(BasePage):
 
 def protect(method):
     """
-    A decorator for use by Editor methods that need to support atomic-ish 
+    A decorator for use by Editor methods that need to support atomic-ish
     operations.
     """
     def decorator(self, *args, **kwds):
@@ -319,13 +317,24 @@ class Editor(object):
 
     def addHost(self, serviceName, groupName, name, ip, weight=1):
         """
-        This method updates the tracker and model (director call) as well as
-        the configuration data.
+        This method adds a host to the tracker and model (director call) as
+        well as the configuration data.
         """
         self.director.addHost(serviceName, groupName, name, ip, weight)
         group = self.conf.getService(serviceName).getGroup(groupName)
         group.addHost(name, ip, weight)
     addHost = protect(addHost)
+
+
+    def delHost(self, serviceName, groupName, name, ip):
+        """
+        This method removes a host from the tracker and model (director call)
+        as well as the configuration data.
+        """
+        self.director.delHost(serviceName, groupName, name, ip)
+        group = self.conf.getService(serviceName).getGroup(groupName)
+        group.delHost(name)
+    delHost = protect(delHost)
 
 
 

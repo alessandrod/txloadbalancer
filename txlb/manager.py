@@ -333,6 +333,16 @@ class ProxyManager(object):
         self.getGroup(serviceName, groupName).addHost(proxiedHost)
 
 
+    def delHost(self, serviceName, groupName, proxiedName, ip):
+        """
+        This method updates not only the tracker data, but the models as well.
+        """
+        tracker = self.getTracker(serviceName=serviceName, groupName=groupName)
+        tracker.delHost(name=proxiedName, ip=ip)
+        # remove from modeling information, too
+        self.getGroup(serviceName, groupName).delHost(proxiedName)
+
+
     def enableGroup(self, serviceName, groupName):
         # XXX probably going to rewrite this one completely...
         serviceConf = self.conf.getService(serviceName)

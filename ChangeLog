@@ -32,6 +32,8 @@ will be.
 * Added start, stop, and protect decorator to editor class.
 * Moved addHost calls into editor.
 * Moved read-only check into base class.
+* Added a delHost method to the GroupProxy model class.
+* Added a delHost method to the ProxyManager class.
 
 2008.07.03 oubiwann
 
