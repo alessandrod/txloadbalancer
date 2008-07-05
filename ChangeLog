@@ -28,6 +28,8 @@ admin.pages.AddHost class to use it.
 will be.
 * Updated commit script to use the new diff function.
 * Added an admin script for committing and pushing.
+* Added an editor class to admin.pages for consolidating edit methods.
+* Added start, stop, and protect decorator to editor class.
 
 2008.07.03 oubiwann
 

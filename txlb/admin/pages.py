@@ -273,6 +273,36 @@ class EnableGroup(BasePage):
             return "OK"
 
 
+class Editor(object):
+    """
+    An object whose sole purpose is to collect all methods that change data
+    into a single class. This is done in an effort to improve maintainability
+    of data-changing code and to provide a unified, chohesive process whereby
+    data edits are performed.
+    """
+    def __init__(self, conf, director):
+        self.conf = conf
+        self.director = director
+
+
+    def start(self):
+        self.director.setReadOnly()
+
+
+    def stop(self):
+        self.director.setReadWrite()
+
+
+    def protect(self, method):
+        def decorator(self, *args, **kwds):
+            self.start()
+            result = method(self, *args, **kwds)
+            self.stop()
+            return result
+        return decorator
+
+
+
 class AdminServer(resource.Resource):
     """
     The admin server page is the root web object that publishes all the other
@@ -282,6 +312,7 @@ class AdminServer(resource.Resource):
         resource.Resource.__init__(self)
         self.conf = conf
         self.director = director
+        self.editor = Editor(conf, director)
         self.starttime = time.time()
         self.serverVersion = "%s/%s" % (txlb.shortName, txlb.version)
 
