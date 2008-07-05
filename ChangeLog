@@ -40,6 +40,7 @@ will be.
 them with a switchGroup method.
 * Renamed Editor start and stop to being and finish, respectively.
 * Fixed redirect msg in EnableGroup.
+* Added enable attributes to manager checks.
 
 2008.07.03 oubiwann
 

@@ -16,16 +16,12 @@ Placeholders
 
 Version 1.1.0
 -------------
- * add web admin UI support for enabling groups
  * add a configuration checker and write out the new ones to disk
    . disable by default; add configuration option in manager
    . store initial configuration in memory as an unparsed string (for
      comparison)
    . in order for configs to have a difference, when hosts are deleted, added,
      etc., from memory, the in-memory configs need to be updated
- * create an Editor class in admin.pages where all data-changing code can go
-   . all operations need to set/unset the read-only attribute
-   . this will be the one place where data-changing methods get managed
 
 
 Version 1.2.0

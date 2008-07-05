@@ -305,23 +305,35 @@ class ManagerConfig(BaseConfig):
 
     def __init__(self):
         self.hostCheckInterval = 120
+        self.hostCheckEnabled = False
         self.configCheckInterval = 30
+        self.configCheckEnabled = False
         self.heartbeatInterval = 60
+        self.heartbeatEnabled = False
 
 
     def loadHostCheck(self, checkNode):
         if checkNode.hasAttribute('interval'):
             self.hostCheckInterval = float(checkNode.getAttribute('interval'))
+        if checkNode.hasAttribute('enable'):
+            self.hostCheckEnabled = util.boolify(
+                checkNode.getAttribute('enable'))
 
 
     def loadConfigCheck(self, checkNode):
         if checkNode.hasAttribute('interval'):
             self.configCheckInterval = float(checkNode.getAttribute('interval'))
+        if checkNode.hasAttribute('enable'):
+            self.configCheckEnabled = util.boolify(
+                checkNode.getAttribute('enable'))
 
 
     def loadHeartbeat(self, checkNode):
         if checkNode.hasAttribute('interval'):
             self.heartbeatInterval = float(checkNode.getAttribute('interval'))
+        if checkNode.hasAttribute('enable'):
+            self.heartbeatEnabled = util.boolify(
+                checkNode.getAttribute('enable'))
 
 
     def toXML(self, padding=''):
@@ -330,12 +342,12 @@ class ManagerConfig(BaseConfig):
         """
         indent = padding + '  '
         output = u'%s<%s>\n' % (padding, self.type)
-        output += '%s<hostCheck interval="%s" />\n' % (
-            indent, self.hostCheckInterval)
-        output += '%s<configCheck interval="%s" />\n' % (
-            indent, self.configCheckInterval)
-        output += '%s<heartbeat interval="%s" />\n' % (
-            indent, self.heartbeatInterval)
+        output += '%s<hostCheck interval="%s" enable="%s" />\n' % (
+            indent, self.hostCheckInterval, self.hostCheckEnabled)
+        output += '%s<configCheck interval="%s" enable="%s" />\n' % (
+            indent, self.configCheckInterval, self.configCheckEnabled)
+        output += '%s<heartbeat interval="%s" enable="%s" />\n' % (
+            indent, self.heartbeatInterval, self.heartbeatEnabled)
         return output + '%s</%s>\n' % (padding, self.type)
 
 
