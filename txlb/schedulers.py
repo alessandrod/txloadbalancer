@@ -106,6 +106,7 @@ class LeastConnsScheduler(BaseScheduler):
         return hosts[0][2]
 
 
+
 class RandomWeightedScheduler(BaseScheduler):
     """
     This scheduler passes the connection in a semi-random fashion, with the
