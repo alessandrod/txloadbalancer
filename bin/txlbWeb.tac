@@ -59,9 +59,9 @@ proxyServices = [
     Host('web', '127.0.0.1:8080', 'test', roundr, 'host6', '127.0.0.1:7006'),
 ]
 
-# another approach that is convenient, if you only have one proxy and one group
-# and the least connections schedulers works for you (most users will likely
-# fall into this category):
+# if you only have one proxy, one group, and the least connections scheduler
+# works for you (most users will likely fall into this category), the following
+# approach is even more convenient:
 proxyServices = [
    Host(proxy='127.0.0.1:8080', host='host1', address='127.0.0.1:7001'),
    Host(proxy='127.0.0.1:8080', host='host2', address='127.0.0.1:7002'),
@@ -74,7 +74,6 @@ application = service.Application('Demo Web Server')
 # here's what makes your application load-balacning
 pm = manager.proxyManagerFactory(proxyServices)
 lbs = LoadBalancedService(pm)
-lbs.proxiesFactory()
 lbs.setServiceParent(application)
 
 

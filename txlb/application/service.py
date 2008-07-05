@@ -33,6 +33,7 @@ class LoadBalancedService(service.MultiService):
         self.proxyCollection.setServiceParent(self)
         # this gets set with setScheduler when the proxies are created
         self.scheduler = None
+        self.proxiesFactory()
 
 
     def _stringifyHostPort(self, host, port):

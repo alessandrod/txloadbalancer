@@ -12,6 +12,7 @@
 * Added support for more concise use of HostMapper by creating sensible
 defaults for proxy and group names.
 * Added a test for the concise form.
+* Cleaned up the lb API by calling proxiesFactory in __init__.
 
 2008.07.04 oubiwann
 
