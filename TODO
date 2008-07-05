@@ -30,6 +30,9 @@ Version 1.2.0
    . when, how long til next test, etc.
    . use heartbeats (TCP pinger) and only put hosts back into rotation if
      they're up
+ * support default service and group names for proxy host mapper so that folks
+   don't have to explicitly include them in each instance if they are only
+   using one service and one group
  * sort service groups in admin UI by name
  * cache DNS lookups
  * continue adding unit tests
