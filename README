@@ -2,14 +2,37 @@
 txLoadBalancer
 ==============
 
+
+Table of Contents
+-----------------
+
+1. Introduction
+
+2. Usage
+
+3. Features
+
+4. Performance
+
+5. Changes
+
+
+Introduction
+------------
+
 This is a pure python TCP load balancer. It takes inbound TCP connections and
 connects them to one of a number of backend servers.
+
+txLoadBalancer is a fork of Anthony Baxter's PythonDirector. It removed all
+threading and asyncore code and the admin UI with the Twisted-based analogs. It
+also significantly reorganized the API and provided many new features (see
+below).
 
 
 Usage
 -----
 
-$ twistd -noy ./bin/txlb.tac
+    $ twistd -noy ./bin/txlb.tac
 
 This will use the default configuration file in ./etc/config.xml; you can edit
 the .tac file to point to the config you prefer. Be sure to edit the
@@ -86,8 +109,11 @@ Anthony's original notes on performance:
   max out at around 350 conns/second.
 
 
-Changes from txLoadBalancer 1.0.1 to 1.1.0
-------------------------------------------
+Changes
+-------
+
+From txLoadBalancer 1.0.1 to 1.1.0
+----------------------------------
 
 * Massive API changes: competely reorganzied the code base.
 * Integrated patches from Apple's Calendar Server project.
@@ -99,29 +125,29 @@ Changes from txLoadBalancer 1.0.1 to 1.1.0
   application.
 * Added a weighted load balance scheduler.
 
-Changes from txLoadBalancer 0.9.1 to 1.0.1
-------------------------------------------
+From txLoadBalancer 0.9.1 to 1.0.1
+----------------------------------
 
 * 100% Twisted: removed all threading and asyncore code completely.
 * Significan API changes.
 * Dropped the web API.
 
-Changes from PyDirector 1.0.0 to 1.1.1 (AKA txLoadBalancer 0.9.1)
------------------------------------------------------------------
+From PyDirector 1.0.0 to 1.1.1 (AKA txLoadBalancer 0.9.1)
+---------------------------------------------------------
 
 * Added support for Twisted, providing the option for all management, admin and
   load-balancing to utilize the Twisted reactor, skipping threading and asycore
   altogether.
 
-Changes from PyDirector 0.0.7 to 1.0.0
---------------------------------------
+From PyDirector 0.0.7 to 1.0.0
+------------------------------
 
 * Very few, mostly this is to update the project to 'stable' status.
 * The networking code now uses twisted if available, and falls back
   to asyncore.
 
-Changes from PyDirector 0.0.6 to 0.0.7
---------------------------------------
+From PyDirector 0.0.6 to 0.0.7
+------------------------------
 
 * You can specify a hostname of '*' to the listen directive for both
   the scheduler and the administrative interface to mean 'listen on
@@ -136,8 +162,8 @@ Changes from PyDirector 0.0.6 to 0.0.7
   (by preference) sent to the same backend server. The factory function
   for schedulers will change to allow things like "roundrobin,sticky".
 
-Changes from PyDirector 0.0.5 to 0.0.6
---------------------------------------
+From PyDirector 0.0.5 to 0.0.6
+------------------------------
 
 * fixed an error in the (hopefully rare) case where all backend servers
   are down.
@@ -147,8 +173,8 @@ Changes from PyDirector 0.0.5 to 0.0.6
   more aggressive mode re-adding them.
 * handle comments in the config file
 
-Changes from PyDirector 0.0.4 to 0.0.5
---------------------------------------
+From PyDirector 0.0.4 to 0.0.5
+------------------------------
 
 * bunch of bugfixes to the logging
 * re-implemented the networking code using the 'twisted' framework; a simple
@@ -159,8 +185,8 @@ Changes from PyDirector 0.0.4 to 0.0.5
       Requests per second:    197.90
       Transfer rate:          4519.69 kb/s received
 
-Changes from PyDirector 0.0.3 to 0.0.4
---------------------------------------
+From PyDirector 0.0.3 to 0.0.4
+------------------------------
 
 * can now specify more than one listener for a service
 * 'client' in the config XML is now 'host'
@@ -174,8 +200,8 @@ Changes from PyDirector 0.0.3 to 0.0.4
   the new config
 * first cut at enabling https for web interface (needs m2crypto)
 
-Changes from PyDirector 0.0.2 to 0.0.3
---------------------------------------
+From PyDirector 0.0.2 to 0.0.3
+------------------------------
 
 * delHost hooked up
 * running.xml added - XML dump of current config
@@ -184,8 +210,8 @@ Changes from PyDirector 0.0.2 to 0.0.3
   logging needs to be added.
 * Python2.1 compatibility fix: no socket.gaierror exception on 2.1
 
-Changes from PyDirector 0.0.1 to 0.0.2
---------------------------------------
+From PyDirector 0.0.1 to 0.0.2
+------------------------------
 
 * refactored web publishing (babybobo)
 * package-ised and distutil-ised the code

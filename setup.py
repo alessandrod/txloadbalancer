@@ -1,3 +1,4 @@
+import os
 from setuptools import setup
 from setuptools import find_packages
 
@@ -34,7 +35,7 @@ def text(*args, **kwargs):
     # http://docs.python.org/dist/meta-data.html
     tmp = []
     for a in args:
-        if a.endswith('.txt'):
+        if a in ['README'] or a.endswith('.txt'):
             f = open(os.path.join(*a.split('/')))
             tmp.append(f.read())
             f.close()
@@ -58,18 +59,18 @@ def text(*args, **kwargs):
             raise ValueError('ReST validation error')
     return res
 # end helpers; below this line should be code custom to this package
-
 setup(
     name=txlb.name,
     version=txlb.version,
-    summary=txlb.summary,
     description=txlb.description,
     author="Duncan McGreggor, Anthony Baxter",
-    author_email="oubiwann@divmod.com, anthony@interlink.com.au",
+    author_email="oubiwann@divmod.com",
     url=txlb.projectURL,
     packages=find_packages(),
     scripts=['bin/txlb.tac'],
-    long_description=text('README'),
+    long_description=text('README', out=False),
+    zip_safe=False,
+    license='MIT',
     classifiers=[
        'Development Status :: 5 - Production/Stable',
        'Environment :: Web Environment',

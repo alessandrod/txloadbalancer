@@ -2,6 +2,9 @@
 
 * Updated setup.py with code from zc.twist's setup.py.
 * Updated README.
+* Updated setup.py with utility functions from Zope Corp.
+* Updated README some more.
+* Added a manifest template so that doc files get included in the sdists.
 
 2008.07.04 oubiwann
 
