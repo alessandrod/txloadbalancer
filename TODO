@@ -30,9 +30,16 @@ Version 1.2.0
    . when, how long til next test, etc.
    . use heartbeats (TCP pinger) and only put hosts back into rotation if
      they're up
- * support default service and group names for proxy host mapper so that folks
-   don't have to explicitly include them in each instance if they are only
-   using one service and one group
+ * improve the performance of the weighted scheduler
+   . provide easy access to the host weights to the tracker
+   . create a custom caching/purging scheduler for calculated host weight
+     populations
+ * add an API for use by any scheduler that needs caching, providing the
+   requisite data to any part of txLB that needs it (tracker, pm/director,
+   admin UI)
+ * update application.service.LoadBalancedService to check for lb type:
+   . if the lb type needs a custom scheduler (e.g., for caching values), add
+     that scheduler as a service automatically with default interval
  * sort service groups in admin UI by name
  * cache DNS lookups
  * continue adding unit tests
@@ -51,7 +58,7 @@ Version 1.3.0
  * add an XML-RPC service instead of the custom web API
    . including adding methods for bouncing the admin UI
  * replace old PyDirector logging with Twisted logging
- * figure out a way to restart/upgrade pydir. Idea: close down listener, start
+ * figure out a way to restart/upgrade code. Idea: close down listener, start
    new code immediately
    . let old connections on old pydir finish (run to completion) before exiting
    . look at (again) JP's live process migration work from several years ago
@@ -117,7 +124,7 @@ Exploratory
  * static load balancring service
    . number of proxies are determined by configuration
  * dynamic load balancing service
-   . number of proxies are determined by load
+   . number of proxies are determined by concurrent requests/load/etc
    . need to define "load"
  * cross-host-messaging
    . copies of a user's appication get deployed

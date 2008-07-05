@@ -13,6 +13,8 @@
 defaults for proxy and group names.
 * Added a test for the concise form.
 * Cleaned up the lb API by calling proxiesFactory in __init__.
+* Updated TODO with notes that were in the scheduler module, but hadn't made it
+into the TODO file.
 
 2008.07.04 oubiwann
 
