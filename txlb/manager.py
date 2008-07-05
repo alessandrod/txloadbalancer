@@ -312,12 +312,15 @@ class ProxyManager(object):
         return self.proxies.items()
 
 
-    def getProxy(self, serviceName, index=0):
+    def getProxy(self, serviceName, index=None):
         """
         A Proxy instance can be retrieve by the service name and (since there
         can be more than one port listening per service) index.
         """
-        return self.proxies[serviceName][index]
+        proxies = self.proxies[serviceName]
+        if index == None:
+            return proxies
+        return proxies[index]
 
 
     def addHost(self, serviceName, groupName, proxiedName, ip, weight=1):
@@ -343,26 +346,17 @@ class ProxyManager(object):
         self.getGroup(serviceName, groupName).delHost(proxiedName)
 
 
-    def enableGroup(self, serviceName, groupName):
-        # XXX probably going to rewrite this one completely...
-        serviceConf = self.conf.getService(serviceName)
-        group = serviceConf.getGroup(groupName)
-        if group:
-            serviceConf.enabledgroup = groupName
-        self.switchTracker(serviceName)
-
-
-    def switchTracker(self, serviceName):
+    def switchGroup(self, serviceName, oldGroupName, newGroupName):
         """
-        switch the tracker for a proxy. this is needed, e.g. if we change the
-        active group
+        This method needs to update the two affected proxy group models and 
+        setup the new tracker.
         """
-        # XXX this needs to be completely reworked
-        serviceConf = self.conf.getService(serviceName)
-        eg = serviceConf.getEnabledGroup()
-        tracker = self.getTracker(serviceName, eg.name)
-        for proxy in self.proxies[serviceName]:
-            proxy.setTracker(tracker)
+        oldGroup = self.getService(serviceName).getGroup(oldGroupName)
+        oldGroup.disable()
+        newGroup = self.getService(serviceName).getGroup(newGroupName)
+        newGroup.enable()
+        for proxy in self.getProxy(serviceName):
+            proxy.setTracker(newGroupName)
 
 
     def getClientAddress(self, host, port):

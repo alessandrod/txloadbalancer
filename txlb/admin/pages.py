@@ -223,6 +223,7 @@ class DeleteHost(BasePage):
         """
 
         """
+        request.setHeader('Content-type', 'text/html')
         if self.isReadOnly():
             return "OK"
         service = request.args['service'][0]
@@ -253,6 +254,7 @@ class AddHost(BasePage):
     tracking object.
     """
     def getPage(self, request):
+        request.setHeader('Content-type', 'text/html')
         if self.isReadOnly():
             return "OK"
         serviceName = request.args['service'][0]
@@ -268,16 +270,24 @@ class AddHost(BasePage):
 
 class EnableGroup(BasePage):
     """
-    This page is responsible for enabling a different host group in the web UI.
+    This page is responsible for enabling a different host group for a given
+    service in the web UI.
     """
     def getPage(self, request):
         """
 
         """
-        if self.parent.director.isReadOnly:
-            msg = "Director is currently in read-only mode."
-            request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+        request.setHeader('Content-type', 'text/html')
+        if self.isReadOnly():
             return "OK"
+        serviceName = request.args['service'][0]
+        newGroupName = request.args['group'][0]
+        service = self.parent.director.getService(serviceName)
+        oldGroupName = service.getEnabledGroup().name
+        self.parent.editor.switchGroup(serviceName, oldGroupName, newGroupName)
+        msg = "Group '%s' has been enabled." % newGroupName
+        request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+        return "OK"
 
 
 
@@ -287,9 +297,9 @@ def protect(method):
     operations.
     """
     def decorator(self, *args, **kwds):
-        self.start()
+        self.begin()
         result = method(self, *args, **kwds)
-        self.stop()
+        self.finish()
         return result
     return decorator
 
@@ -307,12 +317,14 @@ class Editor(object):
         self.director = director
 
 
-    def start(self):
+    def begin(self):
         self.director.setReadOnly()
+        print "Set to read-only mode."
 
 
-    def stop(self):
+    def finish(self):
         self.director.setReadWrite()
+        print "Set to read-write mode."
 
 
     def addHost(self, serviceName, groupName, name, ip, weight=1):
@@ -335,6 +347,18 @@ class Editor(object):
         group = self.conf.getService(serviceName).getGroup(groupName)
         group.delHost(name)
     delHost = protect(delHost)
+
+
+    def switchGroup(self, serviceName, oldGroupName, newGroupName):
+        """
+        This method changes the current/active group for a given service.
+        """
+        # update the configuration info
+        serviceConf = self.conf.getService(serviceName)
+        serviceConf.setEnabledGroup(newGroupName)
+        # update the tracker and model info
+        self.director.switchGroup(serviceName, oldGroupName, newGroupName)
+    switchGroup = protect(switchGroup)
 
 
 

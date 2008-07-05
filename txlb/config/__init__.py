@@ -142,6 +142,10 @@ class GroupConfig(BaseConfig):
         self.enable = True
 
 
+    def setDisabled(self):
+        self.enable = False
+
+
     def isEnabled(self):
         return self.enable
 
@@ -218,6 +222,14 @@ class ServiceConfig(BaseConfig):
 
     def getEnabledGroup(self):
         return self.groups.get(self.enabledgroup)
+
+
+    def setEnabledGroup(self, groupName):
+        oldGroup = self.getEnabledGroup()
+        oldGroup.setDisabled()
+        newGroup = self.getGroup(groupName)
+        newGroup.setEnabled()
+        self.enabledgroup = groupName
 
 
     def getListeners(self):

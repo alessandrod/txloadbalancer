@@ -34,6 +34,12 @@ will be.
 * Moved read-only check into base class.
 * Added a delHost method to the GroupProxy model class.
 * Added a delHost method to the ProxyManager class.
+* Added code to the getPage method of the admin.pages.EnableGroup class.
+* Added missing setDisable method on the group config class.
+* Deleted old enableGroup and switchTracker proxy manager methods and replaced
+them with a switchGroup method.
+* Renamed Editor start and stop to being and finish, respectively.
+* Fixed redirect msg in EnableGroup.
 
 2008.07.03 oubiwann
 
