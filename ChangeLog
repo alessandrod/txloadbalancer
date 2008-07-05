@@ -31,6 +31,7 @@ will be.
 * Added an editor class to admin.pages for consolidating edit methods.
 * Added start, stop, and protect decorator to editor class.
 * Moved addHost calls into editor.
+* Moved read-only check into base class.
 
 2008.07.03 oubiwann
 

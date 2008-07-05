@@ -21,6 +21,7 @@ class UnauthorizedResource(resource.Resource):
     isLeaf = 1
     unauthorizedPage = static.Data(template.unauth, 'text/html')
 
+
     def render(self, request):
         request.setResponseCode(http.UNAUTHORIZED)
         request.setHeader(
@@ -48,6 +49,7 @@ class BasePage(resource.Resource):
         resource.Resource.__init__(self)
         self.parent = parent
 
+
     def getHeader(self, refreshURL='', msg=''):
         """
 
@@ -62,11 +64,13 @@ class BasePage(resource.Resource):
             txlb.name, refresh, txlb.name, self.parent.serverVersion,
             socket.gethostname()) + msg
 
+
     def getBody(self):
         """
         Subclasses must override this.
         """
         raise NotImplemented
+
 
     def getFooter(self, message=''):
         """
@@ -83,11 +87,23 @@ class BasePage(resource.Resource):
         """
         raise NotImplemented
 
+
     def render_GET(self, request):
         """
 
         """
         return str(self.getPage(request))
+
+
+    def isReadOnly(self):
+        """
+        This check needs to be run before any form submission is processed.
+        """
+        if self.parent.director.isReadOnly:
+            msg = "The load balancer is currently in read-only mode."
+            request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+            return True
+        return False
 
 
 class RunningPage(BasePage):
@@ -239,9 +255,7 @@ class AddHost(BasePage):
     tracking object.
     """
     def getPage(self, request):
-        if self.parent.director.isReadOnly:
-            msg = "Director is currently in read-only mode."
-            request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+        if self.isReadOnly():
             return "OK"
         serviceName = request.args['service'][0]
         groupName = request.args['group'][0]
