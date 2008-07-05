@@ -68,7 +68,6 @@ lbs = LoadBalancedService(pm)
 lbs.proxiesFactory()
 lbs.setServiceParent(application)
 
-site = server.Site(static.File('/Users/oubiwann/Sites'))
 
 # for load-balancing on this server, with different processes that have been
 # started up independently, as configured above in the ProxyHost model
@@ -78,13 +77,15 @@ site = server.Site(static.File('/Users/oubiwann/Sites'))
 
 # if one wants to override the load-balancing and serve from a local, single
 # source, # one only need uncomment the following two lines:
+#site = server.Site(static.File('/Users/oubiwann/Sites'))
 #server = internet.TCPServer(servicePort, site)
 #lbs.setPrimaryService(server)
 
 # LoadBalancedService also has a method for changing the port that the current
 # service is running on. For now, in order to work with it, you need to have
 # the SSH admin server enabled:
-# XXX TBD - can't start ssh server without config file right now
+# XXX TBD - can't start ssh server without config file right now; to run this
+# example, you have to run the whole app so that the ssh server starts up
 # You can now change ports with the following:
 #$ ssh localhost 2222
 #>>> services.switchPort('web', 10080)

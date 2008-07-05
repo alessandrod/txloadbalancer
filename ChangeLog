@@ -6,6 +6,7 @@
 * Updated README some more.
 * Added a manifest template so that doc files get included in the sdists.
 * Updated TODO.
+* Updated the example lb API .tac file.
 
 2008.07.04 oubiwann
 
