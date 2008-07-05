@@ -14,16 +14,6 @@ Placeholders
  * rename 'director' attributes to 'proxyManager'
 
 
-Version 1.1.0
--------------
- * add a configuration checker and write out the new ones to disk
-   . disable by default; add configuration option in manager
-   . store initial configuration in memory as an unparsed string (for
-     comparison)
-   . in order for configs to have a difference, when hosts are deleted, added,
-     etc., from memory, the in-memory configs need to be updated
-
-
 Version 1.2.0
 -------------
  * add a scheduler that accounts for memory and CPU utilization, which will

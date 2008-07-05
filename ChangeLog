@@ -42,6 +42,8 @@ them with a switchGroup method.
 * Fixed redirect msg in EnableGroup.
 * Added enable attributes to manager checks.
 * Fixed the toXML() config methods to output XML in the same order.
+* Upated TODO.
+* Removed config package.
 
 2008.07.03 oubiwann
 

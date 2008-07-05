@@ -20,7 +20,6 @@ from txlb import manager
 from txlb.admin import auth
 from txlb.admin import pages
 from txlb.manager import checkBadHosts
-from txlb.application import service as txervice
 from txlb.application.service import LoadBalancedService
 
 
