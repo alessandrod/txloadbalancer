@@ -156,7 +156,9 @@ class GroupConfig(BaseConfig):
         """
         inner = u''
         indent = padding + '  '
-        for host in self.getHosts():
+        hosts = [(x.name, x) for x in self.getHosts()]
+        hosts.sort()
+        for hostName, host in hosts:
             inner += indent + '%s\n' % host.toXML()
         data = {
             'tag': self.type,
@@ -263,9 +265,13 @@ class ServiceConfig(BaseConfig):
         """
         inner = u''
         indent = padding + '  '
-        for listen in self.getListeners():
+        listeners = self.getListeners()
+        listeners.sort()
+        for listen in listeners:
             inner += '%s<listen ip="%s" />\n' % (indent, listen)
-        for group in self.getGroups():
+        groups = [(x.name, x) for x in self.getGroups()]
+        groups.sort()
+        for groupName, group in groups:
             inner += group.toXML(indent)
         data = {
             'tag': self.type,

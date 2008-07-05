@@ -111,7 +111,7 @@ def setupHostChecker(configuration, director):
         return service.Service()
     checkInterval = configuration.manager.hostCheckInterval
     checker = internet.TimerService(
-        checkInterval, manager.checkBadHosts, director)
+        checkInterval, manager.checkBadHosts, configuration, director)
     checker.setName('hostChecker')
     return checker
 
@@ -121,8 +121,6 @@ def setupConfigChecker(configFile, configuration, director):
     """
     This is the setup for the "config check" management task.
     """
-    if not configuration.manager.configCheckEnabled:
-        return service.Service()
     checkInterval = configuration.manager.configCheckInterval
     checker = internet.TimerService(
         checkInterval, manager.checkConfigChanges, configFile, configuration,

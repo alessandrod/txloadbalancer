@@ -34,11 +34,13 @@ class UnknowndServiceError(Error):
 
 
 
-def checkBadHosts(director):
+def checkBadHosts(configuration, director):
     """
     This function checks the director's hosts marked as "unavailable" and puts
     them back into use.
     """
+    if not configuration.manager.hostCheckEnabled:
+        return
     for name, service in director.getServices():
         # since all proxies for a service share a tracker,
         # we only need to check the first proxy.
@@ -64,25 +66,20 @@ def checkConfigChanges(configFile, configuration, director):
     memory. Obviously there are all sorts of issues at play, here: race
     conditions, differences and the need to merge, conflict resolution, etc.
     """
-    return
-    # XXX in order for this to work properly, the order in which elements are
-    # rendered to XML need to be deterministic...
-    print "Checking config files ..."
+    if not configuration.manager.configCheckEnabled:
+        return
     # disable the admin UI or at the very least, make it read-only
     director.setReadOnly()
     # compare in-memory config with on-disk config
     current = configuration.toXML()
     disk = config.Config(configFile).toXML()
-    # XXX not sure if we need these two...
-    # compare load-time config with on-disk config
-    # compare load-time config with in-memory config
     if current != disk:
         print "Configurations are different; backing up and saving to disk ..."
         # backup old file
         backupFile = "%s-%s" % (
             configFile, datetime.now().strftime('%Y%m%d%H%M%S'))
         os.rename(configFile, backupFile)
-        # save configuration(s)
+        # save configuration
         fh = open(configFile, 'w+')
         fh.write(current)
         fh.close()
