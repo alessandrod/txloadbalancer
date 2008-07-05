@@ -239,9 +239,6 @@ class AddHost(BasePage):
     tracking object.
     """
     def getPage(self, request):
-        """
-
-        """
         if self.parent.director.isReadOnly:
             msg = "Director is currently in read-only mode."
             request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
@@ -250,11 +247,9 @@ class AddHost(BasePage):
         groupName = request.args['group'][0]
         name = request.args['name'][0]
         ip = request.args['ip'][0]
-        self.parent.director.addHost(serviceName, groupName, name, ip)
-        # also add to the cofiguration
-        group = self.parent.conf.getService(serviceName).getGroup(groupName)
-        group.addHost(name, ip)
-        msg = 'Host %s(%s) added to %s / %s' % (name, ip, group, service)
+        self.parent.editor.addHost(serviceName, groupName, name, ip)
+        msg = 'Host %s(%s) added to %s / %s' % (
+            name, ip, groupName, serviceName)
         request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
         return "OK"
 
@@ -271,6 +266,21 @@ class EnableGroup(BasePage):
             msg = "Director is currently in read-only mode."
             request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
             return "OK"
+
+
+
+def protect(method):
+    """
+    A decorator for use by Editor methods that need to support atomic-ish 
+    operations.
+    """
+    def decorator(self, *args, **kwds):
+        self.start()
+        result = method(self, *args, **kwds)
+        self.stop()
+        return result
+    return decorator
+
 
 
 class Editor(object):
@@ -293,13 +303,15 @@ class Editor(object):
         self.director.setReadWrite()
 
 
-    def protect(self, method):
-        def decorator(self, *args, **kwds):
-            self.start()
-            result = method(self, *args, **kwds)
-            self.stop()
-            return result
-        return decorator
+    def addHost(self, serviceName, groupName, name, ip, weight=1):
+        """
+        This method updates the tracker and model (director call) as well as
+        the configuration data.
+        """
+        self.director.addHost(serviceName, groupName, name, ip, weight)
+        group = self.conf.getService(serviceName).getGroup(groupName)
+        group.addHost(name, ip, weight)
+    addHost = protect(addHost)
 
 
 
