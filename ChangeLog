@@ -1,3 +1,7 @@
+2008.07.06 oubiwann
+
+* Fixed errors in README REST.
+
 2008.07.05 oubiwann
 
 * Updated setup.py with code from zc.twist's setup.py.

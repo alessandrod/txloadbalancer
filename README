@@ -1,24 +1,13 @@
-==============
+~~~~~~~~~~~~~~
 txLoadBalancer
-==============
+~~~~~~~~~~~~~~
 
+.. contents::
+   :depth: 1
 
-Table of Contents
------------------
-
-1. Introduction
-
-2. Usage
-
-3. Features
-
-4. Performance
-
-5. Changes
-
-
+============
 Introduction
-------------
+============
 
 This is a pure python TCP load balancer. It takes inbound TCP connections and
 connects them to one of a number of backend servers.
@@ -29,8 +18,9 @@ also significantly reorganized the API and provided many new features (see
 below).
 
 
+=====
 Usage
------
+=====
 
     $ twistd -noy ./bin/txlb.tac
 
@@ -49,8 +39,10 @@ import the application setup functions in txlb.application.
 If you want to "embed" a load-balancer in your Twisted application, see the
 example ./bin/txlbWeb.tac.
 
+
+========
 Features
---------
+========
 
 * It is a pure-Twisted TCP loadbalancer.
 
@@ -76,8 +68,9 @@ Features
 * The application uses an XML-based configuration file.
 
 
+===========
 Performance
------------
+===========
 
 (This section is currently incomplete)
 
@@ -109,8 +102,9 @@ Anthony's original notes on performance:
   max out at around 350 conns/second.
 
 
+=======
 Changes
--------
+=======
 
 From txLoadBalancer 1.0.1 to 1.1.0
 ----------------------------------
@@ -179,9 +173,12 @@ From PyDirector 0.0.4 to 0.0.5
 * bunch of bugfixes to the logging
 * re-implemented the networking code using the 'twisted' framework; a simple
   loopback test with asyncore based pydir:
+
       Requests per second:    107.72
       Transfer rate:          2462.69 kb/s received
+
   the same test with twisted-based pydir:
+
       Requests per second:    197.90
       Transfer rate:          4519.69 kb/s received
 
