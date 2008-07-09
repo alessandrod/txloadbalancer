@@ -36,8 +36,31 @@ the ./doc directory.
 If you are creating your own script and don't want to use txlb.tac, you can
 import the application setup functions in txlb.application.
 
-If you want to "embed" a load-balancer in your Twisted application, see the
-example ./bin/txlbWeb.tac.
+You can also "embed" a load-balancer in your Twisted application, though in
+it's current state this is rather limited. For example, if you had started web
+servers on three other hosts, your main application could lood balance them in
+the following manner:
+
+    from twisted.application import service
+
+    from txlb import manager
+    from txlb.model import HostMapper
+    from txlb.schedulers import leastc
+    from txlb.application.service import LoadBalancedService
+
+    proxyServices = [
+      HostMapper(proxy='127.0.0.1:8080', lbType=leastc, host='host1',
+          address='10.0.0.1:80'),
+      HostMapper(proxy='127.0.0.1:8080', lbType=leastc, host='host2',
+          address='10.0.0.2:80'),
+      HostMapper(proxy='127.0.0.1:8080', lbType=leastc, host='host3',
+          address='10.0.0.3:80'),
+    ]
+
+    application = service.Application('Demo LB Service')
+    pm = manager.proxyManagerFactory(proxyServices)
+    lbs = LoadBalancedService(pm)
+    lbs.setServiceParent(application)
 
 
 ========

@@ -17,6 +17,10 @@ Placeholders
 
 Version 1.2.0
 -------------
+ * add a twisted plugin for twistd where you can specify something like an --lb
+   option
+   . legal values could include "manager" and "proxied"
+   . if --lb was omitted, "proxied" would be default
  * add improved support for self-load-balancing apps:
    . manager pings remote hosts to see if up
    . manager then attempts to deploy clones of itself to remove hosts
