@@ -1,7 +1,7 @@
 from twisted.trial import unittest
 
 from txlb import model
-from txlb.manager import HostTracking
+from txlb.manager.base import HostTracking
 from txlb.schedulers import schedulerFactory, roundr, leastc
 
 class HostTrackingTests(unittest.TestCase):
