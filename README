@@ -132,8 +132,9 @@ Changes
 From txLoadBalancer 1.1.1 to 1.2.0
 ----------------------------------
 
-* setuptools is now optional.
-* 
+* Down-ed hosts are now re-checked before they are put back into rotation; only
+  hosts with no connection problems are re-added.
+* The use of setuptools is now optional.
 
 From txLoadBalancer 1.0.1 to 1.1.0
 ----------------------------------

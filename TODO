@@ -17,6 +17,7 @@ Placeholders
 
 Version 1.2.0
 -------------
+ * replace all the copious uses of del with a better idiom
  * add a twisted plugin for twistd where you can specify something like an --lb
    option
    . this would provide the ability for a single code base to act in either
@@ -44,12 +45,6 @@ Version 1.2.0
    . an algorigthm (or series of them) for determining the suitablity of a
      service to receive the next request based on a total evalution of current
      reported resource utilization
- * I don't like the default behaviour of adding bad hosts back into circulation
-   without any checks; I want to add something there...
-   . store away more info about the down hosts
-   . when, how long til next test, etc.
-   . use heartbeats (TCP pinger) and only put hosts back into rotation if
-     they're up
  * improve the performance of the weighted scheduler
    . provide easy access to the host weights to the tracker
    . create a custom caching/purging scheduler for calculated host weight

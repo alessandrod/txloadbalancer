@@ -1,10 +1,10 @@
-MAX=$1
+STARTING_PORT=$1
+ENDING_PORT=$2
 DOC_ROOT=/Users/oubiwann/Sites/
 #DOC_ROOT=/home/oubiwann/public_html/
 FILE_PREFIX=/tmp/twistd
-STARTING_PORT=7001
 cd /tmp
-for ((NUM=$STARTING_PORT; NUM <= $MAX; NUM++))
+for ((NUM=$STARTING_PORT; NUM <= $ENDING_PORT; NUM++))
     do
     echo "Removing old pid and log files..."
     rm ${FILE_PREFIX}${NUM}.pid

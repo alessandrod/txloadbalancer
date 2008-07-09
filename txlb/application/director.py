@@ -19,7 +19,7 @@ from txlb import config
 from txlb import manager
 from txlb.admin import auth
 from txlb.admin import pages
-from txlb.manager import checkBadHosts
+from txlb.manager import checker
 from txlb.application.service import LoadBalancedService
 
 
@@ -109,10 +109,10 @@ def setupHostChecker(configuration, director):
     if not configuration.manager.hostCheckEnabled:
         return service.Service()
     checkInterval = configuration.manager.hostCheckInterval
-    checker = internet.TimerService(
-        checkInterval, manager.checkBadHosts, configuration, director)
-    checker.setName('hostChecker')
-    return checker
+    checkerService = internet.TimerService(
+        checkInterval, checker.checkBadHosts, configuration, director)
+    checkerService.setName('hostChecker')
+    return checkerService
 
 
 
@@ -121,11 +121,11 @@ def setupConfigChecker(configFile, configuration, director):
     This is the setup for the "config check" management task.
     """
     checkInterval = configuration.manager.configCheckInterval
-    checker = internet.TimerService(
-        checkInterval, manager.checkConfigChanges, configFile, configuration,
+    checkerService = internet.TimerService(
+        checkInterval, checker.checkConfigChanges, configFile, configuration,
         director)
-    checker.setName('configChecker')
-    return checker
+    checkerService.setName('configChecker')
+    return checkerService
 
 
 

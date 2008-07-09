@@ -36,7 +36,7 @@
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>
   <manager>
-    <hostCheck interval="500" enable="true"/>
+    <hostCheck interval="10" enable="true"/>
     <configCheck interval="10" enable="false"/>
     <heartbeat  interval="20" enable="false"/>
   </manager>

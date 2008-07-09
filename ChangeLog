@@ -15,6 +15,7 @@ proxied, content-serving host as well as the managing service.
 * Changed the manager module to a subpackage due to increasing code growth.
 * Moved checkers into manager.check.
 * Updated manager tests.
+* Added TCP ping capability (taken from the pymon project's pymon.utils.scanner).
 
 2008.07.06 oubiwann
 
