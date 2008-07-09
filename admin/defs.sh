@@ -51,4 +51,5 @@ function buildSucceed {
     echo "Cleaning up files ..."
     ./admin/clean.sh
     echo "Done."
+    echo
 }

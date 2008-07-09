@@ -6,6 +6,7 @@
 * Fixed a bug in application.director that crept in during the last merge.
 * Added a build-checking script and added it to the commit script.
 * Incremented the version number for next development cycle.
+* Added more messages to the check-build script.
 
 2008.07.06 oubiwann
 
