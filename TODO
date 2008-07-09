@@ -19,6 +19,14 @@ Version 1.2.0
 -------------
  * add a twisted plugin for twistd where you can specify something like an --lb
    option
+   . this would provide the ability for a single code base to act in either
+     proxied host (serving content) mode or manager (directing requests to the
+     the proxied hosts)
+   . need to look at the possibility of using Ampoule
+   . what about code? at the very least, all the dependencies will have to be
+     met on the remote hosts, but what about txLB itself? create a tarball and
+     send it over? In any case, an --lb-basedir= option will be required as
+     well...
    . legal values could include "manager" and "proxied"
    . if --lb was omitted, "proxied" would be default
  * add improved support for self-load-balancing apps:

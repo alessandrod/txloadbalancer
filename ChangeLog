@@ -10,6 +10,8 @@
 * Re-added (somehow) missing cleanup call.
 * Consolidated cleanup command.
 * Updated the README with information on using the txLB API.
+* Updated TODO with more thoughts on the same .tac file serving as both the
+proxied, content-serving host as well as the managing service.
 
 2008.07.06 oubiwann
 
