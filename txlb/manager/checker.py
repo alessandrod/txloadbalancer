@@ -67,6 +67,9 @@ def checkBadHosts(configuration, director):
     them back into use.
     """
     def _makeGood(result, tracker, hostPort):
+        """
+        The private callback function for the pinger.
+        """
         # remember that the result is from a deferred list, so it's a a list of
         # (Bool, result/failure) tuples; if there are any problems at all
         # connecting to the host, we don't want to put it back into rotation
