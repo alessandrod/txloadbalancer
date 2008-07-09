@@ -31,7 +31,7 @@
     </group>
   </service>
   <admin>
-    <web listen="*:7000" enable="true" secure="false" refresh="10" />
+    <web listen="*:7000" enable="true" secure="true" refresh="10" />
     <ssh listen="localhost:2222" enable="true" />
     <user name="admin" password="..xpoEyRReGzk" access="full"/>
   </admin>

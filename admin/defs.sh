@@ -45,3 +45,10 @@ function pushLaunchpad {
     bzr push $BZR && pushSucceed
     cleanup
 }
+
+function buildSucceed {
+    echo "Build succeeded."
+    echo "Cleaning up files ..."
+    ./admin/clean.sh
+    echo "Done."
+}

@@ -1,0 +1,9 @@
+============
+Dependencies
+============
+
+zope.interface
+pyOpenSSL
+pycrypto
+Twisted 8.1+
+

@@ -154,13 +154,10 @@ def setup(configFile):
     # instantiate the proxy manager (that which will direct the proxies)
     director = configuredProxyManagerFactory(conf)
 
-    # set up the lb application
+    # set up the lb application, and implicitly, the proxies
     application = service.Application(name)
     services = LoadBalancedService(director)
     services.setServiceParent(application)
-
-    # set up the proxies
-    services.proxiesFactory()
 
     # set up the control socket
     control = setupControlSocket(conf, director)
