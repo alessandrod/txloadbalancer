@@ -19,7 +19,7 @@ if [[ "$STATUS" == '' ]];then
         echo "All tests passed."
     fi
     ./admin/checkBuild.sh || error
-    localCommit || error
+    localCommit && cleanup || error
 else
     abort
 fi

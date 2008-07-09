@@ -7,6 +7,8 @@
 * Added a build-checking script and added it to the commit script.
 * Incremented the version number for next development cycle.
 * Added more messages to the check-build script.
+* Re-added (somehow) missing cleanup call.
+* Consolidated cleanup command.
 
 2008.07.06 oubiwann
 

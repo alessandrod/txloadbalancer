@@ -25,9 +25,7 @@ function error {
 
 function cleanup {
     echo "Cleaning up temporary files ..."
-    rm $MSG
-    rm -rf _trial_temp
-    rm test.out
+    rm -rf $MSG _trial_temp test.out .DS_Store CHECK_THIS_BEFORE_UPLOAD.txt
     echo "Done."
 }
 
