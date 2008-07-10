@@ -57,7 +57,7 @@ class BasePage(resource.Resource):
         refresh = ''
         if refreshURL:
             refresh = template.refresh % (
-                self.parent.conf.admin.refresh, refreshURL)
+                self.parent.conf.admin.webRefresh, refreshURL)
         if msg:
             msg = template.message % msg
         return template.header % (

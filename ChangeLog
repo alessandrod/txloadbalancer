@@ -1,3 +1,7 @@
+2008.07.10 oubiwann
+
+* Fixed refresh bug submitted by Steffen Oschatz.
+
 2008.07.09 oubiwann
 
 * Moved utility functions out of setup.py and into util module.
