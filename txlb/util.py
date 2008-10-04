@@ -83,7 +83,7 @@ def setupServerCert():
 
 
 
-def generateCryptedPass(clearText, seed=''):
+def generateCryptedPass(clearText, seed='..'):
     """
     This is a utilty so that there's a single place to go in the code to change
     the password crypt checking, when we need to do that.

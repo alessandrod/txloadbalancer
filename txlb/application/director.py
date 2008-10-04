@@ -172,13 +172,14 @@ def setup(configFile):
     configer.setServiceParent(services)
 
     # set up the admin web server
-    # XXX need to test this for when no admin web UI is configured
     adminWeb = setupAdminWebUIServer(conf, director)
-    adminWeb.setServiceParent(services)
+    if adminWeb:
+        adminWeb.setServiceParent(services)
 
     # set up the admin SSH server
     adminSSH = setupAdminSSHServer(conf, director, services)
-    adminSSH.setServiceParent(services)
+    if adminSSH:
+        adminSSH.setServiceParent(services)
 
     # return the application object so that the .tac file can use it
     return application

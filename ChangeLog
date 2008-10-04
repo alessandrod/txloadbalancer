@@ -1,3 +1,9 @@
+2008.10.03
+
+* Added a fix for bug 277184 supplied by Jehiah.
+* Added a similar fix for the web admin UI.
+* Added proper default for crypt salt in utility.
+
 2008.07.10 oubiwann
 
 * Fixed refresh bug submitted by Steffen Oschatz.
