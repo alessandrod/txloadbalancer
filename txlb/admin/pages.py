@@ -95,7 +95,7 @@ class BasePage(resource.Resource):
         return str(self.getPage(request))
 
 
-    def isReadOnly(self):
+    def isReadOnly(self, request):
         """
         This check needs to be run before any form submission is processed.
         """
@@ -224,7 +224,7 @@ class DeleteHost(BasePage):
 
         """
         request.setHeader('Content-type', 'text/html')
-        if self.isReadOnly():
+        if self.isReadOnly(request):
             return "OK"
         service = request.args['service'][0]
         group = request.args['group'][0]
@@ -255,7 +255,7 @@ class AddHost(BasePage):
     """
     def getPage(self, request):
         request.setHeader('Content-type', 'text/html')
-        if self.isReadOnly():
+        if self.isReadOnly(request):
             return "OK"
         serviceName = request.args['service'][0]
         groupName = request.args['group'][0]
@@ -278,7 +278,7 @@ class EnableGroup(BasePage):
 
         """
         request.setHeader('Content-type', 'text/html')
-        if self.isReadOnly():
+        if self.isReadOnly(request):
             return "OK"
         serviceName = request.args['service'][0]
         newGroupName = request.args['group'][0]
