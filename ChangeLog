@@ -4,6 +4,8 @@
 * Added a similar fix for the web admin UI.
 * Added proper default for crypt salt in utility.
 * Added a fix for the isReadOnly bug 277851 supplied by Jehiah.
+* Removed miss-applied boolify function, a bug fix for 277879 supplied by
+Jehiah.
 
 2008.07.10 oubiwann
 

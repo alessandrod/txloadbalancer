@@ -418,7 +418,7 @@ class AdminConfig(BaseConfig):
         if webNode.hasAttribute('secure'):
             self.webSecure = util.boolify(webNode.getAttribute('secure'))
         if webNode.hasAttribute('refresh'):
-            self.webRefresh = util.boolify(webNode.getAttribute('refresh'))
+            self.webRefresh = webNode.getAttribute('refresh')
 
 
     def loadSSH(self, sshNode):
