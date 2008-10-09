@@ -373,6 +373,8 @@ class ControlConfig(BaseConfig):
         """
 
         """
+        if not self.socket:
+            return ''
         return '%s<control socket="%s" />\n' % (padding, self.socket)
 
 

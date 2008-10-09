@@ -1,3 +1,8 @@
+2008.10.08
+
+* Added a check for not writing the control XML node if it is not defined; fix
+from Jehiah; addresses bug 277959.
+
 2008.10.04
 
 * Added icons for use in the project, taken from the "gartoon" icon set.
