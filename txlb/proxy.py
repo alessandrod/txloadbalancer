@@ -1,8 +1,7 @@
+from twisted.python import log
 from twisted.internet import error
 from twisted.internet import reactor
 from twisted.internet import protocol
-
-from txlb import logging
 
 
 
@@ -80,7 +79,7 @@ class Sender(protocol.Protocol):
 
     def dataReceived(self, data):
         if self.receiver is None:
-            logging.log("client got data, no receiver, tho\n")
+            log.msg("client got data, no receiver, tho\n")
         else:
             self.receiver.transport.write(data)
 
@@ -149,12 +148,12 @@ class SenderFactory(protocol.ClientFactory):
         next = self.receiver.factory.tracker.getHost(
             self, self.receiver.client_addr)
         if next:
-            logging.log("retrying with %s\n" % repr(next))
+            log.msg("retrying with %s\n" % repr(next))
             host, port = next
             reactor.connectTCP(host, port, self)
         else:
             # No working servers!?
-            logging.log("no working servers, manager -> aggressive\n")
+            log.msg("no working servers, manager -> aggressive\n")
             self.receiver.transport.loseConnection()
 
 

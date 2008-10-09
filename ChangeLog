@@ -9,6 +9,8 @@ calls.
 * Added missing call to configuration method in
 application.director.configuredProxyManagerFactory; fix submitted by Shaival
 Varma and addresses bug 255498.
+* Removed all references to custom logging and replaced with Twisted logging.
+* Deleted custom logging module.
 
 2008.10.08
 

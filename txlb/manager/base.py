@@ -1,5 +1,6 @@
 import time
 
+from twisted.python import log
 from twisted.protocols import amp
 from twisted.internet import protocol
 
@@ -7,7 +8,6 @@ from txlb import util
 from txlb import model
 from txlb import proxy
 from txlb import config
-from txlb import logging
 from txlb import schedulers
 
 
@@ -485,7 +485,7 @@ class HostTracking(object):
         except KeyError:
             if doLog:
                 msg = """Wow, Bender says "We're boned." No hosts available.\n"""
-                logging.log(msg)
+                log.msg(msg)
             return
         if not self.failed.has_key(hostPort):
             self.failed[hostPort] = 1
@@ -493,7 +493,7 @@ class HostTracking(object):
             self.failed[hostPort] += 1
         if hostPort in self.hosts:
             if doLog:
-                logging.log("marking host %s down (%s)\n" % (
+                log.msg("marking host %s down (%s)\n" % (
                     str(hostPort), reason.getErrorMessage()))
             self.hosts.remove(hostPort)
         if self.available.has_key(hostPort):

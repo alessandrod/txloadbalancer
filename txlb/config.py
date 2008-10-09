@@ -4,7 +4,6 @@ from crypt import crypt
 from xml.dom import minidom
 
 from txlb import util
-from txlb import logging
 from txlb import schedulers
 
 
@@ -518,7 +517,9 @@ class Config(object):
             elif item.nodeName == u'manager':
                 self.loadManager(item)
             elif item.nodeName == u'logging':
-                logging.initlog(item.getAttribute('file'))
+                # right now, all logging is done via Twisted; not sure what I'm
+                # going to do with the logging configuration option right now
+                pass
             elif item.nodeName == u'control':
                 self.loadControl(item)
         if self.manager == None:
