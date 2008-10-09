@@ -2,6 +2,10 @@
 
 * Added a couple more useful methods to the tracker for managing host
 resetting and updated the checker to make use of one of them.
+* Added code for putting all hosts back into rotation on the condition that
+there are no good hosts remaining.
+* Replaced old logging references in manager.checker with twisted.python.log
+calls.
 
 2008.10.08
 

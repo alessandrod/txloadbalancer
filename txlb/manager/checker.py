@@ -7,7 +7,6 @@ from twisted.internet import reactor
 from twisted.internet import protocol
 
 from txlb import config
-from txlb import logging
 
 
 
@@ -74,9 +73,9 @@ def checkBadHosts(configuration, director):
         # (Bool, result/failure) tuples; if there are any problems at all
         # connecting to the host, we don't want to put it back into rotation
         if False in [x[0] for x in result]:
-            logging.log("Host %s is still down.\n" % str(hostPort))
+            log.msg("Host %s is still down.\n" % str(hostPort))
             return
-        logging.log("Host is back up; re-adding %s ...\n" % str(hostPort))
+        log.msg("Host is back up; re-adding %s ...\n" % str(hostPort))
         tracker.resetHost(hostPort)
 
     if not configuration.manager.hostCheckEnabled:
@@ -87,6 +86,15 @@ def checkBadHosts(configuration, director):
         group = service.getEnabledGroup()
         tracker = director.getTracker(name, group.name)
         badHosts = tracker.badhosts
+        allHostPorts = [(host.hostname, host.port)
+                      for name, host in group.getHosts()]
+        # if there are no good hosts, we need to put them all back into
+        # rotation
+        if not set(allHostPorts).symmetric_difference(badHosts.keys()):
+            tracker.resetBadHosts()
+            log.msg("All hosts are down! Forcing them back into rotation ...")
+            return
+        #import pdb;pdb.set_trace()
         for hostPort, timeAndError in badHosts.items():
             host, port = hostPort
             d = ping(host, port)

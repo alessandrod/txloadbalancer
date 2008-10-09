@@ -516,7 +516,7 @@ class HostTracking(object):
             2) when all hosts are unreachable and they are all put back in
                rotation as a last-ditch effort to find one that can connect
         """
-        del self.badHosts[hostPort]
+        del self.badhosts[hostPort]
         hostname = self.getHostNames()[hostPort]
         self.newHost(hostPort, hostname)
 
@@ -525,6 +525,6 @@ class HostTracking(object):
         """
         This method puts all recorded bad hosts back into rotation.
         """
-        for hostPort in self.badHosts.keys():
+        for hostPort in self.badhosts.keys():
             self.resetHost(hostPort)
 
