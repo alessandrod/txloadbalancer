@@ -77,9 +77,7 @@ def checkBadHosts(configuration, director):
             logging.log("Host %s is still down.\n" % str(hostPort))
             return
         logging.log("Host is back up; re-adding %s ...\n" % str(hostPort))
-        del tracker.badhosts[hostPort]
-        hostname = tracker.getHostNames()[hostPort]
-        tracker.newHost(hostPort, hostname)
+        tracker.resetHost(hostPort)
 
     if not configuration.manager.hostCheckEnabled:
         return

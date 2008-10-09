@@ -3,7 +3,7 @@ import itertools
 
 
 rand = 'rand'
-roundr= 'roundr'
+roundr = 'roundr'
 leastc = 'leastc'
 weightr = 'weightr'
 weightlc = 'weightlc'

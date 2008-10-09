@@ -508,3 +508,23 @@ class HostTracking(object):
         # make sure we also mark this session as done.
         self.doneHost(senderFactory)
 
+
+    def resetHost(self, hostPort):
+        """
+        This method is called by the checker under two conditions:
+            1) when a bad host has become available, or
+            2) when all hosts are unreachable and they are all put back in
+               rotation as a last-ditch effort to find one that can connect
+        """
+        del self.badHosts[hostPort]
+        hostname = self.getHostNames()[hostPort]
+        self.newHost(hostPort, hostname)
+
+
+    def resetBadHosts(self):
+        """
+        This method puts all recorded bad hosts back into rotation.
+        """
+        for hostPort in self.badHosts.keys():
+            self.resetHost(hostPort)
+

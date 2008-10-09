@@ -1,3 +1,8 @@
+2008.10.09
+
+* Added a couple more useful methods to the tracker for managing host
+resetting and updated the checker to make use of one of them.
+
 2008.10.08
 
 * Added a check for not writing the control XML node if it is not defined; fix
