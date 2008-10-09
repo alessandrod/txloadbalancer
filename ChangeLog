@@ -6,6 +6,9 @@ resetting and updated the checker to make use of one of them.
 there are no good hosts remaining.
 * Replaced old logging references in manager.checker with twisted.python.log
 calls.
+* Added missing call to configuration method in
+application.director.configuredProxyManagerFactory; fix submitted by Shaival
+Varma and addresses bug 255498.
 
 2008.10.08
 
