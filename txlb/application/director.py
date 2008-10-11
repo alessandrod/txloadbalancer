@@ -116,14 +116,13 @@ def setupHostChecker(configuration, director):
 
 
 
-def setupConfigChecker(configFile, configuration, director):
+def setupConfigChecker(configuration, director):
     """
     This is the setup for the "config check" management task.
     """
     checkInterval = configuration.manager.configCheckInterval
     checkerService = internet.TimerService(
-        checkInterval, checker.checkConfigChanges, configFile, configuration,
-        director)
+        checkInterval, checker.checkConfigChanges, configuration, director)
     checkerService.setName('configChecker')
     return checkerService
 
@@ -168,7 +167,7 @@ def setup(configFile):
     checker.setServiceParent(services)
 
     # set up the config checker service
-    configer = setupConfigChecker(configFile, conf, director)
+    configer = setupConfigChecker(conf, director)
     configer.setServiceParent(services)
 
     # set up the admin web server

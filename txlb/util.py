@@ -1,14 +1,17 @@
 import os
 import re
 import crypt
+import random
+from datetime import datetime
 
+from twisted.python import log
 from twisted.internet import ssl
 
 import txlb
 
+
 privKeyFile = 'etc/server.pem'
 certFile = 'etc/server.pem'
-
 
 
 def boolify(data):
@@ -24,7 +27,6 @@ def boolify(data):
             return True
         return False
     return bool(data)
-
 
 
 def splitHostPort(hostPortString):
@@ -45,19 +47,18 @@ def splitHostPort(hostPortString):
     return (host, port)
 
 
-
 def createCertificate():
     """
 
     """
     # this is copied from test_sslverify.py
-    dn = ssl.DistinguishedName(commonName="PyDirector HTTPS")
+    dn = ssl.DistinguishedName(commonName="txLoadBalancer Admin HTTPS")
     keypair = ssl.KeyPair.generate()
     req = keypair.certificateRequest(dn)
+    serial = int(random.random() * 100000)
     certData = keypair.signCertificateRequest(
-        dn, req, lambda dn: True, 132)
+        dn, req, lambda dn: True, serial)
     return keypair.newCertificate(certData)
-
 
 
 def createSSLFile():
@@ -71,7 +72,6 @@ def createSSLFile():
     print "Generated key/cert file '%s'." % certFile
 
 
-
 def setupServerCert():
     """
 
@@ -80,7 +80,6 @@ def setupServerCert():
         createSSLFile()
     else:
         print "Cert file '%s' exists; not creating." % certFile
-
 
 
 def generateCryptedPass(clearText, seed='..'):
@@ -140,13 +139,44 @@ def reprNestedObjects(obj, padding=u'', skip=[]):
             output += reprNestedObjects(val, padding)
         output += nl
     elif hasattr(obj, '__dict__'):
-        #output += nl
         output += reprNestedObjects(obj.__dict__, padding)
     else:
         output += nl
         output += repr(obj)
     return re.sub('\n\n', '\n', output)
 
+
+def saveConfig(configuration, director):
+    """
+    This function replaces the current on-disk configuration with the
+    adjustments that have been made in-memory (likely from the admin web UI). A
+    backup of the original is made prior to replacement.
+
+    Also, changes made on disc should have the ability to be re-read into
+    memory. Obviously there are all sorts of issues at play, here: race
+    conditions, differences and the need to merge, conflict resolution, etc.
+    """
+    # disable the admin UI or at the very least, make it read-only
+    director.setReadOnly()
+    # compare in-memory config with on-disk config
+    current = configuration.toXML()
+    # re-read the one on disk
+    disk = txlb.config.Config(configuration.filename).toXML()
+    if current != disk:
+        log.msg("Configurations are different; ",
+                "backing up and saving to disk ...")
+        # backup old file
+        backupFile = "%s-%s" % (
+            configuration.filename, datetime.now().strftime('%Y%m%d%H%M%S'))
+        os.rename(configuration.filename, backupFile)
+        # save configuration
+        fh = open(configuration.filename, 'w+')
+        fh.write(current)
+        fh.close()
+    # re-enable admin UI
+    else:
+        log.msg("Configrations do not differ; skipping write.")
+    director.setReadWrite()
 
 
 def setup(*args, **kwds):
@@ -158,7 +188,6 @@ def setup(*args, **kwds):
     except ImportError:
         from distutils.core import setup
     return setup(*args, **kwds)
-
 
 
 def find_packages():
@@ -190,7 +219,6 @@ def hasDocutils():
         return False
 
 
-
 def _validateReST(text):
     """
     Make sure that the given ReST text is valid.
@@ -216,7 +244,6 @@ def _validateReST(text):
     return stream.getvalue()
 
 
-
 def validateReST(text):
     """
     A wrapper that ensafens the validation for pythons that are not embiggened
@@ -226,7 +253,6 @@ def validateReST(text):
         return _validateReST(text)
     print " *** No docutils; can't validate ReST."
     return ''
-
 
 
 def catReST(*args, **kwds):
@@ -262,3 +288,4 @@ def catReST(*args, **kwds):
             print report
             raise ValueError('ReST validation error')
     return res
+

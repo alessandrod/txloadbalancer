@@ -1,3 +1,4 @@
+import cgi
 import time
 import urllib
 import socket
@@ -20,7 +21,6 @@ class UnauthorizedResource(resource.Resource):
     """
     isLeaf = 1
     unauthorizedPage = static.Data(template.unauth, 'text/html')
-
 
     def render(self, request):
         request.setResponseCode(http.UNAUTHORIZED)
@@ -48,52 +48,72 @@ class BasePage(resource.Resource):
     def __init__(self, parent):
         resource.Resource.__init__(self)
         self.parent = parent
+        self.message = ''
+        self.contentType = 'text/html'
 
 
-    def getHeader(self, refreshURL='', msg=''):
+    def setContentType(self, type):
         """
 
         """
+        self.contentType = type
+
+    def getContentType(self):
+        """
+
+        """
+        return self.contentType
+
+    def getHeader(self, request):
+        """
+
+        """
+        msg = ''
         refresh = ''
-        if refreshURL:
+        if request.args.has_key('resultMessage'):
+            msg = template.message % request.args['resultMessage'][0]
+        if request.args.has_key('refresh'):
+            refresh = bool(request.args['refresh'][0])
+            url = '/all?refresh=1&ignore=%s' % time.time()
             refresh = template.refresh % (
-                self.parent.conf.admin.webRefresh, refreshURL)
-        if msg:
-            msg = template.message % msg
+                self.parent.conf.admin.webRefresh, url)
         return template.header % (
-            txlb.name, refresh, txlb.name, self.parent.serverVersion,
-            socket.gethostname()) + msg
+            txlb.name,
+            refresh,
+            txlb.name,
+            self.parent.serverVersion,
+            socket.gethostname(),
+            ) + msg
 
-
-    def getBody(self):
+    def getBody(self, request):
         """
         Subclasses must override this.
         """
-        raise NotImplemented
+        raise NotImplementedError
 
-
-    def getFooter(self, message=''):
+    def getFooter(self):
         """
 
         """
-        if message:
+        message = ''
+        if self.message:
             message = template.message % urllib.unquote(message)
+            self.message = ''
         return template.footer % (txlb.projectURL, txlb.name, message)
 
-
     def getPage(self, request):
-        """
-        Subclasses must override this.
-        """
-        raise NotImplemented
-
+        request.setHeader('Content-type', self.getContentType())
+        return (
+            self.getHeader(request) +
+            self.getBody(request) +
+            self.getFooter()
+            )
 
     def render_GET(self, request):
         """
 
         """
         return str(self.getPage(request))
-
 
     def isReadOnly(self, request):
         """
@@ -111,26 +131,64 @@ class RunningPage(BasePage):
     This class is responsible for presenting the admin UI, in all of it's data
     and button-pushing glory.
     """
-    def getPage(self, request):
+    def getGroupContent(self, service, group, enabledGroup):
         """
+        Render the host group.
+
         Don't look at me; this craziness is a modified version of the original.
         """
-        verbose = False
-        resultMessage = ''
         content = ''
-        msg = ''
-        if request.args.has_key('resultMessage'):
-            msg = request.args['resultMessage'][0]
-        if request.args.has_key('refresh'):
-            refresh = bool(request.args['refresh'][0])
-            url = '/all?refresh=1&ignore=%s' % time.time()
-            content += self.getHeader(refreshURL=url, msg=msg)
-            stopStart = template.stopRefresh % time.time()
+        tracker = self.parent.director.getTracker(
+            service.name, group.name)
+        stats = tracker.getStats()
+        hdict = tracker.getHostNames()
+        if group is enabledGroup:
+            klass = 'enabled'
+            desc = template.groupDescEnabled
         else:
-            content += self.getHeader(msg=msg)
-            stopStart = template.startRefresh % time.time()
-        content += template.refreshButtons % (
-            time.ctime(time.time()), time.time(), stopStart)
+            klass = 'inactive'
+            desc = template.groupDescDisabled % (
+                service.name, group.name)
+        content += template.groupName % (klass, group.name)
+        content += desc
+        content += template.groupHeaderForm % (
+            service.name, group.name, klass)
+        counts = stats['openconns']
+        failed = stats['failed']
+        totals = stats['totals']
+        k = counts.keys()
+        k.sort()
+        for h in k:
+            f = 0
+            if failed.has_key(h):
+                f = failed[h]
+            if counts.has_key(h):
+                oc = counts[h]
+            else:
+                oc = '--'
+            if totals.has_key(h):
+                tc = totals[h]
+            else:
+                tc = '--'
+            content += template.hostInfo % (
+                klass, hdict[h], h, oc, tc, f,
+                urllib.quote(service.name), urllib.quote(group.name),
+                urllib.quote(h))
+        bad = stats['bad']
+        if bad:
+            content += template.badHostGroup % klass
+        for k in bad.keys():
+            host = '%s:%s' % k
+            when, what = bad[k]
+            content += template.badHostInfo % (
+                klass, hdict[host], host, what.getErrorMessage())
+        return content
+
+    def getServiceContent(self):
+        """
+        Render the services content.
+        """
+        content = ''
         for service in self.parent.conf.getServices():
             content += template.serviceName % service.name
             for index, l in enumerate(service.listen):
@@ -140,58 +198,52 @@ class RunningPage(BasePage):
             eg = service.getEnabledGroup()
             groups = service.getGroups()
             for group in groups:
-                tracker = self.parent.director.getTracker(
-                    service.name, group.name)
-                stats = tracker.getStats()
-                hdict = tracker.getHostNames()
-                if group is eg:
-                    klass = 'enabled'
-                    desc = template.groupDescEnabled
-                else:
-                    klass = 'inactive'
-                    desc = template.groupDescDisabled % (
-                        service.name, group.name)
-                content += template.groupName % (klass, group.name)
-                content += desc
-                content += template.groupHeaderForm % (
-                    service.name, group.name, klass)
-                counts = stats['openconns']
-                failed = stats['failed']
-                totals = stats['totals']
-                k = counts.keys()
-                k.sort()
-                for h in k:
-                    f = 0
-                    if failed.has_key(h):
-                        f = failed[h]
-                    if counts.has_key(h):
-                        oc = counts[h]
-                    else:
-                        oc = '--'
-                    if totals.has_key(h):
-                        tc = totals[h]
-                    else:
-                        tc = '--'
-                    content += template.hostInfo % (
-                        klass, hdict[h], h, oc, tc, f,
-                        urllib.quote(service.name), urllib.quote(group.name),
-                        urllib.quote(h))
-                bad = stats['bad']
-                if bad:
-                    content += template.badHostGroup % klass
-                for k in bad.keys():
-                    host = '%s:%s' % k
-                    when, what = bad[k]
-                    content += template.badHostInfo % (
-                        klass, hdict[host], host, what.getErrorMessage())
+                content += self.getGroupContent(service, group, eg)
             content += template.serviceClose
-        content += self.getFooter(resultMessage)
         return content
 
+    def getBody(self, request):
+        """
 
-class RunningConfig(BasePage):
+        """
+        if request.args.has_key('refresh'):
+            stopStart = template.stopRefresh % time.time()
+        else:
+            stopStart = template.startRefresh % time.time()
+        buttonBar = template.buttonBar % (
+            time.ctime(time.time()),
+            time.time(),
+            stopStart + template.saveConfig)
+        return buttonBar + self.getServiceContent()
+
+
+class RunningConfigs(BasePage):
     """
-    This class renders the in-memory configuration as XML.
+
+    """
+    def getBody(self, request):
+        """
+
+        """
+        return template.configList
+
+
+class RunningConfigObj(BasePage):
+    """
+    This class renders the in-memory configuration as a textal representation
+    of the configuration objects.
+    """
+    def getBody(self, request):
+        """
+
+        """
+        return template.pre % util.reprNestedObjects(self.parent.conf)
+
+
+class RunningConfigObjRaw(BasePage):
+    """
+    This class renders the in-memory configuration as a textal representation
+    of the configuration objects.
     """
     def getPage(self, request):
         """
@@ -201,7 +253,41 @@ class RunningConfig(BasePage):
         return util.reprNestedObjects(self.parent.conf)
 
 
+class RunningConfigXML(BasePage):
+    """
+    This class renders the in-memory configuration as XML.
+    """
+    def getBody(self, request):
+        """
+
+        """
+        return template.pre % cgi.escape(self.parent.conf.toXML())
+
+
+class RunningConfigXMLRaw(BasePage):
+    """
+    This class renders the in-memory configuration as XML.
+    """
+    def getPage(self, request):
+        """
+
+        """
+        request.setHeader('Content-type', 'text/xml')
+        return self.parent.conf.toXML()
+
+
 class StoredConfig(BasePage):
+    """
+    This page renders the on-disk XML configuration file.
+    """
+    def getBody(self, request):
+        """
+
+        """
+        return template.pre % cgi.escape(self.parent.conf.dom.toxml())
+
+
+class StoredConfigRaw(BasePage):
     """
     This page renders the on-disk XML configuration file.
     """
@@ -209,8 +295,28 @@ class StoredConfig(BasePage):
         """
 
         """
-        request.setHeader('Content-type', 'text/plain')
+        request.setHeader('Content-type', 'text/xml')
         return self.parent.conf.dom.toxml()
+
+
+class SaveConfig(BasePage):
+    """
+    This page is responsible for saving the config file. It is for users who do
+    not want auto-save turned on.
+    """
+    def getPage(self, request):
+        request.setHeader('Content-type', 'text/html')
+        if self.isReadOnly(request):
+            return "Read Only"
+        didSave = util.saveConfig(self.parent.conf, self.parent.director)
+        if didSave:
+            msg = "Config file '%s' was saved." % self.parent.conf.filename
+        else:
+            msg = ("Config file " + self.parent.conf.filename +
+                   " did not differ from what was in in memory;" +
+                   " file not saved.")
+        request.redirect('/all?resultMessage=%s' % urllib.quote(msg))
+        return "OK"
 
 
 class DeleteHost(BasePage):
@@ -290,7 +396,6 @@ class EnableGroup(BasePage):
         return "OK"
 
 
-
 def protect(method):
     """
     A decorator for use by Editor methods that need to support atomic-ish
@@ -304,7 +409,6 @@ def protect(method):
     return decorator
 
 
-
 class Editor(object):
     """
     An object whose sole purpose is to collect all methods that change data
@@ -316,16 +420,13 @@ class Editor(object):
         self.conf = conf
         self.director = director
 
-
     def begin(self):
         self.director.setReadOnly()
         print "Set to read-only mode."
 
-
     def finish(self):
         self.director.setReadWrite()
         print "Set to read-write mode."
-
 
     def addHost(self, serviceName, groupName, name, ip, weight=1):
         """
@@ -337,7 +438,6 @@ class Editor(object):
         group.addHost(name, ip, weight)
     addHost = protect(addHost)
 
-
     def delHost(self, serviceName, groupName, name, ip):
         """
         This method removes a host from the tracker and model (director call)
@@ -347,7 +447,6 @@ class Editor(object):
         group = self.conf.getService(serviceName).getGroup(groupName)
         group.delHost(name)
     delHost = protect(delHost)
-
 
     def switchGroup(self, serviceName, oldGroupName, newGroupName):
         """
@@ -359,7 +458,6 @@ class Editor(object):
         # update the tracker and model info
         self.director.switchGroup(serviceName, oldGroupName, newGroupName)
     switchGroup = protect(switchGroup)
-
 
 
 class AdminServer(resource.Resource):
@@ -393,7 +491,6 @@ class AdminServer(resource.Resource):
             return True
         return False
 
-
     def getChild(self, name, request):
         """
         A simple object publisher that mapes part of a URL path to an object.
@@ -405,16 +502,28 @@ class AdminServer(resource.Resource):
             return page
         elif name == 'txlb.css':
             return StyleSheet()
+        elif name == 'configs':
+            return RunningConfigs(self)
         elif name == 'config.obj':
-            return RunningConfig(self)
+            return RunningConfigObj(self)
+        elif name == 'rawConfig.obj':
+            return RunningConfigObjRaw(self)
         elif name == 'config.xml':
+            return RunningConfigXML(self)
+        elif name == 'rawConfig.xml':
+            return RunningConfigXMLRaw(self)
+        elif name == 'stored.xml':
             return StoredConfig(self)
+        elif name == 'rawStored.xml':
+            return StoredConfigRaw(self)
         elif name == 'delHost':
             return DeleteHost(self)
         elif name == 'addHost':
             return AddHost(self)
         elif name == 'enableGroup':
             return EnableGroup(self)
+        elif name == 'saveConfig':
+            return SaveConfig(self)
         return resource.Resource.getChild(self, name, request)
 
 

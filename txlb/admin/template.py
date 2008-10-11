@@ -33,8 +33,7 @@ footer = """
     <div class="footer">
     <a href="/">top</a>
     <a href="all">all</a>
-    <a href="config.obj">running config</a>
-    <a href="config.xml">disk config</a>
+    <a href="configs">configs</a>
     <a href="%s">%s</a>
     </div>
     %s
@@ -45,23 +44,26 @@ footer = """
 
 startRefresh = """
     <a class="button" href="/all?refresh=1&ignore=%s">Start
-    auto-refresh</a></p>
+    auto-refresh</a>
     """
 
 
 stopRefresh = """
-    <a class="button" href="/all?ignore=%s">Stop auto-refresh</a></p>
+    <a class="button" href="/all?ignore=%s">Stop auto-refresh</a>
     """
 
 
-# takes an update time, a refresh time, and stop/start html
-refreshButtons = """
+saveConfig = """
+    <a class="button" href="/saveConfig">Save Config</a></p>
+    """
+
+# takes an update time and the remainng rendered contents of the button bar
+buttonBar = """
     <p><b>current config</b></p>
     <p>last update at %s</p>
     <p><a class="button" href="/all?ignore=%s">Refresh</a>
     %s
     """
-
 
 # takes a service name
 serviceName = """
@@ -162,4 +164,31 @@ serviceClose = """
 
 unauth = """
     <html><body>Access Denied.</body></html>
+    """
+
+configList = """
+    <b>Running Configuration Formats/Views</b>
+    <ul>
+        <li>
+            <a href="/config.obj">Textual Representation of 
+            Config Objects</a>
+        </li>
+        <li>
+            <a href="/rawConfig.obj">Textual Representation of 
+            Config Objects (raw)</a>
+        </li>
+        <li><a href="/config.xml">XML Config</a></li>
+        <li><a href="/rawConfig.xml">XML Config (raw)</a></li>
+    </ul>
+    <b>On-Disk Configuration</b>
+    <ul>
+        <li><a href="/stored.xml">Saved Config</a></li>
+        <li><a href="/rawStored.xml">Saved Config (raw)</a></li>
+        <li><a href="/saveConfig">Save Current Configuration to Disk</a></li>
+    </ul>
+    """
+
+pre = """
+    <pre>\n%s
+    </pre>
     """

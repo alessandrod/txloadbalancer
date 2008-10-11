@@ -1,13 +1,11 @@
 import os
-from datetime import datetime
 
 from twisted.python import log
 from twisted.internet import defer
 from twisted.internet import reactor
 from twisted.internet import protocol
 
-from txlb import config
-
+from txlb import util
 
 
 class PingProtocol(protocol.Protocol):
@@ -21,30 +19,24 @@ class PingProtocol(protocol.Protocol):
         self.transport.loseConnection()
 
 
-
 class PingFactory(protocol.ClientFactory):
     """
     The factory used when creating a "pinger."
     """
     protocol = PingProtocol
 
-
     def __init__(self):
         self.deferred = defer.Deferred()
         self.count = 0
 
-
     def clientConnectionFailed(self, connector, reason):
         self.deferred.errback(reason)
-
 
     def clientConnectionLost(self, connector, reason):
         pass
 
-
     def incrementCount(self):
         self.count += 1
-
 
 
 def ping(host, port, tries=4, timeout=5):
@@ -57,7 +49,6 @@ def ping(host, port, tries=4, timeout=5):
         reactor.connectTCP(host, port, factory, timeout=timeout)
         deferreds.append(factory.deferred)
     return defer.DeferredList(deferreds, consumeErrors=1)
-
 
 
 def checkBadHosts(configuration, director):
@@ -102,34 +93,11 @@ def checkBadHosts(configuration, director):
             d.addCallback(_makeGood, tracker, hostPort)
 
 
-
-def checkConfigChanges(configFile, configuration, director):
+def checkConfigChanges(configuration, director):
     """
-    This function replaces the current on-disk configuration with the
-    adjustments that have been made in-memory (likely from the admin web UI). A
-    backup of the original is made prior to replacement.
-
-    Also, changes made on disc should have the ability to be re-read into
-    memory. Obviously there are all sorts of issues at play, here: race
-    conditions, differences and the need to merge, conflict resolution, etc.
+    A scheduled checker for configration changes.
     """
     if not configuration.manager.configCheckEnabled:
         return
-    # disable the admin UI or at the very least, make it read-only
-    director.setReadOnly()
-    # compare in-memory config with on-disk config
-    current = configuration.toXML()
-    disk = config.Config(configFile).toXML()
-    if current != disk:
-        print "Configurations are different; backing up and saving to disk ..."
-        # backup old file
-        backupFile = "%s-%s" % (
-            configFile, datetime.now().strftime('%Y%m%d%H%M%S'))
-        os.rename(configFile, backupFile)
-        # save configuration
-        fh = open(configFile, 'w+')
-        fh.write(current)
-        fh.close()
-    # re-enable admin UI
-    director.setReadWrite()
+    util.saveConfig(configuration, director)
 

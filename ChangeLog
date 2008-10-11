@@ -1,3 +1,18 @@
+2008.10.10
+
+* Removed commented out code.
+* Updated createCertificate to use a random serial number.
+* Added new coniguration rendering options based on Jehiah's patches; addresses
+bug 277899.
+* Broke up the RunningPage content into different methods.
+* Updated getHeader and getFooter methods.
+* Added content type methods.
+* Removed the need to pass the config file to the config change checker, now
+that Jehiah's change to the config object has been added: storing the filename
+on an attribute.
+* Pulled the save config code out of manager.checker and put it in a util
+function.
+
 2008.10.09
 
 * Added a couple more useful methods to the tracker for managing host

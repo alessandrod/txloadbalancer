@@ -492,6 +492,7 @@ class Config(object):
 
 
     def __init__(self, filename=None, xml=None):
+        self.filename = filename
         self.services = {}
         self.admin = None
         self.manager = None
