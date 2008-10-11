@@ -17,9 +17,9 @@ from txlb import util
 from txlb import model
 from txlb import config
 from txlb import manager
-from txlb.admin import auth
-from txlb.admin import pages
 from txlb.manager import checker
+from txlb.web.admin import auth
+from txlb.web.admin import pages
 from txlb.application.service import LoadBalancedService
 
 

@@ -10,8 +10,8 @@ from twisted.web import resource
 
 import txlb
 from txlb import util
-from txlb.admin import css
-from txlb.admin import template
+from txlb.web.admin import css
+from txlb.web.admin import template
 
 
 class UnauthorizedResource(resource.Resource):

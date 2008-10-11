@@ -1,3 +1,8 @@
+2008.10.11
+
+* Created a new subpackage for web stuff.
+* Moved admin subpackage into web subpackage.
+
 2008.10.10
 
 * Removed commented out code.
