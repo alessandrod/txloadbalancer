@@ -3,6 +3,10 @@
 * Created a new subpackage for web stuff.
 * Moved admin subpackage into web subpackage.
 * Added Twisted REST resource.
+* Added an rpc module.
+* Added dummy util classes for impersonating missing libs.
+* Started working on an API for RPC/REST access.
+* Updated TODO.
 
 2008.10.10
 

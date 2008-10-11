@@ -15,6 +15,19 @@ Placeholders
  * rename 'director' attributes to 'proxyManager'
 
 
+RPC API Work
+------------
+
+ * add configuration options for XML- and JSON-RPC and REST URL base paths 
+ * add txlb.app.dir setup function for each type of RPC instance desired
+    - the set up functions need to take the adminWeb instance as a parameter
+    - the adminWeb site is adminWeb.args[1]
+    - the adminWeb root is adminWeb.args[1].resource
+    - children need to be added to that with .putChild
+    - if adminWeb is not defined, create a t.w.resource.Resource() as root and
+      a t.w.server.Site(root) as the site and return
+      internet.TCPServer(ADMIN_PORT, site) 
+
 Version 1.2.0
 -------------
  * replace all the copious uses of del with a better idiom

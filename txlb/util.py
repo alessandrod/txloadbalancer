@@ -289,3 +289,14 @@ def catReST(*args, **kwds):
             raise ValueError('ReST validation error')
     return res
 
+
+class DummyModule(object):
+    pass
+
+
+class DummyJSONRPC(object):
+    pass
+
+
+dummyModule = DummyModule()
+dummyModule.JSONRPC =DummyJSONRPC
