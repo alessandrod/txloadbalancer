@@ -2,6 +2,7 @@
 
 * Created a new subpackage for web stuff.
 * Moved admin subpackage into web subpackage.
+* Added Twisted REST resource.
 
 2008.10.10
 
