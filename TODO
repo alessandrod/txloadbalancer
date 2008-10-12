@@ -30,6 +30,12 @@ RPC API Work
 
 Version 1.2.0
 -------------
+ * bug fixes
+ * feature additions/requests from users
+ * initial RPC implementation
+
+Version 1.2.0
+-------------
  * replace all the copious uses of del with a better idiom
  * add a twisted plugin for twistd where you can specify something like an --lb
    option
