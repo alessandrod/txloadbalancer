@@ -372,7 +372,7 @@ class ControlConfig(BaseConfig):
         """
 
         """
-        if not self.socket:
+        if self.socket == None:
             return ''
         return '%s<control socket="%s" />\n' % (padding, self.socket)
 
@@ -388,7 +388,7 @@ class AdminConfig(BaseConfig):
         self.webListen = None
         self.webEnable = False
         self.webSecure = False
-        self.webRefresh = 30
+        self.webRefresh = 30.0
         self.sshListen = 2222
         self.sshEnable = False
         self.userdb = {}
@@ -419,7 +419,7 @@ class AdminConfig(BaseConfig):
         if webNode.hasAttribute('secure'):
             self.webSecure = util.boolify(webNode.getAttribute('secure'))
         if webNode.hasAttribute('refresh'):
-            self.webRefresh = webNode.getAttribute('refresh')
+            self.webRefresh = float(webNode.getAttribute('refresh'))
 
 
     def loadSSH(self, sshNode):
@@ -492,7 +492,6 @@ class Config(object):
 
 
     def __init__(self, filename=None, xml=None):
-        self.filename = filename
         self.services = {}
         self.admin = None
         self.manager = None

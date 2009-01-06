@@ -4,7 +4,7 @@ BZR=lp:txloadbalancer
 echo $BZR_DEST
 FLAG='skip_tests'
 MSG=commit-msg
-export PYTHONPATH=.:./test
+export PYTHONPATH=.:./test:$PYTHONPATH
 
 function getDiff {
     bzr diff $1 | \

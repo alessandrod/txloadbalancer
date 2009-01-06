@@ -1,7 +1,14 @@
+2009.01.06
+
+* Added config fixes from Shaival Varma.
+* Fixed typo in script filename.
+* Fixed PYTHONPATH in defs.sh.
+
 2008.10.12
 
-* Updated TODO as a reslt of all the changes done over the past week, including
-the adjustment of verion number in the roadmap and rearrangement of features.
+* Updated TODO as a result of all the changes done over the past week,
+including the adjustment of version number in the roadmap and rearrangement of
+features.
 
 2008.10.11
 

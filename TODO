@@ -33,8 +33,12 @@ Version 1.2.0
  * bug fixes
  * feature additions/requests from users
  * initial RPC implementation
+ * sort service groups in admin UI by name
+ * add an XML-RPC service instead of the custom web API
+   . including adding methods for bouncing the admin UI
+ * replace old PyDirector logging with Twisted logging
 
-Version 1.2.0
+Version 1.3.0
 -------------
  * replace all the copious uses of del with a better idiom
  * add a twisted plugin for twistd where you can specify something like an --lb
@@ -74,7 +78,6 @@ Version 1.2.0
  * update application.service.LoadBalancedService to check for lb type:
    . if the lb type needs a custom scheduler (e.g., for caching values), add
      that scheduler as a service automatically with default interval
- * sort service groups in admin UI by name
  * cache DNS lookups
  * continue adding unit tests
  * continue adding any missing docstring
@@ -82,7 +85,7 @@ Version 1.2.0
    proxied hosts
 
 
-Version 1.3.0
+Version 1.4.0
 -------------
  * add heartbeat/HA features for lb'ed services to communicate back up to the
    lb manager
@@ -91,9 +94,7 @@ Version 1.3.0
    . only put them back into rotation if they are pingable again
    . clones (proxied hosts) also ping back to the server to make sure they are
      still up; if it is down, one of the proxies can take over as manager
- * add an XML-RPC service instead of the custom web API
-   . including adding methods for bouncing the admin UI
- * replace old PyDirector logging with Twisted logging
+
  * figure out a way to restart/upgrade code. Idea: close down listener, start
    new code immediately
    . let old connections on old pydir finish (run to completion) before exiting
@@ -104,7 +105,7 @@ Version 1.3.0
  * continue adding unit tests
 
 
-Version 1.4.0
+Version 1.5.0
 -------------
  * [maybe] make the "top" link point to a list of service groups, linked to
    pages that just display that one section (as opposed to the view that
@@ -129,7 +130,7 @@ Version 1.4.0
  * continue adding unit tests
 
 
-Version 1.5.0
+Version 1.6.0
 -------------
  * convert the user auth to use cred
  * complete unit tests
