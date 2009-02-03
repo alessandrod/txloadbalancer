@@ -174,7 +174,6 @@ def setup(configFile):
     adminWeb = setupAdminWebUIServer(conf, director)
     if adminWeb:
         adminWeb.setServiceParent(services)
-    import pdb;pdb.set_trace()
 
     # set up the RPC resources
 
