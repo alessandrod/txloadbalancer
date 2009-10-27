@@ -1,1 +1,7 @@
-include doc/*
+recursive-include docs *.txt
+recursive-include txlb *.py
+include ChangeLog
+include README
+include LICENSE
+include TODO
+

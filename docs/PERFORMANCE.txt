@@ -1,0 +1,34 @@
+===========
+Performance
+===========
+
+Note: This section is currently incomplete and dated.
+
+Duncan's notes from 2008, tested on a 2 CPU Sun Netra 240:
+
+* a single apache instance on Solaris 10
+
+  * starting threads:
+
+  * max threads
+
+* 2 load-balanced apache instances on Solaris 10
+
+* twisted.web instances on Solaris 10 (same docroot)
+
+* 2 load-balanced twisted.web instances
+
+* PythonDirector 1.0.0 proxies for 2 load-balanced twisted.web instances
+
+Anthony's original notes on performance:
+
+* On my notebook, load balancing an apache on the same local ethernet
+  (serving a static 18K text file) gets 155 connections per second and
+  2850 kbytes/s throughput (apachebench -n 2000 -c 10). Connecting directly
+  to the apache gets 180 conns/sec and 3400kbytes/s. So unless you're
+  serving really really stupidly high hit rates it's unlikely to be
+  pythondirector causing you difficulties. (Note that 155 connections/sec
+  is 13 million hits per day...)
+
+* Running purely over the loopback interface to a local apache seems to
+  max out at around 350 conns/second.

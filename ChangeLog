@@ -1,6 +1,9 @@
 2009.10.26
 
 * Fixed ReST formatting issues in README.
+* Reorganzied docs and updated setup.py with the changes.
+* Updated manifest file.
+* Added install docs.
 
 2009.02.03
 

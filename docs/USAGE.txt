@@ -1,0 +1,45 @@
+=====
+Usage
+=====
+
+To get started with the sample script, just do the following::
+
+    $ twistd -noy ./bin/txlb.tac
+
+This will use the default configuration file in ./etc/config.xml; you can edit
+the .tac file to point to the config you prefer. Be sure to edit the
+config.xml file to properly reflect your services in need of load-balancing.
+
+To enable the admin interface, your config file must have the admin section
+defined, with the required fields. For an example, be sure to see
+./etc/config.xml. For more details, please see the configuration information in
+the ./doc directory.
+
+If you are creating your own script and don't want to use txlb.tac, you can
+import the application setup functions in txlb.application.
+
+You can also "embed" a load-balancer in your Twisted application, though in
+it's current state this is rather limited. For example, if you had started web
+servers on three other hosts, your main application could lood balance them in
+the following manner::
+
+    from twisted.application import service
+
+    from txlb import manager
+    from txlb.model import HostMapper
+    from txlb.schedulers import leastc
+    from txlb.application.service import LoadBalancedService
+
+    proxyServices = [
+      HostMapper(proxy='127.0.0.1:8080', lbType=leastc, host='host1',
+          address='10.0.0.1:80'),
+      HostMapper(proxy='127.0.0.1:8080', lbType=leastc, host='host2',
+          address='10.0.0.2:80'),
+      HostMapper(proxy='127.0.0.1:8080', lbType=leastc, host='host3',
+          address='10.0.0.3:80'),
+    ]
+
+    application = service.Application('Demo LB Service')
+    pm = manager.proxyManagerFactory(proxyServices)
+    lbs = LoadBalancedService(pm)
+    lbs.setServiceParent(application)
