@@ -1,2 +1,2 @@
-find . -name "*pyc" -exec rm {} \;
-rm -rf build dist txLoadBalancer.egg-info
+sudo find . -name "*pyc" -exec rm {} \;
+sudo rm -rf build dist txLoadBalancer.egg-info CHECK_THIS_BEFORE_UPLOAD.txt
