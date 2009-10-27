@@ -12,15 +12,16 @@ Introduction
 This is a pure python TCP load balancer. It takes inbound TCP connections and
 connects them to one of a number of backend servers.
 
-txLoadBalancer is a fork of Anthony Baxter's PythonDirector. It removed all
-threading and asyncore code and the admin UI with the Twisted-based analogs. It
-also significantly reorganized the API and provided many new features (see
-below).
+txLoadBalancer is a fork of Anthony Baxter's PythonDirector. It replaced all
+threading, asyncore, and admin UI code with the Twisted-based analogs. It also
+significantly reorganized the API and provided many new features.
 
 
 =====
 Usage
 =====
+
+To get started with the sample script, just do the following::
 
     $ twistd -noy ./bin/txlb.tac
 
@@ -39,7 +40,7 @@ import the application setup functions in txlb.application.
 You can also "embed" a load-balancer in your Twisted application, though in
 it's current state this is rather limited. For example, if you had started web
 servers on three other hosts, your main application could lood balance them in
-the following manner:
+the following manner::
 
     from twisted.application import service
 
@@ -95,12 +96,14 @@ Features
 Performance
 ===========
 
-(This section is currently incomplete)
+Note: This section is currently incomplete and dated.
 
 Duncan's notes from 2008, tested on a 2 CPU Sun Netra 240:
 
 * a single apache instance on Solaris 10
+
   * starting threads:
+
   * max threads
 
 * 2 load-balanced apache instances on Solaris 10
@@ -134,26 +137,34 @@ From txLoadBalancer 1.1.1 to 1.2.0
 
 * Down-ed hosts are now re-checked before they are put back into rotation; only
   hosts with no connection problems are re-added.
+
 * The use of setuptools is now optional.
 
 From txLoadBalancer 1.0.1 to 1.1.0
 ----------------------------------
 
 * Massive API changes: competely reorganzied the code base.
+
 * Integrated patches from Apple's Calendar Server project.
+
 * A new API for creating load-balanced services within a Twisted application
   (without the need to run a separate load-balancingn daemon).
+
 * Added support for live interaction with load-balancer via SSH connection to
   running Python interpretter (Twisted manhole).
+
 * The ability to start listening on a new port without restaring the
   application.
+
 * Added a weighted load balance scheduler.
 
 From txLoadBalancer 0.9.1 to 1.0.1
 ----------------------------------
 
 * 100% Twisted: removed all threading and asyncore code completely.
+
 * Significan API changes.
+
 * Dropped the web API.
 
 From PyDirector 1.0.0 to 1.1.1 (AKA txLoadBalancer 0.9.1)
@@ -167,6 +178,7 @@ From PyDirector 0.0.7 to 1.0.0
 ------------------------------
 
 * Very few, mostly this is to update the project to 'stable' status.
+
 * The networking code now uses twisted if available, and falls back
   to asyncore.
 
@@ -177,10 +189,13 @@ From PyDirector 0.0.6 to 0.0.7
   the scheduler and the administrative interface to mean 'listen on
   all interfaces'. Considerably more obvious than '0.0.0.0'. Thanks
   to Andrew Sydelko for the idea.
+
 * New "leastconnsrr" scheduler - this is leastconns, with a roundrobin
   as well. Previously, leastconns would keep the list of hosts sorted,
   which often meant one system got beaten up pretty badly.
+
 * Twisted backend group selection works again.
+
 * The client address is now passed to the scheduler's getHost() method.
   This allows the creation of "sticky" schedulers, where a client is
   (by preference) sent to the same backend server. The factory function
@@ -191,16 +206,20 @@ From PyDirector 0.0.5 to 0.0.6
 
 * fixed an error in the (hopefully rare) case where all backend servers
   are down.
+
 * the main script uses resource.setrlimit() to boost the number of open
   filedescriptors (solaris has stupidly low defaults)
+
 * when all backend servers are down, the manager thread goes into a much
   more aggressive mode re-adding them.
+
 * handle comments in the config file
 
 From PyDirector 0.0.4 to 0.0.5
 ------------------------------
 
 * bunch of bugfixes to the logging
+
 * re-implemented the networking code using the 'twisted' framework; a simple
   loopback test with asyncore based pydir:
 
@@ -216,29 +235,40 @@ From PyDirector 0.0.3 to 0.0.4
 ------------------------------
 
 * can now specify more than one listener for a service
+
 * 'client' in the config XML is now 'host'
+
 * fixed a bug in leastconns and roundrobin scheduler if all backends
   were unavailable.
+
 * whole lotta documentation added.
+
 * running display in web api now shows count of total connections
+
 * running display now has refresh and auto-refresh
+
 * compareconf module - takes a running config and a new config and
   emits the web api commands needed to make the running config match
   the new config
+
 * first cut at enabling https for web interface (needs m2crypto)
 
 From PyDirector 0.0.2 to 0.0.3
 ------------------------------
 
 * delHost hooked up
+
 * running.xml added - XML dump of current config
+
 * centralised logging - the various things that write logfile
   entries need to be made consistent, and a lot of additional
   logging needs to be added.
+
 * Python2.1 compatibility fix: no socket.gaierror exception on 2.1
 
 From PyDirector 0.0.1 to 0.0.2
 ------------------------------
 
 * refactored web publishing (babybobo)
+
 * package-ised and distutil-ised the code

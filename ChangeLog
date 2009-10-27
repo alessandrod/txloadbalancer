@@ -1,3 +1,7 @@
+2009.10.26
+
+* Fixed ReST formatting issues in README.
+
 2009.02.03
 
 * Removed debugger break unintentionally committed and left in trunk (thanks
