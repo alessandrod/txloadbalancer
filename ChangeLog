@@ -6,6 +6,8 @@
 * Added install docs.
 * Changed the util module into a subpackage.
 * Added a dist helper module to the util subpackage and updated setup.py.
+* Moved meta data out of __init__ and into new meta module.
+* Updated setup.py to use the new meta module.
 
 2009.02.03
 

@@ -1,15 +1,15 @@
-import txlb
+from txlb import meta
 from txlb.util import dist
 
 
 dist.setup(
-    name=txlb.name,
-    version=txlb.version,
-    description=txlb.description,
-    author="Duncan McGreggor, Anthony Baxter",
-    author_email="oubiwann@adytum.us",
-    url=txlb.projectURL,
-    packages=dist.findPackages("txlb"),
+    name=meta.display_name,
+    version=meta.version,
+    description=meta.description,
+    author=meta.author,
+    author_email=meta.author_email,
+    url=meta.url,
+    packages=dist.findPackages(meta.library_name),
     scripts=["bin/txlb.tac"],
     long_description=dist.catReST(
         "docs/PRELUDE.txt",
@@ -20,7 +20,7 @@ dist.setup(
         "docs/PERFORMANCE.txt",
         "docs/HISTORY.txt",
          out=True),
-    license="MIT",
+    license=meta.license,
     classifiers=[
        "Development Status :: 5 - Production/Stable",
        "Environment :: Web Environment",

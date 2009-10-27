@@ -1,0 +1,8 @@
+display_name = "txLoadBalancer"
+library_name = "txlb"
+version = "1.2.0"
+author = "Duncan McGreggori, Anthony Baxter"
+author_email = "oubiwann@adytum.us"
+license = "MIT"
+url = "http://launchpad.net/txloadbalancer"
+description = """A pure python TCP load balancer."""
