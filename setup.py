@@ -1,17 +1,17 @@
 import txlb
-from txlb import util
+from txlb.util import dist
 
 
-util.setup(
+dist.setup(
     name=txlb.name,
     version=txlb.version,
     description=txlb.description,
     author="Duncan McGreggor, Anthony Baxter",
-    author_email="oubiwann@divmod.com",
+    author_email="oubiwann@adytum.us",
     url=txlb.projectURL,
-    packages=util.find_packages(),
+    packages=dist.findPackages("txlb"),
     scripts=["bin/txlb.tac"],
-    long_description=util.catReST(
+    long_description=dist.catReST(
         "docs/PRELUDE.txt",
         "README",
         "docs/DEPENDENCIES.txt",

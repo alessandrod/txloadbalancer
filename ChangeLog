@@ -4,6 +4,8 @@
 * Reorganzied docs and updated setup.py with the changes.
 * Updated manifest file.
 * Added install docs.
+* Changed the util module into a subpackage.
+* Added a dist helper module to the util subpackage and updated setup.py.
 
 2009.02.03
 
