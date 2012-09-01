@@ -4,8 +4,6 @@ import crypt
 import random
 from datetime import datetime
 
-from twisted.python import log
-from twisted.internet import ssl
 
 import txlb
 
@@ -52,6 +50,7 @@ def createCertificate():
 
     """
     # this is copied from test_sslverify.py
+    from twisted.internet import ssl
     dn = ssl.DistinguishedName(commonName="txLoadBalancer Admin HTTPS")
     keypair = ssl.KeyPair.generate()
     req = keypair.certificateRequest(dn)
@@ -156,6 +155,7 @@ def saveConfig(configuration, director):
     memory. Obviously there are all sorts of issues at play, here: race
     conditions, differences and the need to merge, conflict resolution, etc.
     """
+    from twisted.python import log
     # disable the admin UI or at the very least, make it read-only
     director.setReadOnly()
     # compare in-memory config with on-disk config

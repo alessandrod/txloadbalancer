@@ -34,6 +34,11 @@ dist.setup(
        "Intended Audience :: Developers",
        "Topic :: Internet",
        "Topic :: System :: Networking",
+    ],
+    install_requires=[
+        'twisted',
+        'pycrypto',
+        'pyasn1',
+        'pyOpenSSL'
     ]
-
 )
